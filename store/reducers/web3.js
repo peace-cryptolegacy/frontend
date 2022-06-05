@@ -3,13 +3,15 @@ import { createSlice } from '@reduxjs/toolkit';
 const web3Slice = createSlice({
   name: 'web3',
   initialState: {
-    address: null
+    address: null,
+    isConnected: false
   },
   reducers: {
     setAddress(state, action) {
       return {
         ...state,
-        address: action.payload.address
+        address: action.payload.address,
+        isConnected: true
       };
     }
   }

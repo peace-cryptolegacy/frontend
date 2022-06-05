@@ -1,9 +1,8 @@
 import { Button } from '@chakra-ui/react';
+import { getProvider } from 'utils/web3/provider';
 import { setAddress } from 'store/reducers/web3';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
-import { Web3Provider } from "@ethersproject/providers";
-import Web3Modal from "web3modal";
 
 export default function WalletConnectModal() {
   const [isConnecting, setConnect] = useState(false);
@@ -15,11 +14,7 @@ export default function WalletConnectModal() {
     try {
       setConnect(true);
 
-      const web3Modal = new Web3Modal({
-        providerOptions: {}
-      });
-      const instance = await web3Modal.connect();
-      const provider = new Web3Provider(instance);
+      const provider = await getProvider();
       const signer = provider.getSigner();
       const address = await signer.getAddress();
 
