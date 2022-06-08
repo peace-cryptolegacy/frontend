@@ -59,10 +59,11 @@ export default function CreatePlan() {
 
         <Slider 
           defaultValue={30} 
-          onChange={ maxDays => setMaxDays(maxDays) }
+          disabled={ !isConnected }
           max={60} 
           mb='10'
           min={30} 
+          onChange={ maxDays => setMaxDays(maxDays) }
           step={15} 
           value={maxDays} 
         >
@@ -87,6 +88,7 @@ export default function CreatePlan() {
           Set the beneficiary address that will activate after time passed
         </FormHelperText>
         <Input 
+          disabled={ !isConnected }
           id='inheritor' 
           onChange={ event => setInheritor(event.currentTarget.value)}
           placeholder='Wallet Address' 
