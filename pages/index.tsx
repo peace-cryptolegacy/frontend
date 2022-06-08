@@ -1,7 +1,7 @@
 import CreatePlan from 'components/create-plan';
 import Head from 'next/head';
 
-export default function Home() {
+function Home() {
   return (
     <div>
       <Head>
@@ -14,5 +14,7 @@ export default function Home() {
         <CreatePlan />
       </div>
     </div>
-  )
+  );
 }
+
+export default Home;

@@ -1,8 +1,9 @@
-import Navbar from 'components/navbar';
+import { FC, ReactNode } from 'react';
 import Footer from 'components/footer';
+import Navbar from 'components/navbar';
 import styles from 'styles/Layout.module.scss';
 
-export default function Layout({ children }) {
+const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <div className={styles.layout}>
       <Navbar />
@@ -11,3 +12,5 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
+export default Layout;

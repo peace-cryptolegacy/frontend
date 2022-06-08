@@ -13,16 +13,17 @@ import {
 } from '@chakra-ui/react';
 import { addTestator } from 'utils/web3/heritage';
 import { approve } from 'utils/web3/erc20';
-import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import { BaseSyntheticEvent, FC, useState } from 'react';
+import { getIsConnected } from 'store/reducers/web3';
+import { useAppSelector } from 'store/hooks';
 import styles from 'styles/CreatePlan.module.scss';
 
-export default function CreatePlan() {
-  const isConnected = useSelector(state => state.web3.isConnected);
-  const [isApproving, setIsApproving] = useState(false);
-  const [isCreatingTestament, setIsCreatingTestament] = useState(false);
-  const [inheritor, setInheritor] = useState('');
-  const [maxDays, setMaxDays] = useState(30);
+const CreatePlan: FC = () => {
+  const isConnected: boolean = useAppSelector(getIsConnected);
+  const [isApproving, setIsApproving] = useState<boolean>(false);
+  const [isCreatingTestament, setIsCreatingTestament] = useState<boolean>(false);
+  const [inheritor, setInheritor] = useState<string>('');
+  const [maxDays, setMaxDays] = useState<number>(30);
 
   async function handleApproveButtonClick() {
     try {
@@ -40,12 +41,16 @@ export default function CreatePlan() {
     try {
       setIsCreatingTestament(true);
 
-      await addTestator({ inheritor, maxDays });
+      await addTestator(inheritor, maxDays);
     } catch (error) {
       console.log(error);
     } finally {
       setIsCreatingTestament(false)
     }
+  }
+
+  function handleSliderChange(maxDays: number) {
+    setMaxDays(maxDays);
   }
 
   return (
@@ -59,11 +64,11 @@ export default function CreatePlan() {
 
         <Slider 
           defaultValue={30} 
-          disabled={ !isConnected }
+          isDisabled={ !isConnected }
           max={60} 
           mb='10'
           min={30} 
-          onChange={ maxDays => setMaxDays(maxDays) }
+          onChange={ handleSliderChange }
           step={15} 
           value={maxDays} 
         >
@@ -90,7 +95,7 @@ export default function CreatePlan() {
         <Input 
           disabled={ !isConnected }
           id='inheritor' 
-          onChange={ event => setInheritor(event.currentTarget.value)}
+          onChange={ (event: BaseSyntheticEvent) => setInheritor(event.currentTarget.value)}
           placeholder='Wallet Address' 
           type='string' 
           value={ inheritor }
@@ -118,3 +123,5 @@ export default function CreatePlan() {
     </div>
   );
 }
+
+export default CreatePlan;
