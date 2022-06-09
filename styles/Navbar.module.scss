@@ -8,4 +8,10 @@
   &__logo {
     display: block;
   }
+
+  &__button__container {
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px 5px rgba(0,0,0,0.05);
+    padding: 2px;
+  }
 }

@@ -1,19 +1,35 @@
 import { AppProps } from 'next/app';
+import { appWithTranslation } from 'next-i18next';
 import { ChakraProvider } from '@chakra-ui/react';
+import { extendTheme } from '@chakra-ui/react'
 import { Provider } from 'react-redux';
 import { store } from 'store';
 import Layout from 'components/layout';
 
+const theme = extendTheme({
+  components: {
+    Button: {
+      baseStyle: {
+        fontWeight: 'normal'
+      }
+    },
+  },
+  fonts: {
+    heading: 'Inter',
+    body: 'Inter'
+  }
+});
+
 function App({ Component, pageProps }: AppProps) {
   return(
     <Provider store={store}>
-      <ChakraProvider>
+      <ChakraProvider theme={ theme }>
         <Layout>
-          <Component {...pageProps} />
+          <Component { ...pageProps } />
         </Layout>
       </ChakraProvider>
     </Provider>
   ); 
 }
 
-export default App;
+export default appWithTranslation(App);
