@@ -1,5 +1,6 @@
 import { Button, ButtonGroup, ButtonProps, Select } from '@chakra-ui/react';
 import { getChains } from 'utils/chains/index';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import ConnectWallet from 'components/connect-wallet';
 import Image from 'next/image';
@@ -7,11 +8,16 @@ import styles from 'styles/Navbar.module.scss';
 
 import type { Chain } from 'utils/chains/index';
 
+type GetButtonProps = (token: string) => ButtonProps;
+
 const Navbar = () => {
   const { t } = useTranslation();
-  const buttonProps: ButtonProps = {
-    backgroundColor: '#FFFFFF'
-  };
+  const router = useRouter();
+
+  const getButtonProps: GetButtonProps = (type) => ({
+    backgroundColor: router.pathname === type ? '#F6F8FB' : '#FFFFFF',
+    onClick: () => router.push(type)
+  });
 
   const chains: Chain[] = getChains(true, true);
   
@@ -20,13 +26,19 @@ const Navbar = () => {
       <Image src="/logo.png" alt="Peace Logo" width={200} height={60} />
 
       <ButtonGroup className={styles['navbar__button__container']}>
-        <Button { ...buttonProps } backgroundColor='#F6F8FB'>
+        <Button 
+          { ...getButtonProps('/') }
+        >
           { t('navbar.inheritance') }
         </Button>
-        <Button { ...buttonProps }>
+        <Button 
+          { ...getButtonProps('/claim') }
+        >
           { t('navbar.claim') }
         </Button>
-        <Button { ...buttonProps }>
+        <Button 
+          { ...getButtonProps('/donations') }
+        >
           { t('navbar.donations') }
         </Button>
       </ButtonGroup>
