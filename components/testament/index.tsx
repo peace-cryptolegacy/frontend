@@ -31,7 +31,7 @@ const Testament = ({ testator }: { testator: ITestator }) => {
         proofOfTimestamp: BigNumber.from(getUnixTime(Date.now()))
       }));  
     } catch (error) {
-      console.log(error);
+      alert(error);
     } finally {
       setUpdatingProof(false)
     }

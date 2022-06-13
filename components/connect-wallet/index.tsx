@@ -3,12 +3,12 @@ import { Button } from '@chakra-ui/react';
 import { formatAddress } from 'utils/formatters';
 import { getAddress, getBalance, getChainInfo, setProvider, setTestator } from 'store/reducers/web3';
 import { getProvider } from 'utils/web3/provider';
+import { getTestator } from "utils/web3/heritage";
 import { providers } from "ethers";
 import { useAppSelector, useAppDispatch } from 'store/hooks';
 import { useState, FC } from 'react';
 import { useTranslation } from 'next-i18next';
 import styles from 'styles/ConnectWallet.module.scss';
-import { getTestator } from "utils/web3/heritage";
 
 import type { Chain } from 'utils/chains/index';
 import type { ITestator } from 'utils/web3/heritage';
@@ -44,7 +44,7 @@ const WalletConnectModal: FC = () => {
       }));
       setConnect(false);
     } catch (error) {
-      console.log(error);        
+      alert(error);        
       
       setConnect(false);
     }

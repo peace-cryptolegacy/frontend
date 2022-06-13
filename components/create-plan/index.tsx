@@ -12,17 +12,20 @@ import {
   SliderThumb,
   SliderTrack
 } from '@chakra-ui/react';
-import { addTestator } from 'utils/web3/heritage';
+import { addTestator, getTestator } from 'utils/web3/heritage';
 import { approve } from 'utils/web3/erc20';
 import { BaseSyntheticEvent, FC, useState } from 'react';
-import { getIsConnected } from 'store/reducers/web3';
+import { BigNumber, constants } from 'ethers';
+import { getAllowance } from 'utils/web3/erc20';
+import { getAddress, getIsConnected, setTestator } from 'store/reducers/web3';
 import { getTokensByChainId } from 'utils/tokens/index';
-import { useAppSelector } from 'store/hooks';
+import { useAppSelector, useAppDispatch } from 'store/hooks';
 import { useTranslation } from 'next-i18next';
 import isEmpty from "lodash/isEmpty";
 import styles from 'styles/CreatePlan.module.scss';
 
 import type { Token } from 'utils/tokens/index';
+import type { ITestator } from 'utils/web3/heritage';
 
 const CreatePlan: FC = () => {
   const { t } = useTranslation();
@@ -33,17 +36,24 @@ const CreatePlan: FC = () => {
   const [inheritor, setInheritor] = useState<string>('');
   const [token, setToken] = useState<string>('');
   const [maxDays, setMaxDays] = useState<number>(30);
+  const [hasAllowance, setHasAllowance] = useState<boolean>(false);
 
+  const address: string = useAppSelector(getAddress);
   const chainId: number = useAppSelector(state => state.web3.chainId);
   const tokens: Token[] = getTokensByChainId(chainId);
+  const dispatch = useAppDispatch();
 
   async function handleApproveButtonClick() {
     try {
       setIsApproving(true);
 
       await approve(token);
+
+      const allowance: BigNumber = await getAllowance(token);
+
+      setHasAllowance(allowance.eq(constants.MaxUint256));
     } catch (error) {
-      console.log(error);
+      alert(error);
     } finally {
       setIsApproving(false)
     }
@@ -54,8 +64,14 @@ const CreatePlan: FC = () => {
       setIsCreatingTestament(true);
 
       await addTestator(inheritor, maxDays, token);
+
+      const testator: ITestator | undefined = await getTestator(address);
+
+      if (testator) {
+        dispatch(setTestator(testator));  
+      }
     } catch (error) {
-      console.log(error);
+      alert(error);
     } finally {
       setIsCreatingTestament(false)
     }
@@ -63,6 +79,20 @@ const CreatePlan: FC = () => {
 
   function handleSliderChange(maxDays: number) {
     setMaxDays(maxDays);
+  }
+
+  async function handleTokenChange(event: BaseSyntheticEvent) {
+    const token = event.currentTarget.value;
+    
+    setToken(token);
+    
+    try {
+      const allowance: BigNumber = await getAllowance(token);
+
+      setHasAllowance(allowance.eq(constants.MaxUint256));
+    } catch (error) {
+      alert(error);
+    }
   }
 
   return (
@@ -109,12 +139,12 @@ const CreatePlan: FC = () => {
 
         <Input 
           disabled={ !isConnected }
-          id='token' 
+          id='inheritor' 
           mb='5'
-          onChange={ (event: BaseSyntheticEvent) => setToken(event.currentTarget.value)}
+          onChange={ (event: BaseSyntheticEvent) => setInheritor(event.currentTarget.value)}
           placeholder={ t('create-plan.wallet-address') }
           type='string' 
-          value={ token }
+          value={ inheritor }
         />
 
         <FormHelperText mb='5'>
@@ -122,9 +152,9 @@ const CreatePlan: FC = () => {
         </FormHelperText>
 
         <Select 
-          onChange={ (event: BaseSyntheticEvent) => setInheritor(event.currentTarget.value)}
+          onChange={ handleTokenChange }
           placeholder={t('create-plan.token-address')}
-          value={ inheritor }
+          value={ token }
         >
           { 
             isEmpty(tokens) ? 
@@ -143,7 +173,7 @@ const CreatePlan: FC = () => {
       <ButtonGroup className={styles['createplan--submitbuttons']} gap='10'>
         <Button 
           colorScheme='blue' 
-          disabled={ !isConnected || inheritor === '' } 
+          disabled={ !isConnected || token === '' } 
           isLoading={ isApproving }
           onClick={ handleApproveButtonClick }
         >
@@ -151,7 +181,7 @@ const CreatePlan: FC = () => {
         </Button>
         <Button 
           colorScheme='blue'
-          disabled={ !isConnected }
+          disabled={ !(isConnected && hasAllowance) }
           isLoading={ isCreatingTestament }
           onClick={ handleCreateTestamentButtonClick }
         >
