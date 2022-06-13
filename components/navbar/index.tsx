@@ -1,34 +1,51 @@
-import { Button, ButtonGroup, ButtonProps } from '@chakra-ui/react';
-import { FC } from 'react';
+import { Button, ButtonGroup, ButtonProps, Select } from '@chakra-ui/react';
+import { getChains } from 'utils/chains/index';
 import { useTranslation } from 'next-i18next';
 import ConnectWallet from 'components/connect-wallet';
 import Image from 'next/image';
 import styles from 'styles/Navbar.module.scss';
 
-const Navbar: FC = () => {
+import type { Chain } from 'utils/chains/index';
+
+const Navbar = () => {
   const { t } = useTranslation();
   const buttonProps: ButtonProps = {
-    backgroundColor: '#FFFFFF',
-    textTransform: 'capitalize'
+    backgroundColor: '#FFFFFF'
   };
+
+  const chains: Chain[] = getChains(true, true);
   
   return (
-    <div className={styles.navbar}>
+    <div className={ styles.navbar }>
       <Image src="/logo.png" alt="Peace Logo" width={200} height={60} />
 
       <ButtonGroup className={styles['navbar__button__container']}>
         <Button { ...buttonProps } backgroundColor='#F6F8FB'>
-          { t('inheritance') }
+          { t('navbar.inheritance') }
         </Button>
         <Button { ...buttonProps }>
-          { t('claim') }
+          { t('navbar.claim') }
         </Button>
         <Button { ...buttonProps }>
-          { t('donation') }
+          { t('navbar.donations') }
         </Button>
       </ButtonGroup>
 
-      <ConnectWallet />
+      <div className={ styles['navbar__wallet__container'] }>
+        <Select mr={ 2 } height='44px' width={ 130 }>
+          {
+            chains.map((chain) => {
+              return (
+                <option key={ chain.chainId } value={ chain.chainId }>
+                  { chain.name }
+                </option>
+              );
+            })
+          }
+        </Select>
+
+        <ConnectWallet />
+      </div>
     </div>
   );
 }

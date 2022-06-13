@@ -1,0 +1,15 @@
+.testament {
+  margin: auto;
+  max-width: 515px;
+
+  &__update__proof {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__progress__days {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}

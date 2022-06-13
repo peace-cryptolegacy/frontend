@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 
-export function fromWei(amount: string): Number {
+export function fromWei(amount: string | BigNumber): Number {
   return Number(formatUnits(amount, 18));
 }
 

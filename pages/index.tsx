@@ -1,9 +1,14 @@
 import { GetStaticProps } from "next";
+import { getTestator } from 'store/reducers/web3';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useAppSelector } from 'store/hooks';
 import CreatePlan from 'components/create-plan';
 import Head from 'next/head';
+import Testament from 'components/testament';
 
 function Home() {
+  const testator = useAppSelector(getTestator);
+
   return (
     <div>
       <Head>
@@ -13,7 +18,11 @@ function Home() {
       </Head>
 
       <div>
-        <CreatePlan />
+        {
+          testator === undefined ?
+            <CreatePlan /> :
+            <Testament testator={ testator } />
+        }
       </div>
     </div>
   );

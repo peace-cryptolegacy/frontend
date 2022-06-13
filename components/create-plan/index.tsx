@@ -5,6 +5,7 @@ import {
   FormHelperText,
   Heading,
   Input,
+  Select,
   Slider,
   SliderFilledTrack,
   SliderMark,
@@ -15,21 +16,32 @@ import { addTestator } from 'utils/web3/heritage';
 import { approve } from 'utils/web3/erc20';
 import { BaseSyntheticEvent, FC, useState } from 'react';
 import { getIsConnected } from 'store/reducers/web3';
+import { getTokensByChainId } from 'utils/tokens/index';
 import { useAppSelector } from 'store/hooks';
+import { useTranslation } from 'next-i18next';
+import isEmpty from "lodash/isEmpty";
 import styles from 'styles/CreatePlan.module.scss';
 
+import type { Token } from 'utils/tokens/index';
+
 const CreatePlan: FC = () => {
+  const { t } = useTranslation();
+
   const isConnected: boolean = useAppSelector(getIsConnected);
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [isCreatingTestament, setIsCreatingTestament] = useState<boolean>(false);
   const [inheritor, setInheritor] = useState<string>('');
+  const [token, setToken] = useState<string>('');
   const [maxDays, setMaxDays] = useState<number>(30);
+
+  const chainId: number = useAppSelector(state => state.web3.chainId);
+  const tokens: Token[] = getTokensByChainId(chainId);
 
   async function handleApproveButtonClick() {
     try {
       setIsApproving(true);
 
-      await approve();
+      await approve(token);
     } catch (error) {
       console.log(error);
     } finally {
@@ -41,7 +53,7 @@ const CreatePlan: FC = () => {
     try {
       setIsCreatingTestament(true);
 
-      await addTestator(inheritor, maxDays);
+      await addTestator(inheritor, maxDays, token);
     } catch (error) {
       console.log(error);
     } finally {
@@ -55,11 +67,13 @@ const CreatePlan: FC = () => {
 
   return (
     <div className={styles.createplan}>
-      <Heading as='h1' size='lg' mb='10'>Inheritance Plan</Heading>
+      <Heading as='h1' size='lg' mb='10'>
+        { t('create-plan.title') }
+      </Heading>
 
       <FormControl mb='10'>
         <FormHelperText mb="5">
-          Select the days without activity in the wallet to activate protocol
+        { t('create-plan.max-days-hint') }
         </FormHelperText>
 
         <Slider 
@@ -73,13 +87,13 @@ const CreatePlan: FC = () => {
           value={maxDays} 
         >
           <SliderMark value={30} mt='2' ml='-2.5' fontSize='sm'>
-            30 days
+            { t('create-plan.days', { days: 30 }) }
           </SliderMark>
           <SliderMark value={45} mt='2' ml='-2.5' fontSize='sm'>
-            45 days
+            { t('create-plan.days', { days: 45 }) }
           </SliderMark>
           <SliderMark value={60} mt='2' ml='-10' fontSize='sm' style={{ whiteSpace: 'nowrap' }}>
-            60 days
+          { t('create-plan.days', { days: 60 }) }
           </SliderMark>
 
           <SliderTrack>
@@ -90,26 +104,50 @@ const CreatePlan: FC = () => {
         </Slider>
 
         <FormHelperText mb='5'>
-          Set the beneficiary address that will activate after time passed
+          { t('create-plan.beneficiary-hint') }
         </FormHelperText>
+
         <Input 
           disabled={ !isConnected }
-          id='inheritor' 
-          onChange={ (event: BaseSyntheticEvent) => setInheritor(event.currentTarget.value)}
-          placeholder='Wallet Address' 
+          id='token' 
+          mb='5'
+          onChange={ (event: BaseSyntheticEvent) => setToken(event.currentTarget.value)}
+          placeholder={ t('create-plan.wallet-address') }
           type='string' 
-          value={ inheritor }
+          value={ token }
         />
+
+        <FormHelperText mb='5'>
+          { t('create-plan.token-hint') }
+        </FormHelperText>
+
+        <Select 
+          onChange={ (event: BaseSyntheticEvent) => setInheritor(event.currentTarget.value)}
+          placeholder={t('create-plan.token-address')}
+          value={ inheritor }
+        >
+          { 
+            isEmpty(tokens) ? 
+            null :
+            tokens.map(token => {
+              return (
+                <option key={ token.address } value={ token.address }>
+                  { token.name }
+                </option>
+              );
+            })
+          }
+        </Select>
       </FormControl>
 
       <ButtonGroup className={styles['createplan--submitbuttons']} gap='10'>
         <Button 
           colorScheme='blue' 
-          disabled={ !isConnected } 
+          disabled={ !isConnected || inheritor === '' } 
           isLoading={ isApproving }
           onClick={ handleApproveButtonClick }
         >
-          Approve
+          { t('create-plan.approve-allowance') }
         </Button>
         <Button 
           colorScheme='blue'
@@ -117,7 +155,7 @@ const CreatePlan: FC = () => {
           isLoading={ isCreatingTestament }
           onClick={ handleCreateTestamentButtonClick }
         >
-           Create testament
+           { t('create-plan.create-testament') }
         </Button>
       </ButtonGroup>
     </div>

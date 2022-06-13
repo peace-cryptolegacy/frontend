@@ -1,5 +1,21 @@
 {
-  "claim": "reclamación",
-  "donations": "donaciones",
-  "inheritance": "herencia"
+  "navbar": {
+    "claim": "Reclamación",
+    "donations": "Donación",
+    "inheritance": "Herencia"
+  },
+  "create-plan": {
+    "title": "Plan de herencia",
+    "max-days-hint": "Días sin actividad en el monedero para activar prueba de vida",
+    "days": "{{days}} días",
+    "beneficiary-hint": "Establezca la dirección de la wallet del beneficiario",
+    "wallet-address": "Dirección del beneficiario",
+    "approve-allowance": "Aprobar autorización",
+    "create-testament": "Apruebe su voluntad",
+    "token-hint": "Establezca el token a heredar",
+    "token-address": "Dirección del token"
+  },
+  "connect-wallet": {
+    "connect": "Conecta tu wallet"
+  }
 }
