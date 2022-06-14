@@ -14,10 +14,10 @@ export interface Chain {
   nativeCurrency: NativeCurrency;
 }
 
-export function getChainById(id: number): Chain {
+export function getChainById(id: number): Chain | undefined {
   return chains.find((chain: Chain) => {
     return chain.chainId === id;
-  })!;
+  });
 }
 
 export function getChains(isSupported: boolean, isTesnet: boolean): Chain[] {

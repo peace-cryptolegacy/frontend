@@ -17,5 +17,14 @@
   },
   "connect-wallet": {
     "connect": "Conecta tu wallet"
+  },
+  "testament": {
+    "title": "Testamento",
+    "status": "Estado",
+    "inheritor": "Heredero",
+    "token": "Token",
+    "life-proof": "Ultima prueba de vida",
+    "days": "{{days}} días",
+    "update-proof": "Actualizar prueba de vida"
   }
 }

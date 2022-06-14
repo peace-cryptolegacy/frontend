@@ -3,7 +3,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fromWei } from 'utils/converter';
 import { getChainById } from 'utils/chains/index';
 import { RootState } from 'store';
-import { Status } from 'utils/web3/heritage';
 
 import type { Chain } from 'utils/chains/index';
 import type { ITestator } from 'utils/web3/heritage';
@@ -28,12 +27,17 @@ const web3Slice = createSlice({
   name: 'web3',
   initialState,
   reducers: {
-    setProvider(state: Web3State, action: PayloadAction<{ address: string, balance: BigNumber, chainId: number }>) {
+    setChainId(state: Web3State, action: PayloadAction<{ chainId: number }>) {
+      return {
+        ...state,
+        chainId: action.payload.chainId
+      };
+    },
+    setProvider(state: Web3State, action: PayloadAction<{ address: string, balance: BigNumber }>) {
       return {
         ...state,
         address: action.payload.address,
         balance: action.payload.balance,
-        chainId: action.payload.chainId,
         isConnected: true
       };
     },
@@ -46,21 +50,12 @@ const web3Slice = createSlice({
   }
 })
 
-export const { setProvider, setTestator } = web3Slice.actions;
+export const { setChainId, setProvider, setTestator } = web3Slice.actions;
 
 export const getAddress = (state: RootState) => state.web3.address;
 export const getBalance = (state: RootState) => fromWei(state.web3.balance).toFixed(2);
-export const getChainInfo = (state: RootState): Chain => getChainById(state.web3.chainId);
+export const getChainInfo = (state: RootState): Chain | undefined => getChainById(state.web3.chainId);
 export const getIsConnected = (state: RootState) => state.web3.isConnected;
-export const getTestator = (state: RootState) => {
-  const { testator } = state.web3;
-
-  if (testator) {
-    return {
-      ...testator,
-      status: Status[testator.status]
-    };
-  }
-}
+export const getTestator = (state: RootState) => state.web3.testator;
 
 export default web3Slice.reducer;

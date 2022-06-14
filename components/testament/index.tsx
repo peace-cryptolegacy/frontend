@@ -1,9 +1,10 @@
 import { BigNumber } from 'ethers';
 import { Box, Button, Heading, Progress, Text } from '@chakra-ui/react';
 import { setTestator } from 'store/reducers/web3';
-import { updateProof } from 'utils/web3/heritage';
+import { Status, updateProof } from 'utils/web3/heritage';
 import { useAppDispatch } from 'store/hooks';
 import { useState } from 'react';
+import { useTranslation } from 'next-i18next';
 import differenceInMinutes from 'date-fns/differenceInMinutes';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import getUnixTime from 'date-fns/getUnixTime';
@@ -13,6 +14,7 @@ import styles from 'styles/Testament.module.scss';
 import type { ITestator } from 'utils/web3/heritage';
 
 const Testament = ({ testator }: { testator: ITestator }) => {
+  const { t } = useTranslation('common');
   const [isUpdatingProof, setUpdatingProof] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
@@ -40,19 +42,19 @@ const Testament = ({ testator }: { testator: ITestator }) => {
   return (
     <div className={ styles.testament }>
       <Heading as='h1' size='lg' mb='10'>
-        Testamento
+        { t('testament.title') }
       </Heading>
 
       <Text fontSize='xl' fontWeight='bold'>
-        Estado
+        { t('testament.status') }
       </Text>
 
       <Box mb={ 5 }>
-        { testator.status}
+        { Status[Number(testator.status)] }
       </Box>
 
       <Text fontSize='xl' fontWeight='bold'>
-        Heredero
+        { t('testament.inheritor') }
       </Text>
 
       <Box mb={ 5 }>
@@ -60,7 +62,7 @@ const Testament = ({ testator }: { testator: ITestator }) => {
       </Box>
 
       <Text fontSize='xl' fontWeight='bold'>
-        Token
+        { t('testament.token') }
       </Text>
 
       <Box mb={ 5 }>
@@ -68,7 +70,7 @@ const Testament = ({ testator }: { testator: ITestator }) => {
       </Box>
 
       <Text fontSize='xl' fontWeight='bold'>
-        Ultima prueba de vida
+        { t('testament.life-proof') }
       </Text>
 
       <Box mb={ 5 }>
@@ -79,8 +81,8 @@ const Testament = ({ testator }: { testator: ITestator }) => {
         <Progress mb={ 2 } value={ timePassed } max={ maxHours } />
 
         <div className={ styles['testament__progress__days'] }>
-          <div>0 días</div>
-          <div>{ testator.maxDays } días</div>
+          <div>{ t('testament.days', { days: 0 }) }</div>
+          <div>{ t('testament.days', { days: testator.maxDays }) }</div>
         </div>
       </Box>
 
@@ -91,7 +93,7 @@ const Testament = ({ testator }: { testator: ITestator }) => {
           isLoading={ isUpdatingProof }
           onClick={ handleUpdateProofButtonClick }
         >
-          Actualizar prueba de vida
+          { t('testament.update-proof') }
         </Button>
       </div>
     </div>

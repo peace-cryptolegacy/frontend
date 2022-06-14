@@ -11,7 +11,7 @@ import type { Chain } from 'utils/chains/index';
 type GetButtonProps = (token: string) => ButtonProps;
 
 const Navbar = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const router = useRouter();
 
   const getButtonProps: GetButtonProps = (type) => ({

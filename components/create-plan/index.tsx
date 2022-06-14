@@ -28,7 +28,7 @@ import type { Token } from 'utils/tokens/index';
 import type { ITestator } from 'utils/web3/heritage';
 
 const CreatePlan: FC = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   const isConnected: boolean = useAppSelector(getIsConnected);
   const [isApproving, setIsApproving] = useState<boolean>(false);

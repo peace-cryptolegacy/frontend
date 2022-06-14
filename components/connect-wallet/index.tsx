@@ -14,11 +14,11 @@ import type { Chain } from 'utils/chains/index';
 import type { ITestator } from 'utils/web3/heritage';
 
 const WalletConnectModal: FC = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const [isConnecting, setConnect] = useState<boolean>(false);
 
   const address: string = useAppSelector(getAddress);
-  const chainInfo: Chain = useAppSelector(getChainInfo);
+  const chainInfo: Chain | undefined = useAppSelector(getChainInfo);
   const balance: string = useAppSelector(getBalance);
   const dispatch = useAppDispatch();
   
@@ -30,7 +30,6 @@ const WalletConnectModal: FC = () => {
       const signer: providers.JsonRpcSigner = provider.getSigner();
       const address: string = await signer.getAddress();
       const balance: BigNumber = await signer.getBalance();
-      const chainId: number = await signer.getChainId();
       const testator: ITestator | undefined = await getTestator(address);
 
       if (testator) {
@@ -39,8 +38,7 @@ const WalletConnectModal: FC = () => {
 
       dispatch(setProvider({ 
         address, 
-        balance,
-        chainId
+        balance
       }));
       setConnect(false);
     } catch (error) {
@@ -56,7 +54,7 @@ const WalletConnectModal: FC = () => {
         address ? 
           <div className={styles['connectwallet__user']}>
             <div className={styles['connectwallet__user__balance']}>
-              { balance } { chainInfo.nativeCurrency.symbol.toUpperCase() }
+              { balance } { chainInfo?.nativeCurrency.symbol.toUpperCase() }
             </div>
             <div className={styles['connectwallet__user__address']}>
               { formatAddress(address) }
@@ -64,9 +62,10 @@ const WalletConnectModal: FC = () => {
           </div> : 
           <Button 
             colorScheme='blue' 
+            disabled={ !chainInfo?.isSupported }
             height='44px'
-            isLoading={isConnecting} 
-            onClick={handleClick}
+            isLoading={ isConnecting } 
+            onClick={ handleClick }
           >
             { t('connect-wallet.connect') }
           </Button>

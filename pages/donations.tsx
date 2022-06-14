@@ -16,8 +16,8 @@ const Claim = () => {
   );
 }
 
-export const getStaticProps: GetStaticProps = async ({ defaultLocale, locale }) => {
-  const translations = await serverSideTranslations('es', ['common']);
+export const getStaticProps: GetStaticProps = async ({ defaultLocale = "en", locale }) => {
+  const translations = await serverSideTranslations(locale || defaultLocale, ['common']);
 
   return {
     props: {
