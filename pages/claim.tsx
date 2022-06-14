@@ -5,9 +5,11 @@ import { inherit } from 'utils/web3/heritage';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useAppSelector } from 'store/hooks';
 import { useState } from 'react';
+import { useTranslation } from 'next-i18next';
 import Head from 'next/head';
 
 const Claim = () => {
+  const { t } = useTranslation('common');
   const [isInheriting, setIsInheriting] = useState<boolean>(false);
 
   const isConnected: boolean = useAppSelector(getIsConnected);
@@ -40,7 +42,7 @@ const Claim = () => {
             isLoading={isInheriting}
             onClick={handleClick}
           >
-            Claim
+            { t('claim.claim') }
           </Button>
       </div>
     </div>

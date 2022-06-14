@@ -26,5 +26,8 @@
     "life-proof": "Last proof of life",
     "days": "{{days}} days",
     "update-proof": "Update proof of life"
+  },
+  "claim": {
+    "claim": "Claim"
   }
 }
