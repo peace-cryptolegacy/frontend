@@ -13,3 +13,11 @@ export interface Tokens {
 export function getTokensByChainId(id: number): Token[] {
   return tokens[id];
 }
+
+export function getTokenByAddress(chainId: number, address: string): Token | undefined {
+  const tokens = getTokensByChainId(chainId);
+
+  return tokens.find((token) => {
+    return token.address === address;
+  });
+}

@@ -1,5 +1,6 @@
-import { BigNumber, Contract, ContractTransaction, providers } from 'ethers';
+import { BigNumber, Contract, ContractReceipt, ContractTransaction, providers, utils } from 'ethers';
 import { getProvider } from 'utils/web3/provider';
+import { handleError } from 'utils/web3/errors';
 import get from 'lodash/get';
 import Heritage from 'utils/web3/heritage.json';
 
@@ -11,7 +12,7 @@ export enum Status {
   INHERITED
 };
 
-export interface ITestator {
+export type ITestament = {
   inheritor: string;
   status: Status;
   proofOfTimestamp: BigNumber;
@@ -19,19 +20,40 @@ export interface ITestator {
   maxDays: number;
 }
 
+export type IEventDecoded = ITestament & {
+  testator?: string;
+  balance?: BigNumber;
+}
+
 interface IHeritage extends Contract {
-  addTestator(_inheritor: string, _token: String, _maxDays: BigNumber): Promise<ContractTransaction>;
-  getTestator(_testatorAddress: string): Promise<[string, Status, BigNumber, string, number]>;
-  inherit(): Promise<ContractTransaction>;
+  addTestament(_inheritor: string, _token: String, _maxDays: BigNumber): Promise<ContractTransaction>;
+  getInheritor(_inheritorAddress: string): Promise<ITestament>;
+  getTestator(_testatorAddress: string): Promise<ITestament>;
+  updateTestament(_inheritor: string, _token: String, _maxDays: BigNumber): Promise<ContractTransaction>;
   updateProof(): Promise<ContractTransaction>;
+  inherit(): Promise<ContractTransaction>;
+  revoke(): Promise<ContractTransaction>;
 };
 
-type AddTestator = (inheritor: string, maxDays: number, token: string) => void;
-type GetTestator = (tpestator: string) => Promise<ITestator | undefined>;
-type Inherit = () => Promise<void>;
-type UpdateProof = () => Promise<void>;
+type AddTestament = (inheritor: string, maxDays: number, token: string) => Promise<IEventDecoded | undefined>;
+type GetInheritor = (inheritor: string) => Promise<IEventDecoded | undefined>;
+type GetTestator = (testator: string) => Promise<IEventDecoded | undefined>;
+type UpdateTestament = (inheritor: string, maxDays: number, token: string) => Promise<IEventDecoded | undefined>;
+type UpdateProof = () => Promise<IEventDecoded | undefined>;
+type Inherit = () => Promise<IEventDecoded | undefined>;
+type Revoke = () => Promise<IEventDecoded | undefined>;
 
-export const addTestator: AddTestator = async (inheritor, maxDays, token) => {
+function _decodeEvent(receipt: ContractReceipt): IEventDecoded {
+  const coder = new utils.AbiCoder();
+  const data: string = get(receipt, 'events[0].data');
+  const types = ["address", "address", "uint8", "uint256", "address", "uint16"];
+
+  const [testator, inheritor, status, proofOfTimestamp, token, maxDays] = coder.decode(types, data);
+
+  return { testator, inheritor, status, proofOfTimestamp, token, maxDays };
+}
+
+async function _execute(method: string, params: any[] = []): Promise<IEventDecoded | ITestament | undefined> {
   try {
     const provider: providers.Web3Provider = await getProvider();
     const signer: providers.JsonRpcSigner = provider.getSigner();
@@ -42,79 +64,48 @@ export const addTestator: AddTestator = async (inheritor, maxDays, token) => {
       signer
     ) as IHeritage;
 
-    const tx: ContractTransaction = await HeritageContract.addTestator(
-      inheritor,
-      token,
-      BigNumber.from(maxDays)
-    );
+    const tx: ContractTransaction = await HeritageContract[method](...params);
 
-    await tx.wait();
+    const receipt: ContractReceipt = await tx.wait();
+
+    return _decodeEvent(receipt);
   } catch (error) {
-    const message: string = get(error, 'error.data.message', '');
-
-    throw message.replace('execution reverted:', '').trim();
+    handleError(error as Error);
   }
+}
+
+export const addTestament: AddTestament = async (inheritor, maxDays, token) => {
+  return await _execute('addTestament', [
+    inheritor,
+    token,
+    BigNumber.from(maxDays)
+  ]);
 };
 
 export const getTestator: GetTestator = async (testator) => {
-  try {
-    const provider: providers.Web3Provider = await getProvider();
-    const signer: providers.JsonRpcSigner = provider.getSigner();
+  return await _execute('getTestator', [testator]);
+};
 
-    const HeritageContract = new Contract(
-      heritageContractAddress,
-      Heritage.abi,
-      signer
-    ) as IHeritage;
-
-    const [inheritor, status, proofOfTimestamp, token, maxDays] = await HeritageContract.getTestator(testator);
-
-    return {
-      inheritor, status, proofOfTimestamp, token, maxDays
-    };
-  } catch (error) {
-    return undefined;
-  }
+export const getInheritor: GetInheritor = async (testator) => {
+  return await _execute('getInheritor', [testator]);
 };
 
 export const inherit: Inherit = async () => {
-  try {
-    const provider: providers.Web3Provider = await getProvider();
-    const signer: providers.JsonRpcSigner = provider.getSigner();
-
-    const HeritageContract = new Contract(
-      heritageContractAddress,
-      Heritage.abi,
-      signer
-    ) as IHeritage;
-
-    const tx: ContractTransaction = await HeritageContract.inherit();
-
-    await tx.wait();
-  } catch (error) {
-    const message: string = get(error, 'error.data.message', '');
-
-    throw message.replace('execution reverted:', '').trim();
-  }
+  return await _execute('inherit');
 };
 
 export const updateProof: UpdateProof = async () => {
-  try {
-    const provider: providers.Web3Provider = await getProvider();
-    const signer: providers.JsonRpcSigner = provider.getSigner();
+  return await _execute('updateProof');
+};
 
-    const HeritageContract = new Contract(
-      heritageContractAddress,
-      Heritage.abi,
-      signer
-    ) as IHeritage;
+export const updateTestament: UpdateTestament = async (inheritor, maxDays, token) => {
+  return await _execute('updateTestament', [
+    inheritor,
+    token,
+    BigNumber.from(maxDays)
+  ]);
+};
 
-    const tx: ContractTransaction = await HeritageContract.updateProof();
-
-    await tx.wait();
-  } catch (error) {
-    const message: string = get(error, 'error.data.message', '');
-
-    throw message.replace('execution reverted:', '').trim();
-  }
+export const revoke: Revoke = async () => {
+  return await _execute('revoke');
 };

@@ -11,6 +11,7 @@ export const store = configureStore({
         ],
         ignoredPaths: [
           'web3.balance',
+          'web3.inheritor.proofOfTimestamp',
           'web3.testator.proofOfTimestamp'
         ]
       },

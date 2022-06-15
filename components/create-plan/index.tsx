@@ -12,7 +12,7 @@ import {
   SliderThumb,
   SliderTrack
 } from '@chakra-ui/react';
-import { addTestator, getTestator } from 'utils/web3/heritage';
+import { addTestament } from 'utils/web3/heritage';
 import { approve } from 'utils/web3/erc20';
 import { BaseSyntheticEvent, FC, useState } from 'react';
 import { BigNumber, constants } from 'ethers';
@@ -25,7 +25,6 @@ import isEmpty from "lodash/isEmpty";
 import styles from 'styles/CreatePlan.module.scss';
 
 import type { Token } from 'utils/tokens/index';
-import type { ITestator } from 'utils/web3/heritage';
 
 const CreatePlan: FC = () => {
   const { t } = useTranslation('common');
@@ -35,7 +34,7 @@ const CreatePlan: FC = () => {
   const [isCreatingTestament, setIsCreatingTestament] = useState<boolean>(false);
   const [inheritor, setInheritor] = useState<string>('');
   const [token, setToken] = useState<string>('');
-  const [maxDays, setMaxDays] = useState<number>(30);
+  const [maxDays, setMaxDays] = useState<number>(1);
   const [hasAllowance, setHasAllowance] = useState<boolean>(false);
 
   const address: string = useAppSelector(getAddress);
@@ -53,7 +52,6 @@ const CreatePlan: FC = () => {
 
       setHasAllowance(allowance.eq(constants.MaxUint256));
     } catch (error) {
-      alert(error);
     } finally {
       setIsApproving(false)
     }
@@ -63,15 +61,12 @@ const CreatePlan: FC = () => {
     try {
       setIsCreatingTestament(true);
 
-      await addTestator(inheritor, maxDays, token);
-
-      const testator: ITestator | undefined = await getTestator(address);
+      const testator = await addTestament(inheritor, maxDays, token);
 
       if (testator) {
         dispatch(setTestator(testator));  
       }
     } catch (error) {
-      alert(error);
     } finally {
       setIsCreatingTestament(false)
     }
@@ -90,9 +85,7 @@ const CreatePlan: FC = () => {
       const allowance: BigNumber = await getAllowance(token);
 
       setHasAllowance(allowance.eq(constants.MaxUint256));
-    } catch (error) {
-      alert(error);
-    }
+    } catch (error) {}
   }
 
   return (
@@ -107,16 +100,19 @@ const CreatePlan: FC = () => {
         </FormHelperText>
 
         <Slider 
-          defaultValue={30} 
+          defaultValue={ 1 } 
           isDisabled={ !isConnected }
-          max={60} 
+          max={ 7 } 
+          // max={60} 
           mb='10'
-          min={30} 
+          // min={30} 
+          min={ 1 } 
           onChange={ handleSliderChange }
-          step={15} 
+          // step={15} 
+          step={ 1 }
           value={maxDays} 
         >
-          <SliderMark value={30} mt='2' ml='-2.5' fontSize='sm'>
+          {/* <SliderMark value={30} mt='2' ml='-2.5' fontSize='sm'>
             { t('create-plan.days', { days: 30 }) }
           </SliderMark>
           <SliderMark value={45} mt='2' ml='-2.5' fontSize='sm'>
@@ -124,6 +120,13 @@ const CreatePlan: FC = () => {
           </SliderMark>
           <SliderMark value={60} mt='2' ml='-10' fontSize='sm' style={{ whiteSpace: 'nowrap' }}>
           { t('create-plan.days', { days: 60 }) }
+          </SliderMark> */}
+
+          <SliderMark value={1} mt='2' ml='-2.5' fontSize='sm'>
+            { t('create-plan.days', { days: 1 }) }
+          </SliderMark>
+          <SliderMark value={7} mt='2' ml='-10' fontSize='sm' style={{ whiteSpace: 'nowrap' }}>
+          { t('create-plan.days', { days: 7 }) }
           </SliderMark>
 
           <SliderTrack>

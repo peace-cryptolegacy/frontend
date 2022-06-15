@@ -25,9 +25,7 @@
     "token": "Token",
     "life-proof": "Last proof of life",
     "days": "{{days}} days",
-    "update-proof": "Update proof of life"
-  },
-  "claim": {
+    "update-proof": "Update proof of life",
     "claim": "Claim"
   }
 }

@@ -21,7 +21,7 @@ function Home() {
         {
           testator === undefined ?
             <CreatePlan /> :
-            <Testament testator={ testator } />
+            <Testament testator={ testator } isTestator />
         }
       </div>
     </div>

@@ -1,9 +1,9 @@
 import { BigNumber } from 'ethers';
 import { Button } from '@chakra-ui/react';
 import { formatAddress } from 'utils/formatters';
-import { getAddress, getBalance, getChainInfo, setProvider, setTestator } from 'store/reducers/web3';
+import { getAddress, getBalance, getChainInfo, setInheritor, setProvider, setTestator } from 'store/reducers/web3';
 import { getProvider } from 'utils/web3/provider';
-import { getTestator } from "utils/web3/heritage";
+import { getInheritor, getTestator } from "utils/web3/heritage";
 import { providers } from "ethers";
 import { useAppSelector, useAppDispatch } from 'store/hooks';
 import { useState, FC } from 'react';
@@ -11,7 +11,7 @@ import { useTranslation } from 'next-i18next';
 import styles from 'styles/ConnectWallet.module.scss';
 
 import type { Chain } from 'utils/chains/index';
-import type { ITestator } from 'utils/web3/heritage';
+import type { ITestament } from 'utils/web3/heritage';
 
 const WalletConnectModal: FC = () => {
   const { t } = useTranslation('common');
@@ -30,10 +30,15 @@ const WalletConnectModal: FC = () => {
       const signer: providers.JsonRpcSigner = provider.getSigner();
       const address: string = await signer.getAddress();
       const balance: BigNumber = await signer.getBalance();
-      const testator: ITestator | undefined = await getTestator(address);
+      const testator: ITestament | undefined = await getTestator(address);
+      const inheritor: ITestament | undefined = await getInheritor(address);
 
       if (testator) {
         dispatch(setTestator(testator));  
+      }
+
+      if (inheritor) {
+        dispatch(setInheritor(inheritor));  
       }
 
       dispatch(setProvider({ 

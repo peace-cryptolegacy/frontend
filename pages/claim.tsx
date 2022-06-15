@@ -1,30 +1,12 @@
-import { Button } from '@chakra-ui/react';
-import { getIsConnected } from 'store/reducers/web3';
+import { getInheritor } from 'store/reducers/web3';
 import { GetStaticProps } from 'next';
-import { inherit } from 'utils/web3/heritage';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useAppSelector } from 'store/hooks';
-import { useState } from 'react';
-import { useTranslation } from 'next-i18next';
 import Head from 'next/head';
+import Testament from 'components/testament';
 
 const Claim = () => {
-  const { t } = useTranslation('common');
-  const [isInheriting, setIsInheriting] = useState<boolean>(false);
-
-  const isConnected: boolean = useAppSelector(getIsConnected);
-
-  async function handleClick() {
-    try {
-      setIsInheriting(true);
-
-      await inherit();
-    } catch (error) {
-      alert(error);
-    } finally {
-      setIsInheriting(false);
-    }
-  }
+  const inheritor = useAppSelector(getInheritor);
 
   return (
     <div>
@@ -35,15 +17,11 @@ const Claim = () => {
       </Head>
 
       <div>
-        <Button 
-            colorScheme='blue' 
-            disabled={ !isConnected }
-            height='44px'
-            isLoading={isInheriting}
-            onClick={handleClick}
-          >
-            { t('claim.claim') }
-          </Button>
+        {
+          inheritor === undefined ?
+            <div>{ `You don't have a testament` }</div> :
+            <Testament testator={ inheritor } isInheritor />
+        }
       </div>
     </div>
   );
