@@ -31,9 +31,13 @@ const Testament = ({ isInheritor, isTestator, testator }: props) => {
           { t('testament.title') }
         </Heading>
 
-        <div className={ styles['testament__edit__icon'] } >
-          <EditTestamentModal testator={ testator } />
-        </div>
+        {
+          isTestator ?
+            <div className={ styles['testament__edit__icon'] } >
+              <EditTestamentModal testator={ testator } />
+            </div> :
+            null
+        }
       </Box>
 
       <Text fontSize='xl' fontWeight='bold'>
@@ -65,7 +69,7 @@ const Testament = ({ isInheritor, isTestator, testator }: props) => {
 
       <div className={ styles['testament__actions']}>
         { isTestator ? <TestatorActions testator={ testator } /> : null }
-        { isInheritor ? <InheritorActions testator={ testator } /> : null }
+        { isInheritor ? <InheritorActions inheritor={ testator } /> : null }
       </div>
     </div>
   );

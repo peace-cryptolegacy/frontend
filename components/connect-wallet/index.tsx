@@ -9,6 +9,7 @@ import { useAppSelector, useAppDispatch } from 'store/hooks';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import styles from 'styles/ConnectWallet.module.scss';
+import { useRouter } from 'next/router';
 
 import type { Chain } from 'utils/chains/index';
 import type { ITestament } from 'utils/web3/heritage';
@@ -16,6 +17,7 @@ import type { ITestament } from 'utils/web3/heritage';
 const ConnectWallet = () => {
   const { t } = useTranslation('common');
   const [isConnecting, setConnect] = useState<boolean>(false);
+  const router = useRouter();
 
   const address: string = useAppSelector(getAddress);
   const chainInfo: Chain | undefined = useAppSelector(getChainInfo);
@@ -44,6 +46,8 @@ const ConnectWallet = () => {
 
         if (inheritor) {
           dispatch(setInheritor(inheritor));  
+          
+          router.push('/claim');
         }    
       } catch (error) {}
 
