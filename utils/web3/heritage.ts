@@ -74,6 +74,27 @@ async function _execute(method: string, params: any[] = []): Promise<IEventDecod
   }
 }
 
+async function _read(method: string, params: any[] = []): Promise<ITestament | undefined> {
+  try {
+    const provider: providers.Web3Provider = await getProvider();
+    const signer: providers.JsonRpcSigner = provider.getSigner();
+
+    const HeritageContract = new Contract(
+      heritageContractAddress,
+      Heritage.abi,
+      signer
+    ) as IHeritage;
+
+    const [inheritor, status, proofOfTimestamp, token, maxDays] = await HeritageContract[method](...params);
+
+    return {
+      inheritor, status, proofOfTimestamp, token, maxDays
+    };
+  } catch (error) {
+    handleError(error as Error);
+  }
+}
+
 export const addTestament: AddTestament = async (inheritor, maxDays, token) => {
   return await _execute('addTestament', [
     inheritor,
@@ -83,11 +104,11 @@ export const addTestament: AddTestament = async (inheritor, maxDays, token) => {
 };
 
 export const getTestator: GetTestator = async (testator) => {
-  return await _execute('getTestator', [testator]);
+  return await _read('getTestator', [testator]);
 };
 
 export const getInheritor: GetInheritor = async (testator) => {
-  return await _execute('getInheritor', [testator]);
+  return await _read('getInheritor', [testator]);
 };
 
 export const inherit: Inherit = async () => {

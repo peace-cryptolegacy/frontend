@@ -19,7 +19,7 @@ const Claim = () => {
       <div>
         {
           inheritor === undefined ?
-            <div>{ `You don't have a testament` }</div> :
+            <div>{ `You don't have an active testament` }</div> :
             <Testament testator={ inheritor } isInheritor />
         }
       </div>

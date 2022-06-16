@@ -1,0 +1,9 @@
+.lifeproof {
+  &__progress {
+    &__days {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+}
