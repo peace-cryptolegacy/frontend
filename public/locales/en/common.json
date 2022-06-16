@@ -5,13 +5,15 @@
     "inheritance": "Inheritance"
   },
   "create-plan": {
-    "title": "Inheritance Plan",
+    "title-create": "Create testament",
+    "title-edit": "Edit testament",
     "max-days-hint": "Select the days without activity in the wallet to activate protocol",
     "days": "{{days}} days",
     "beneficiary-hint": "Establezca la dirección de la wallet del beneficiario",
     "wallet-address": "Wallet address",
     "approve-allowance": "Approve allowance",
     "create-testament": "Approve your will",
+    "edit-testament": "Edit your will",
     "token-hint": "Establezca la dirección del token",
     "token-address": "Token address"
   },
@@ -26,6 +28,7 @@
     "life-proof": "Last proof of life",
     "days": "{{days}} days",
     "update-proof": "Update proof of life",
+    "revoke": "Revoke",
     "claim": "Claim"
   }
 }

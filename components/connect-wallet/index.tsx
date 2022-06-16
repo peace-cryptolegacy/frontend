@@ -6,14 +6,14 @@ import { getProvider } from 'utils/web3/provider';
 import { getInheritor, getTestator } from "utils/web3/heritage";
 import { providers } from "ethers";
 import { useAppSelector, useAppDispatch } from 'store/hooks';
-import { useState, FC } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import styles from 'styles/ConnectWallet.module.scss';
 
 import type { Chain } from 'utils/chains/index';
 import type { ITestament } from 'utils/web3/heritage';
 
-const WalletConnectModal: FC = () => {
+const ConnectWallet = () => {
   const { t } = useTranslation('common');
   const [isConnecting, setConnect] = useState<boolean>(false);
 
@@ -30,16 +30,22 @@ const WalletConnectModal: FC = () => {
       const signer: providers.JsonRpcSigner = provider.getSigner();
       const address: string = await signer.getAddress();
       const balance: BigNumber = await signer.getBalance();
-      const testator: ITestament | undefined = await getTestator(address);
-      const inheritor: ITestament | undefined = await getInheritor(address);
 
-      if (testator) {
-        dispatch(setTestator(testator));  
-      }
+      try {
+        const testator: ITestament | undefined = await getTestator(address);
+      
+        if (testator) {
+          dispatch(setTestator(testator));  
+        }  
+      } catch (error) {}
 
-      if (inheritor) {
-        dispatch(setInheritor(inheritor));  
-      }
+      try {
+        const inheritor: ITestament | undefined = await getInheritor(address);
+
+        if (inheritor) {
+          dispatch(setInheritor(inheritor));  
+        }    
+      } catch (error) {}
 
       dispatch(setProvider({ 
         address, 
@@ -47,8 +53,6 @@ const WalletConnectModal: FC = () => {
       }));
       setConnect(false);
     } catch (error) {
-      alert(error);        
-      
       setConnect(false);
     }
   }
@@ -79,4 +83,4 @@ const WalletConnectModal: FC = () => {
   );
 }
 
-export default WalletConnectModal;
+export default ConnectWallet;

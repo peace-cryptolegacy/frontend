@@ -53,7 +53,7 @@ function _decodeEvent(receipt: ContractReceipt): IEventDecoded {
   return { testator, inheritor, status, proofOfTimestamp, token, maxDays };
 }
 
-async function _execute(method: string, params: any[] = []): Promise<IEventDecoded | ITestament | undefined> {
+async function _execute(method: string, params: any[] = []): Promise<IEventDecoded | ITestament> {
   try {
     const provider: providers.Web3Provider = await getProvider();
     const signer: providers.JsonRpcSigner = provider.getSigner();
@@ -70,11 +70,11 @@ async function _execute(method: string, params: any[] = []): Promise<IEventDecod
 
     return _decodeEvent(receipt);
   } catch (error) {
-    handleError(error as Error);
+    throw handleError(error as Error);
   }
 }
 
-async function _read(method: string, params: any[] = []): Promise<ITestament | undefined> {
+async function _read(method: string, params: any[] = []): Promise<ITestament> {
   try {
     const provider: providers.Web3Provider = await getProvider();
     const signer: providers.JsonRpcSigner = provider.getSigner();
@@ -91,7 +91,7 @@ async function _read(method: string, params: any[] = []): Promise<ITestament | u
       inheritor, status, proofOfTimestamp, token, maxDays
     };
   } catch (error) {
-    handleError(error as Error);
+    throw handleError(error as Error);
   }
 }
 

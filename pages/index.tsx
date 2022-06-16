@@ -20,7 +20,7 @@ function Home() {
       <div>
         {
           testator === undefined ?
-            <CreatePlan /> :
+            <CreatePlan createMode /> :
             <Testament testator={ testator } isTestator />
         }
       </div>

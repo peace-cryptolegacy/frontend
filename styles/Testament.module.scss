@@ -1,5 +1,15 @@
 .testament {
-  &__update__proof {
+  &__title {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__edit__icon {
+    cursor: pointer;
+  }
+
+  &__actions {
     display: flex;
     justify-content: center;
   }

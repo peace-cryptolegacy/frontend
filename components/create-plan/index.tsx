@@ -12,35 +12,57 @@ import {
   SliderThumb,
   SliderTrack
 } from '@chakra-ui/react';
-import { addTestament } from 'utils/web3/heritage';
+import { addTestament, updateTestament } from 'utils/web3/heritage';
 import { approve } from 'utils/web3/erc20';
-import { BaseSyntheticEvent, FC, useState } from 'react';
+import { BaseSyntheticEvent, useEffect, useState } from 'react';
 import { BigNumber, constants } from 'ethers';
 import { getAllowance } from 'utils/web3/erc20';
-import { getAddress, getIsConnected, setTestator } from 'store/reducers/web3';
+import { getIsConnected, setTestator } from 'store/reducers/web3';
 import { getTokensByChainId } from 'utils/tokens/index';
 import { useAppSelector, useAppDispatch } from 'store/hooks';
 import { useTranslation } from 'next-i18next';
 import isEmpty from "lodash/isEmpty";
+import noop from "lodash/noop";
 import styles from 'styles/CreatePlan.module.scss';
 
-import type { Token } from 'utils/tokens/index';
+import type { ITestament } from 'utils/web3/heritage';
+import type { IToken } from 'utils/tokens/index';
 
-const CreatePlan: FC = () => {
+type props = {
+  createMode?: boolean;
+  onAccept?: Function;
+  testator?: ITestament;
+}
+
+const CreatePlan = ({ createMode, onAccept = noop, testator }: props) => {
   const { t } = useTranslation('common');
+  const dispatch = useAppDispatch();
 
   const isConnected: boolean = useAppSelector(getIsConnected);
+  const chainId: number = useAppSelector(state => state.web3.chainId);
+
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [isCreatingTestament, setIsCreatingTestament] = useState<boolean>(false);
-  const [inheritor, setInheritor] = useState<string>('');
-  const [token, setToken] = useState<string>('');
-  const [maxDays, setMaxDays] = useState<number>(1);
+  const [inheritor, setInheritor] = useState<string>(testator?.inheritor || '');
+  const [token, setToken] = useState<string>(testator?.token || '');
+  const [maxDays, setMaxDays] = useState<number>(testator?.maxDays || 1);
   const [hasAllowance, setHasAllowance] = useState<boolean>(false);
 
-  const address: string = useAppSelector(getAddress);
-  const chainId: number = useAppSelector(state => state.web3.chainId);
-  const tokens: Token[] = getTokensByChainId(chainId);
-  const dispatch = useAppDispatch();
+  const tokens: IToken[] = getTokensByChainId(chainId);
+  const title = createMode ? t('create-plan.title-create') : t('create-plan.title-edit');
+  const action = createMode ? t('create-plan.create-testament') : t('create-plan.edit-testament');
+
+  useEffect(() => {
+    if (testator) {
+      const event = {
+        currentTarget: {
+          value: testator.token
+        } 
+      } as BaseSyntheticEvent;
+
+      handleTokenChange(event);
+    }
+  }, []);
 
   async function handleApproveButtonClick() {
     try {
@@ -52,6 +74,7 @@ const CreatePlan: FC = () => {
 
       setHasAllowance(allowance.eq(constants.MaxUint256));
     } catch (error) {
+      alert(error);
     } finally {
       setIsApproving(false)
     }
@@ -61,14 +84,19 @@ const CreatePlan: FC = () => {
     try {
       setIsCreatingTestament(true);
 
-      const testator = await addTestament(inheritor, maxDays, token);
+      const action = createMode ? addTestament : updateTestament;
+
+      const testator = await action(inheritor, maxDays, token);
 
       if (testator) {
         dispatch(setTestator(testator));  
       }
     } catch (error) {
+      alert(error);
     } finally {
-      setIsCreatingTestament(false)
+      setIsCreatingTestament(false);
+
+      onAccept();
     }
   }
 
@@ -91,7 +119,7 @@ const CreatePlan: FC = () => {
   return (
     <div className={styles.createplan}>
       <Heading as='h1' size='lg' mb='10'>
-        { t('create-plan.title') }
+        { title }
       </Heading>
 
       <FormControl mb='10'>
@@ -173,7 +201,7 @@ const CreatePlan: FC = () => {
         </Select>
       </FormControl>
 
-      <ButtonGroup className={styles['createplan--submitbuttons']} gap='10'>
+      <ButtonGroup className={styles['createplan--submitbuttons']} gap='4'>
         <Button 
           colorScheme='blue' 
           disabled={ !isConnected || token === '' } 
@@ -188,7 +216,7 @@ const CreatePlan: FC = () => {
           isLoading={ isCreatingTestament }
           onClick={ handleCreateTestamentButtonClick }
         >
-           { t('create-plan.create-testament') }
+           { action }
         </Button>
       </ButtonGroup>
     </div>

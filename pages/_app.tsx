@@ -15,7 +15,7 @@ const theme = extendTheme({
       baseStyle: {
         fontWeight: 'normal'
       }
-    },
+    }
   },
   fonts: {
     heading: 'Inter',

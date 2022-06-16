@@ -49,7 +49,7 @@ const web3Slice = createSlice({
         inheritor: action.payload
       };
     },
-    setTestator(state: Web3State, action: PayloadAction<ITestament>) {
+    setTestator(state: Web3State, action: PayloadAction<ITestament | undefined>) {
       return {
         ...state,
         testator: action.payload

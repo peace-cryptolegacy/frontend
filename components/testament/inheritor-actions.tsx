@@ -20,6 +20,7 @@ const InheritorActions = ({ testator }: props) => {
 
       await inherit();
     } catch (error) {
+      alert(error);
     } finally {
       setIsInheriting(false);
     }
