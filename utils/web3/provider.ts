@@ -1,5 +1,6 @@
-import { providers } from "ethers";
-import Web3Modal from "web3modal";
+import { getChainById } from 'utils/chains/index';
+import { providers } from 'ethers';
+import Web3Modal from 'web3modal';
 
 const { Web3Provider } = providers;
 
@@ -13,3 +14,25 @@ export const getProvider: GetProvider = async () => {
 
   return new Web3Provider(instance);
 };
+
+export const changeNetwork = async (chainId: number) => {
+  const chain = getChainById(chainId);
+
+  if (!chain) return;
+
+  const networkConfig = {
+    chainId: chain.hexa,
+    chainName: chain.name,
+    rpcUrls: chain.rpcs,
+    blockExplorerUrls: chain.explorers,
+    nativeCurrency: {
+      name: chain.nativeCurrency.name,
+      symbol: chain.nativeCurrency.symbol,
+      decimals: chain.nativeCurrency.decimals
+    }
+  };
+
+  const web3Wrapper = await getProvider();
+
+  await web3Wrapper.send('wallet_addEthereumChain', [networkConfig]);
+}

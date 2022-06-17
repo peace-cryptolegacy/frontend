@@ -12,6 +12,9 @@ export interface Chain {
   isSupported: boolean;
   isTesnet: boolean;
   nativeCurrency: NativeCurrency;
+  hexa: string;
+  rpcs: string[];
+  explorers: string[];
 }
 
 export function getChainById(id: number): Chain | undefined {

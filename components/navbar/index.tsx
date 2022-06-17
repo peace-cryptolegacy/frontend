@@ -1,3 +1,4 @@
+import { BaseSyntheticEvent, useEffect, useState } from 'react';
 import { Button, ButtonGroup, ButtonProps, Select } from '@chakra-ui/react';
 import { getChains } from 'utils/chains/index';
 import { useRouter } from 'next/router';
@@ -14,16 +15,28 @@ const Navbar = () => {
   const { t } = useTranslation('common');
   const router = useRouter();
 
+  const [chain, setChain] = useState<number>(1);
+
+  const chains: Chain[] = getChains(true, true);
+
+  useEffect(() => {
+    setChain(chains[0].chainId);
+  }, [chains]);
+
   const getButtonProps: GetButtonProps = (type) => ({
     backgroundColor: router.pathname === type ? '#F6F8FB' : '#FFFFFF',
     onClick: () => router.push(type)
   });
 
-  const chains: Chain[] = getChains(true, true);
-  
+  function handleChainSelectChange(event: BaseSyntheticEvent) {
+    const chain: number = event.target.value;
+
+    setChain(chain);
+  }
+
   return (
     <div className={ styles.navbar }>
-      <Image src="/logo.png" alt="Peace Logo" width={200} height={60} />
+      <Image src='/logo.png' alt='Peace Logo' width={200} height={60} />
 
       <ButtonGroup className={styles['navbar__button__container']}>
         <Button 
@@ -44,7 +57,13 @@ const Navbar = () => {
       </ButtonGroup>
 
       <div className={ styles['navbar__wallet__container'] }>
-        <Select mr={ 2 } height='44px' width={ 130 }>
+        <Select 
+          height='44px' 
+          mr={ 2 } 
+          onChange={ handleChainSelectChange }
+          value={ chain }
+          width={ 130 } 
+        >
           {
             chains.map((chain) => {
               return (
@@ -56,7 +75,7 @@ const Navbar = () => {
           }
         </Select>
 
-        <ConnectWallet />
+        <ConnectWallet selectedChain={ chain } />
       </div>
     </div>
   );

@@ -27,7 +27,7 @@ const Claim = () => {
   );
 }
 
-export const getStaticProps: GetStaticProps = async ({ defaultLocale = "en", locale }) => {
+export const getStaticProps: GetStaticProps = async ({ defaultLocale = 'en', locale }) => {
   const translations = await serverSideTranslations(locale || defaultLocale, ['common']);
 
   return {

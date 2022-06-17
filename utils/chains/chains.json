@@ -1,42 +1,16 @@
 [
   {
-    "name": "Ethereum",
-    "chainId": 1,
-    "isSupported": false,
-    "isTesnet": false,
-    "nativeCurrency": {
-      "name": "Ether",
-      "symbol": "ETH",
-      "decimals": 18
-    }
-  },
-  {
-    "name": "Rinkeby",
-    "chainId": 4,
-    "isSupported": false,
-    "isTesnet": true,
-    "nativeCurrency": {
-      "name": "Rinkeby Ether",
-      "symbol": "RIN",
-      "decimals": 18
-    }
-  },
-  {
     "name": "Avalanche",
     "chainId": 43113,
+    "hexa": "0xA869",
+    "rpcs": [
+      "https://api.avax-test.network/ext/bc/C/rpc"
+    ],
+    "explorers": [
+      "https://testnet.snowtrace.io"
+    ],
     "isSupported": true,
     "isTesnet": true,
-    "nativeCurrency": {
-      "name": "AVAX",
-      "symbol": "AVAX",
-      "decimals": 18
-    }
-  },
-  {
-    "name": "Avalanche C chain",
-    "chainId": 43113,
-    "isSupported": false,
-    "isTesnet": false,
     "nativeCurrency": {
       "name": "AVAX",
       "symbol": "AVAX",

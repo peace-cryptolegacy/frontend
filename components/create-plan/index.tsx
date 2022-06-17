@@ -21,8 +21,8 @@ import { getIsConnected, setTestator } from 'store/reducers/web3';
 import { getTokensByChainId } from 'utils/tokens/index';
 import { useAppSelector, useAppDispatch } from 'store/hooks';
 import { useTranslation } from 'next-i18next';
-import isEmpty from "lodash/isEmpty";
-import noop from "lodash/noop";
+import isEmpty from 'lodash/isEmpty';
+import noop from 'lodash/noop';
 import styles from 'styles/CreatePlan.module.scss';
 
 import type { ITestament } from 'utils/web3/heritage';
@@ -123,7 +123,7 @@ const CreatePlan = ({ createMode, onAccept = noop, testator }: props) => {
       </Heading>
 
       <FormControl mb='10'>
-        <FormHelperText mb="5">
+        <FormHelperText mb='5'>
         { t('create-plan.max-days-hint') }
         </FormHelperText>
 

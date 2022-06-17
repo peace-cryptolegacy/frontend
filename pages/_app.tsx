@@ -3,7 +3,7 @@ import { appWithTranslation } from 'next-i18next';
 import { ChakraProvider } from '@chakra-ui/react';
 import { extendTheme } from '@chakra-ui/react'
 import { Provider } from 'react-redux';
-import { providers } from "ethers";
+import { providers } from 'ethers';
 import { setChainId } from 'store/reducers/web3';
 import { store } from 'store';
 import { useEffect } from 'react';

@@ -1,4 +1,4 @@
-import { BigNumber, Contract, ContractTransaction, Signer, constants, providers } from "ethers";
+import { BigNumber, Contract, ContractTransaction, Signer, constants, providers } from 'ethers';
 import { getProvider } from 'utils/web3/provider';
 import ERC20Token from '@openzeppelin/contracts/build/contracts/ERC20.json';
 

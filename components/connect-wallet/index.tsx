@@ -1,20 +1,24 @@
 import { BigNumber } from 'ethers';
 import { Button } from '@chakra-ui/react';
+import { changeNetwork, getProvider } from 'utils/web3/provider';
 import { formatAddress } from 'utils/formatters';
 import { getAddress, getBalance, getChainInfo, setInheritor, setProvider, setTestator } from 'store/reducers/web3';
-import { getProvider } from 'utils/web3/provider';
-import { getInheritor, getTestator } from "utils/web3/heritage";
-import { providers } from "ethers";
+import { getInheritor, getTestator } from 'utils/web3/heritage';
+import { providers } from 'ethers';
 import { useAppSelector, useAppDispatch } from 'store/hooks';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import styles from 'styles/ConnectWallet.module.scss';
-import { useRouter } from 'next/router';
 
 import type { Chain } from 'utils/chains/index';
 import type { ITestament } from 'utils/web3/heritage';
 
-const ConnectWallet = () => {
+type props = {
+  selectedChain: number
+};
+
+const ConnectWallet = ({ selectedChain }: props) => {
   const { t } = useTranslation('common');
   const [isConnecting, setConnect] = useState<boolean>(false);
   const router = useRouter();
@@ -30,6 +34,13 @@ const ConnectWallet = () => {
 
       const provider: providers.Web3Provider = await getProvider();
       const signer: providers.JsonRpcSigner = provider.getSigner();
+
+      if (!chainInfo?.isSupported) {
+        await changeNetwork(selectedChain);
+
+        throw null;
+      }
+
       const address: string = await signer.getAddress();
       const balance: BigNumber = await signer.getBalance();
 
@@ -75,7 +86,6 @@ const ConnectWallet = () => {
           </div> : 
           <Button 
             colorScheme='blue' 
-            disabled={ !chainInfo?.isSupported }
             height='44px'
             isLoading={ isConnecting } 
             onClick={ handleClick }
