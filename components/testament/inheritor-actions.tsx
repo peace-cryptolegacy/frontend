@@ -1,5 +1,5 @@
 import { Button } from '@chakra-ui/react';
-import { inherit } from 'utils/web3/heritage';
+import { inherit, Status } from 'utils/web3/heritage';
 import { setInheritor } from 'store/reducers/web3';
 import { useAppDispatch } from 'store/hooks';
 import { useState } from 'react';
@@ -23,6 +23,8 @@ const InheritorActions = ({ inheritor }: props) => {
 
       const result = await inherit();
 
+      console.log("--- ", result);
+
       if (result !== undefined) {
         dispatch(setInheritor({ 
           ...inheritor, 
@@ -39,6 +41,7 @@ const InheritorActions = ({ inheritor }: props) => {
   return (
     <Button
       colorScheme='blue' 
+      disabled={ inheritor.status === Status.INHERITED }
       isLoading={ isInheriting }
       onClick={ handleInheritButtonClick }
     >
