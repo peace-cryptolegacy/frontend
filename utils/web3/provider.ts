@@ -10,7 +10,7 @@ export const getProvider: GetProvider = async () => {
   const web3Modal: Web3Modal = new Web3Modal({});
   const instance: providers.ExternalProvider = await web3Modal.connect();
 
-  return new Web3Provider(instance);
+  return new Web3Provider(instance, 'any');
 };
 
 export const changeNetwork = async (chainId: number) => {

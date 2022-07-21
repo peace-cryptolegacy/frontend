@@ -23,8 +23,6 @@ const InheritorActions = ({ inheritor }: props) => {
 
       const result = await inherit();
 
-      console.log("--- ", result);
-
       if (result !== undefined) {
         dispatch(setInheritor({ 
           ...inheritor, 

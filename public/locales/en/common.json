@@ -1,8 +1,10 @@
 {
   "navbar": {
     "claim": "Claim",
-    "donations": "Donation",
-    "inheritance": "Inheritance"
+    "inheritance": "Inheritance",
+    "vaults": "Vaults",
+    "services": "Services",
+    "nft": "NFT"
   },
   "create-plan": {
     "title-create": "Create testament",
@@ -18,7 +20,7 @@
     "token-address": "Token address"
   },
   "connect-wallet": {
-    "connect": "Connect your wallet"
+    "connect": "Connect wallet"
   },
   "testament": {
     "title": "Testament",

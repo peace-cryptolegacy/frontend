@@ -118,10 +118,6 @@ const CreatePlan = ({ createMode, onAccept = noop, testator }: props) => {
 
   return (
     <div className={styles.createplan}>
-      <Heading as='h1' size='lg' mb='10'>
-        { title }
-      </Heading>
-
       <FormControl mb='10'>
         <FormHelperText mb='5'>
         { t('create-plan.max-days-hint') }

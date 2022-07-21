@@ -1,13 +1,9 @@
-import { BaseSyntheticEvent, useEffect, useState } from 'react';
-import { Button, ButtonGroup, ButtonProps, Select } from '@chakra-ui/react';
-import { getChains } from 'utils/chains/index';
+import { Box, Button, ButtonProps, HStack } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import ConnectWallet from 'components/connect-wallet';
 import Image from 'next/image';
 import styles from 'styles/Navbar.module.scss';
-
-import type { Chain } from 'utils/chains/index';
 
 type GetButtonProps = (token: string) => ButtonProps;
 
@@ -15,30 +11,20 @@ const Navbar = () => {
   const { t } = useTranslation('common');
   const router = useRouter();
 
-  const [chain, setChain] = useState<number>(1);
-
-  const chains: Chain[] = getChains(true, true);
-
-  useEffect(() => {
-    setChain(chains[0].chainId);
-  }, [chains]);
-
   const getButtonProps: GetButtonProps = (type) => ({
-    backgroundColor: router.pathname === type ? '#F6F8FB' : '#FFFFFF',
-    onClick: () => router.push(type)
+    color: router.pathname === type ? '#5F4DFF' : '#1D2B4F',
+    className: router.pathname === type ? styles['navbar__button--selected'] : '',
+    fontSize: 14,
+    fontWeight: 500,
+    onClick: () => router.push(type),
+    variant: 'ghost'
   });
-
-  function handleChainSelectChange(event: BaseSyntheticEvent) {
-    const chain: number = event.target.value;
-
-    setChain(chain);
-  }
 
   return (
     <div className={ styles.navbar }>
-      <Image src='/logo.png' alt='Peace Logo' width={200} height={60} />
+      <Image src='/logo.png' alt='Peace Logo' width='144px' height='48px' />
 
-      <ButtonGroup className={styles['navbar__button__container']}>
+      <HStack className={styles['navbar__button__container']}>
         <Button 
           { ...getButtonProps('/') }
         >
@@ -50,32 +36,40 @@ const Navbar = () => {
           { t('navbar.claim') }
         </Button>
         <Button 
-          { ...getButtonProps('/donations') }
+          { ...getButtonProps('/vaults') }
         >
-          { t('navbar.donations') }
+          { t('navbar.vaults') }
         </Button>
-      </ButtonGroup>
+        <Button 
+          { ...getButtonProps('/services') }
+        >
+          { t('navbar.services') }
+        </Button>
+        <Button 
+          { ...getButtonProps('/nft') }
+        >
+          { t('navbar.nft') }
+        </Button>
+      </HStack>
 
       <div className={ styles['navbar__wallet__container'] }>
-        <Select 
-          height='44px' 
-          mr={ 2 } 
-          onChange={ handleChainSelectChange }
-          value={ chain }
-          width={ 130 } 
+        <Button 
+          backgroundColor='#FFFFFF'
+          borderRadius={ 11 }
+          boxShadow='0px 5px 15px 5px rgba(0,0,0,0.05)'
+          height='48px'
+          mr='20px'
+          width='57px' 
         >
-          {
-            chains.map((chain) => {
-              return (
-                <option key={ chain.chainId } value={ chain.chainId }>
-                  { chain.name }
-                </option>
-              );
-            })
-          }
-        </Select>
+          <Box 
+            marginTop={1}
+            position='absolute'
+          > 
+            <Image src='/logos/avax.svg' alt='AVAX Logo' height='35px' width='35px' />
+          </Box>
+        </Button>
 
-        <ConnectWallet selectedChain={ chain } />
+        <ConnectWallet />
       </div>
     </div>
   );

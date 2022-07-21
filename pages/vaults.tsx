@@ -2,7 +2,7 @@ import { GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
 
-const Claim = () => {
+const Vaults = () => {
   return (
     <div>
       <Head>
@@ -11,7 +11,7 @@ const Claim = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      Donations
+      Vaults
     </div>
   );
 }
@@ -26,4 +26,4 @@ export const getStaticProps: GetStaticProps = async ({ defaultLocale = 'en', loc
   };
 }
 
-export default Claim;
+export default Vaults;

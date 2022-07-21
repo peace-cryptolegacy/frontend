@@ -1,86 +1,28 @@
-import { BigNumber } from 'ethers';
+import { AddIcon } from "@chakra-ui/icons";
 import { Button } from '@chakra-ui/react';
-import { changeNetwork, getProvider } from 'utils/web3/provider';
+import { connect } from 'utils/web3/connect';
 import { formatAddress } from 'utils/formatters';
-import { getAddress, getBalance, getChainInfo, setInheritor, setProvider, setTestator } from 'store/reducers/web3';
-import { getInheritor, getTestator } from 'utils/web3/heritage';
-import { providers } from 'ethers';
+import { getAddress } from 'store/reducers/web3';
 import { useAppSelector, useAppDispatch } from 'store/hooks';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import styles from 'styles/ConnectWallet.module.scss';
 
-import type { Chain } from 'utils/chains/index';
-import type { ITestament } from 'utils/web3/heritage';
-
-type props = {
-  selectedChain: number
-};
-
-const ConnectWallet = ({ selectedChain }: props) => {
+const ConnectWallet = () => {
   const { t } = useTranslation('common');
-  const [isConnecting, setConnect] = useState<boolean>(false);
-  const router = useRouter();
 
   const address: string = useAppSelector(getAddress);
-  const chainInfo: Chain | undefined = useAppSelector(getChainInfo);
-  const balance: string = useAppSelector(getBalance);
+  const isConnecting: boolean = useAppSelector(state => state.web3.isConnecting);
+
   const dispatch = useAppDispatch();
   
-  async function handleClick()  {
-    try {
-      setConnect(true);
-
-      const provider: providers.Web3Provider = await getProvider();
-      const signer: providers.JsonRpcSigner = provider.getSigner();
-
-      if (!chainInfo?.isSupported) {
-        await changeNetwork(selectedChain);
-
-        throw null;
-      }
-
-      const address: string = await signer.getAddress();
-      const balance: BigNumber = await signer.getBalance();
-
-      try {
-        const testator: ITestament | undefined = await getTestator(address);
-      
-        if (testator) {
-          dispatch(setTestator(testator));  
-        }  
-      } catch (error) {}
-
-      try {
-        const inheritor: ITestament | undefined = await getInheritor(address);
-
-        if (inheritor) {
-          dispatch(setInheritor(inheritor));  
-          
-          router.push('/claim');
-        }    
-      } catch (error) {}
-
-      dispatch(setProvider({ 
-        address, 
-        balance
-      }));
-      setConnect(false);
-    } catch (error) {
-      setConnect(false);
-    }
+  function handleClick()  {
+    connect(dispatch);
   }
 
   function renderWalletInfo() {
     return (
       <div className={styles['connectwallet__user']}>
-        <div className={styles['connectwallet__user__balance']}>
-          { balance } { chainInfo?.nativeCurrency.symbol.toUpperCase() }
-        </div>
-        <div className={styles['connectwallet__user__address']}>
-          { formatAddress(address) }
-        </div>
+        { formatAddress(address) }
       </div>
     );
   }
@@ -88,10 +30,16 @@ const ConnectWallet = ({ selectedChain }: props) => {
   function renderConnectWallet() {
     return (
       <Button 
-        colorScheme='blue' 
+        backgroundColor="#5F4DFF"
+        borderRadius={11}
+        color='#FFFFFF' 
+        fontSize={14}
+        fontWeight={500}
         height='44px'
-        isLoading={ isConnecting } 
-        onClick={ handleClick }
+        isLoading={isConnecting} 
+        leftIcon={<AddIcon />}
+        onClick={handleClick}
+        width={200}
       >
         { t('connect-wallet.connect') }
       </Button>

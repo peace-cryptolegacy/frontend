@@ -13,6 +13,7 @@ export interface Web3State {
   chainId: number;
   inheritor?: ITestament;
   isConnected: boolean;
+  isConnecting: boolean;
   testator?: ITestament;
 }
 
@@ -22,6 +23,7 @@ const initialState: Web3State = {
   chainId: 0,
   inheritor: undefined,
   isConnected: false,
+  isConnecting: false,
   testator: undefined
 };
 
@@ -54,11 +56,23 @@ const web3Slice = createSlice({
         ...state,
         testator: action.payload
       };
+    },
+    setIsConnecting(state: Web3State, action: PayloadAction<boolean>) {
+      return {
+        ...state,
+        isConnecting: action.payload
+      };
     }
   }
 })
 
-export const { setChainId, setInheritor, setProvider, setTestator } = web3Slice.actions;
+export const {
+  setIsConnecting,
+  setChainId,
+  setInheritor,
+  setProvider,
+  setTestator
+} = web3Slice.actions;
 
 export const getAddress = (state: RootState) => state.web3.address;
 export const getBalance = (state: RootState) => fromWei(state.web3.balance).toFixed(2);

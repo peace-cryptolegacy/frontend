@@ -1,15 +1,8 @@
 import { GetStaticProps } from 'next';
-import { getTestator } from 'store/reducers/web3';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useAppSelector } from 'store/hooks';
-import ConnectBanner from 'components/connect-banner';
-import CreatePlan from 'components/create-plan';
 import Head from 'next/head';
-import Testament from 'components/testament';
 
-function Home() {
-  const testator = useAppSelector(getTestator);
-
+const Services = () => {
   return (
     <div>
       <Head>
@@ -18,15 +11,7 @@ function Home() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <ConnectBanner />
-
-      {/* <div>
-        {
-          testator === undefined ?
-            <CreatePlan createMode /> :
-            <Testament testator={ testator } isTestator />
-        }
-      </div> */}
+      Services
     </div>
   );
 }
@@ -41,4 +26,4 @@ export const getStaticProps: GetStaticProps = async ({ defaultLocale = 'en', loc
   };
 }
 
-export default Home;
+export default Services;

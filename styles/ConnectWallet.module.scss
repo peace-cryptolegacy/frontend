@@ -1,21 +1,18 @@
 .connectwallet {
   &__user {
     align-items: center;
+    background: #FFFFFF;
     border-radius: 10px;    
     box-shadow: 0px 5px 15px 5px rgba(0,0,0,0.05);
+    color: #1D2B4F;
     display: flex;
-    padding: 2px 4px;
     flex-direction: row;
-
-    &__balance {
-      margin-right: 8px;
-    }
-
-    &__address {
-      background-color: #F6F8FB;
-      font-weight: 500;
-      border-radius: 10px;
-      padding: 8px;
-    }
+    font-size: 14px;
+    font-weight: 400;
+    height: 48px;
+    justify-content: center;
+    letter-spacing: 0.25px;
+    padding: 0px 6px 0px 12px;
+    width: 200px;
   }
 }
