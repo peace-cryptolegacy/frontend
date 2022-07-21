@@ -71,28 +71,36 @@ const ConnectWallet = ({ selectedChain }: props) => {
       setConnect(false);
     }
   }
+
+  function renderWalletInfo() {
+    return (
+      <div className={styles['connectwallet__user']}>
+        <div className={styles['connectwallet__user__balance']}>
+          { balance } { chainInfo?.nativeCurrency.symbol.toUpperCase() }
+        </div>
+        <div className={styles['connectwallet__user__address']}>
+          { formatAddress(address) }
+        </div>
+      </div>
+    );
+  }
+ 
+  function renderConnectWallet() {
+    return (
+      <Button 
+        colorScheme='blue' 
+        height='44px'
+        isLoading={ isConnecting } 
+        onClick={ handleClick }
+      >
+        { t('connect-wallet.connect') }
+      </Button>
+    );
+  }
   
   return (
     <div className={styles.connectwallet}>
-      {
-        address ? 
-          <div className={styles['connectwallet__user']}>
-            <div className={styles['connectwallet__user__balance']}>
-              { balance } { chainInfo?.nativeCurrency.symbol.toUpperCase() }
-            </div>
-            <div className={styles['connectwallet__user__address']}>
-              { formatAddress(address) }
-            </div>
-          </div> : 
-          <Button 
-            colorScheme='blue' 
-            height='44px'
-            isLoading={ isConnecting } 
-            onClick={ handleClick }
-          >
-            { t('connect-wallet.connect') }
-          </Button>
-      }
+      { address ? renderWalletInfo() : renderConnectWallet() }
     </div>
   );
 }
