@@ -1,7 +1,9 @@
 .createplan {
-  &--submitbuttons {
-    display: flex;
-    justify-content: center;
-    width: 100%;
+  margin-top: 60px;
+
+  &__title {
+    color: #1D2B4F;
+    font-size: 32px;
+    font-weight: 400;
   }
 }

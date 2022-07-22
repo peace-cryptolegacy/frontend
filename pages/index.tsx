@@ -5,7 +5,6 @@ import { useAppSelector } from 'store/hooks';
 import ConnectBanner from 'components/connect-banner';
 import CreatePlan from 'components/create-plan';
 import Head from 'next/head';
-import Testament from 'components/testament';
 
 function Home() {
   const testator = useAppSelector(getTestator);
@@ -20,13 +19,7 @@ function Home() {
 
       <ConnectBanner />
 
-      {/* <div>
-        {
-          testator === undefined ?
-            <CreatePlan createMode /> :
-            <Testament testator={ testator } isTestator />
-        }
-      </div> */}
+      <CreatePlan /> 
     </div>
   );
 }
