@@ -1,26 +1,28 @@
+import { useState } from 'react';
 import classNames from 'classnames';
+import ConnectStep from 'components/steps/connect-step';
 import styles from 'styles/Steps.module.scss';
 
 const CreatePlan = () => {
+  const [activeStep, setActiveStep] = useState<number>(0);
   const steps = [
     {
-      content: <div>adopakdkasodkasopdkasopdkpoas asdjopasdjopaskd</div>,
+      content: <ConnectStep onNextStep={setActiveStep} />,
       title: 'Connect wallet & select network',
     },
     {
-      content: <div>adopakdkasodkasopdkasopdkpoas asdjopasdjopaskd</div>,
+      content: <div>Step 2</div>,
       title: 'Select beneficiaries & proof of life',
     },
     {
-      content: <div>adopakdkasodkasopdkasopdkpoas asdjopasdjopaskd</div>,
+      content: <div>Step 3</div>,
       title: 'Approve tokens  & distribution',
     },
     {
-      content: <div>adopakdkasodkasopdkasopdkpoas asdjopasdjopaskd</div>,
+      content: <div>Step 4</div>,
       title: 'Review',
     }
   ];
-  const activeStep = 0;
 
   function renderStep({ content, title }: { content: any, title: string  }, index: number) {
     return (
