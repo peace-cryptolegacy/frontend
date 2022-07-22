@@ -8,25 +8,29 @@ const CreatePlan = () => {
   const steps = [
     {
       content: <ConnectStep onNextStep={setActiveStep} />,
-      title: 'Connect wallet & select network',
+      key: 'step-1',
+      title: 'Connect wallet & select network'
     },
     {
       content: <div>Step 2</div>,
-      title: 'Select beneficiaries & proof of life',
+      key: 'step-2',
+      title: 'Select beneficiaries & proof of life'
     },
     {
       content: <div>Step 3</div>,
-      title: 'Approve tokens  & distribution',
+      key: 'step-3',
+      title: 'Approve tokens  & distribution'
     },
     {
       content: <div>Step 4</div>,
-      title: 'Review',
+      key: 'step-4',
+      title: 'Review'
     }
   ];
 
-  function renderStep({ content, title }: { content: any, title: string  }, index: number) {
+  function renderStep({ content, key, title }: { content: any, key: string, title: string  }, index: number) {
     return (
-      <div className={classNames(styles['steps__step'])}>
+      <div className={classNames(styles['steps__step'])} key={ key }>
         <div className={styles['steps__step__stepper']}>
         <div className={styles['steps__step__stepper__header']}>
             <div className={styles['steps__step__stepper__circle']}>

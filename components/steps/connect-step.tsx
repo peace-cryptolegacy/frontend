@@ -30,21 +30,33 @@ const ConnectStep = ({ onNextStep }: props) => {
           Creating your plan on
         </span>
 
-        <Button 
+        <Box
+          alignItems='center'
+          as='button' 
           backgroundColor='#FFFFFF'
+          border='1px solid #E2E8F0'
           borderRadius={ 11 }
           boxShadow='0px 5px 15px 5px rgba(0,0,0,0.05)'
-          height='48px'
+          display='flex'
+          flexDirection='row'
+          marginTop={1}
           mr='20px'
-          width='57px' 
+          padding='5px 20px'
         >
-          <Box 
-            marginTop={1}
-            position='absolute'
-          > 
-            <Image src='/logos/avax.svg' alt='AVAX Logo' height='35px' width='35px' />
+          <Image 
+            alt='AVAX Logo' 
+            height='35px' 
+            src='/logos/avax.svg' 
+            width='35px' 
+          />
+          <Box
+            fontSize='14px'
+            letterSpacing='0.25px'
+            marginLeft='18px'
+          >
+            Avalanche
           </Box>
-        </Button>
+        </Box>
       </div>
 
 

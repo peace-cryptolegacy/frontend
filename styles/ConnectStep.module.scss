@@ -4,7 +4,10 @@
   padding: 24px 30px;
 
   &__container {
+    align-items: center;
     color: #1D2B4F;
+    display: flex;
+    flex-direction: row;
     font-size: 22px;
     font-weight: 400;
     margin: 30px 0 40px 0;
