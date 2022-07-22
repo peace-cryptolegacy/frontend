@@ -42,10 +42,7 @@ const EditTestamentModal = ({ testator }: props) => {
         <ModalContent>
           <ModalCloseButton />
           <ModalBody padding={10}>
-            <CreatePlan
-              onAccept={ handleClose }
-              testator={ testator } 
-            />
+            <CreatePlan />
           </ModalBody>
         </ModalContent>
       </Modal>
