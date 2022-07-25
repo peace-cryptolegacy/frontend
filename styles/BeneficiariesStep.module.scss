@@ -1,0 +1,16 @@
+.beneficiariesstep {
+  border-radius: 12px;
+  box-shadow: 0px 3px 50px rgba(0, 0, 0, 0.15);
+  padding: 24px 30px;
+
+  &__disclaimer {
+    color: #1D2B4F;
+    letter-spacing: 0.25px;
+    line-height: 20px;
+  }
+
+  &__divider {
+    border: 1px solid #E2E8F0;
+    margin: 25px 0;
+  }
+}

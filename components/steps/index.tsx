@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import classNames from 'classnames';
+import BeneficairiesStep from 'components/steps/beneficiaries-step';
 import ConnectStep from 'components/steps/connect-step';
 import styles from 'styles/Steps.module.scss';
 
@@ -12,7 +13,7 @@ const CreatePlan = () => {
       title: 'Connect wallet & select network'
     },
     {
-      content: <div>Step 2</div>,
+      content: <BeneficairiesStep onNextStep={setActiveStep} />,
       key: 'step-2',
       title: 'Select beneficiaries & proof of life'
     },
