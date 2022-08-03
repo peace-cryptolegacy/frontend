@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import classNames from 'classnames';
+import ApproveStep from 'components/steps/approve-step';
 import BeneficairiesStep from 'components/steps/beneficiaries-step';
 import ConnectStep from 'components/steps/connect-step';
 import styles from 'styles/Steps.module.scss';
@@ -18,14 +19,14 @@ const CreatePlan = () => {
       title: 'Select beneficiaries & proof of life'
     },
     {
-      content: <div>Step 3</div>,
+      content: <div></div>, // <ApproveStep onNextStep={setActiveStep} />,
       key: 'step-3',
-      title: 'Approve tokens  & distribution'
+      title: 'Approve tokens'
     },
     {
       content: <div>Step 4</div>,
       key: 'step-4',
-      title: 'Review'
+      title: 'Distribution & review'
     }
   ];
 

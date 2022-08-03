@@ -1,0 +1,26 @@
+.claim {
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 50px;
+
+    &__title {
+      margin-bottom: 50px;
+      font-size: 32px;
+      font-weight: 400;
+    }
+
+    &__details {
+      margin-bottom: 40 px;
+      max-width: 500px;
+    }
+  }
+
+  &__details {
+    border-radius: 12px;
+    box-shadow: 0px 3px 50px rgba(0, 0, 0, 0.15);
+    padding: 24px 30px;
+  }
+}

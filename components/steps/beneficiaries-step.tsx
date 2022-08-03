@@ -1,4 +1,4 @@
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, CloseIcon } from '@chakra-ui/icons';
 import { BaseSyntheticEvent, useState } from 'react';
 import { Box, Button, Checkbox, FormControl, FormErrorMessage, Input, Select } from '@chakra-ui/react';
 import { isAddress } from 'ethers/lib/utils';
@@ -11,10 +11,11 @@ type props = {
 type Beneficiary = {
   name?: string;
   address: string;
+  isClaimant?: boolean;
 }
 
 const BenficiariesStep = ({ onNextStep }: props) => {
-  const defaultBeneficiary = { name: '', address: '' };
+  const defaultBeneficiary = { name: '', address: '', isClaimant: false };
   const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([defaultBeneficiary]);
   const [errors, setErrors] = useState<boolean[]>([false]);
 
@@ -34,6 +35,8 @@ const BenficiariesStep = ({ onNextStep }: props) => {
   }
 
   function handleChange(key: string, value: string, index: number) {
+    console.log(key, value, index);
+    
     setBeneficiaries([
       ...beneficiaries.slice(0, index),
       {
@@ -54,6 +57,18 @@ const BenficiariesStep = ({ onNextStep }: props) => {
     }
   }
 
+  function handleCloseIconClick(index: number) {
+    setBeneficiaries([
+      ...beneficiaries.slice(0, index),
+      ...beneficiaries.slice(index + 1)
+    ]);
+
+    setErrors([
+      ...errors.slice(0, index),
+      ...errors.slice(index + 1)
+    ]);
+  }
+
   function renderRow(beneficiary: Beneficiary, index: number) {
     return (
       <Box
@@ -62,7 +77,7 @@ const BenficiariesStep = ({ onNextStep }: props) => {
         marginBottom='15px'
         key={`beneficiary-${index}`}
       >
-        <FormControl flex={2}>
+        <FormControl flex={5}>
           <Input 
             height='50px'
             onChange={(event: BaseSyntheticEvent) => {handleChange('name', event.target.value, index)}}
@@ -72,7 +87,7 @@ const BenficiariesStep = ({ onNextStep }: props) => {
           />
         </FormControl>
 
-        <FormControl flex={2} isInvalid={errors[index]}>
+        <FormControl flex={5} isInvalid={errors[index]}>
           <Input 
             height='50px'
             onChange={(event: BaseSyntheticEvent) => handleChange('address', event.target.value, index)}
@@ -91,9 +106,27 @@ const BenficiariesStep = ({ onNextStep }: props) => {
           alignContent='center'
           display='flex'
           flexDirection='row'
+          justifyContent='center'
           flex={1}
         >
-          <Checkbox></Checkbox>
+          <Checkbox 
+            isChecked={beneficiary.isClaimant}
+            onChange={(event: BaseSyntheticEvent) => handleChange('isClaimant', event.target.checked, index)}          
+          >
+          </Checkbox>
+        </Box>
+
+        <Box
+          alignItems='center'
+          cursor='pointer'
+          display='flex'
+          flex={1}
+          justifyContent='flex-end'
+          marginRight={10}
+        >
+          <CloseIcon 
+            onClick={() => handleCloseIconClick(index)}
+          />       
         </Box>
       </Box>
     )
@@ -115,9 +148,10 @@ const BenficiariesStep = ({ onNextStep }: props) => {
         flexDirection='row'
         fontWeight='bold'
       >
-        <Box flex={2}>Name</Box>
-        <Box flex={2}>Address</Box>
+        <Box flex={5}>Name</Box>
+        <Box flex={5}>Address</Box>
         <Box flex={1}>Claimant</Box>
+        <Box flex={1}></Box>
       </Box>
 
       <div className={styles['beneficiariesstep__divider']}></div>
@@ -149,12 +183,41 @@ const BenficiariesStep = ({ onNextStep }: props) => {
         Choose how many days and which beneficiaries need to sign for the funds to be released:
       </Box>
 
-        <Select 
-          size='lg'
-          width='230px'
-        >
-          <option>365 days</option>
-        </Select>
+      <Box
+        display='flex'
+      >
+        <Box marginRight='150px'>
+          <Select 
+            size='lg'
+            width='230px'
+          >
+            <option>7 days</option>
+            <option>30 days</option>
+            <option>60 days</option>
+            <option>180 days</option>
+            <option>365 days</option>
+          </Select>
+        </Box>
+        
+        <Box>
+          <Select 
+            size='lg'
+            width='230px'
+          >
+            <option>Just peace</option>
+            
+            {
+              beneficiaries.map((beneficiary, index) => {
+                return (
+                  <option key={`option-${index}`}>
+                    Just {index + 1} beneficiary
+                  </option>
+                );
+              })
+            }
+          </Select>
+        </Box>
+      </Box>
 
       <div className={styles['beneficiariesstep__divider']}></div>
       
