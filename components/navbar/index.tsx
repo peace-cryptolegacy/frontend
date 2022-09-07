@@ -65,7 +65,7 @@ const Navbar = () => {
             marginTop={1}
             position='absolute'
           > 
-            <Image src='/logos/avax.svg' alt='AVAX Logo' height='35px' width='35px' />
+            <Image src='/logos/moonbeam.png' alt='Moonbeam Logo' height='35px' width='35px' />
           </Box>
         </Button>
 

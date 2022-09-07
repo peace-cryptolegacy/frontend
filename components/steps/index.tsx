@@ -1,32 +1,47 @@
 import { useState } from 'react';
+import BeneficiariesStep from 'components/steps/beneficiaries-step';
 import classNames from 'classnames';
-import ApproveStep from 'components/steps/approve-step';
-import BeneficairiesStep from 'components/steps/beneficiaries-step';
 import ConnectStep from 'components/steps/connect-step';
+import ReviewStep from 'components/steps/review-step';
 import styles from 'styles/Steps.module.scss';
 
 const CreatePlan = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
+  const [beneficiaries, setBeneficiares] = useState({});
   const steps = [
     {
-      content: <ConnectStep onNextStep={setActiveStep} />,
-      key: 'step-1',
+      content: <ConnectStep onNextStep={() => setActiveStep(1)} />,
+      key: 'step-connect',
       title: 'Connect wallet & select network'
     },
     {
-      content: <BeneficairiesStep onNextStep={setActiveStep} />,
-      key: 'step-2',
+      content: (
+        <BeneficiariesStep 
+          onPrevStep={() => setActiveStep(0)} 
+          onNextStep={
+            (beneficiaries: any, expiration: any) => {
+              setActiveStep(2); 
+              setBeneficiares({
+                beneficiaries,
+                expiration
+              });
+            }
+          } 
+        />
+      ),
+      key: 'step-beneficiaries',
       title: 'Select beneficiaries & proof of life'
     },
     {
-      content: <div></div>, // <ApproveStep onNextStep={setActiveStep} />,
-      key: 'step-3',
-      title: 'Approve tokens'
-    },
-    {
-      content: <div>Step 4</div>,
-      key: 'step-4',
-      title: 'Distribution & review'
+      content: (
+        <ReviewStep 
+          beneficiaries={beneficiaries}
+          onPrevStep={() => setActiveStep(1)} 
+          onNextStep={() => null} 
+        />
+      ),
+      key: 'step-distribution',
+      title: 'Review your testament'
     }
   ];
 

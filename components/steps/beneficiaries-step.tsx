@@ -1,23 +1,30 @@
 import { AddIcon, CloseIcon } from '@chakra-ui/icons';
 import { BaseSyntheticEvent, useState } from 'react';
-import { Box, Button, Checkbox, FormControl, FormErrorMessage, Input, Select } from '@chakra-ui/react';
+import { Box, Button, Checkbox, FormControl, FormErrorMessage, Input, InputGroup, InputRightElement, Select } from '@chakra-ui/react';
 import { isAddress } from 'ethers/lib/utils';
 import styles from 'styles/BeneficiariesStep.module.scss';
 
 type props = {
   onNextStep: Function;
+  onPrevStep: Function;
 }
 
 type Beneficiary = {
   name?: string;
   address: string;
   isClaimant?: boolean;
+  distribution: number;
 }
 
-const BenficiariesStep = ({ onNextStep }: props) => {
-  const defaultBeneficiary = { name: '', address: '', isClaimant: false };
+const BenficiariesStep = ({ onNextStep, onPrevStep }: props) => {
+  const defaultBeneficiary = { name: '', address: '', isClaimant: false, distribution: 0 };
   const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([defaultBeneficiary]);
+  const [expiration, setExpiration] = useState<number>(7);
   const [errors, setErrors] = useState<boolean[]>([false]);
+
+  function handleExpirationChange(event: any) {
+    setExpiration(Number(event.target.value));
+  }
 
   function handleAddBeneficiary() {
     setBeneficiaries([
@@ -35,8 +42,6 @@ const BenficiariesStep = ({ onNextStep }: props) => {
   }
 
   function handleChange(key: string, value: string, index: number) {
-    console.log(key, value, index);
-    
     setBeneficiaries([
       ...beneficiaries.slice(0, index),
       {
@@ -47,14 +52,19 @@ const BenficiariesStep = ({ onNextStep }: props) => {
     ]);
   }
 
-  function handleContinueClick() {
-    const errors = beneficiaries.map(({ address }) => !isAddress(address));
+  function handleClaimantChange(value: string, index: number) {
+    const nextBeneficiaries = beneficiaries.map((beneficiary, beneficiaryIndex) => {
+      return {
+        ...beneficiary,
+        isClaimant: index === beneficiaryIndex
+      };
+    });
 
-    if (errors.some(value => value))  {
-      setErrors(errors);
-    } else {
-      onNextStep(2);
-    }
+    setBeneficiaries(nextBeneficiaries);
+  }
+
+  async function handleContinueClick() {
+    onNextStep(beneficiaries, expiration);
   }
 
   function handleCloseIconClick(index: number) {
@@ -111,10 +121,21 @@ const BenficiariesStep = ({ onNextStep }: props) => {
         >
           <Checkbox 
             isChecked={beneficiary.isClaimant}
-            onChange={(event: BaseSyntheticEvent) => handleChange('isClaimant', event.target.checked, index)}          
+            onChange={(event: BaseSyntheticEvent) => handleClaimantChange(event.target.checked, index)}          
           >
           </Checkbox>
         </Box>
+
+        <FormControl flex={1}>
+          <Input 
+            marginLeft={10}
+            height='50px'
+            onChange={(event: BaseSyntheticEvent) => handleChange('distribution', event.target.value, index)}
+            required
+            value={beneficiary.distribution}
+            type='number'
+          />
+        </FormControl>
 
         <Box
           alignItems='center'
@@ -137,7 +158,7 @@ const BenficiariesStep = ({ onNextStep }: props) => {
       <Box className={styles['beneficiariesstep__disclaimer']}>
         <div>Your inheritance plan will have one or more beneficiaries, you can select which of them could activate the protocol after inactivity time passed.</div>
         <br />
-        <div>You can add an identifier name to verify in the future who will be receiving your will and customize % of funds and the different type of tokens that will inherit.  This plan will ONLY be claimable on Ethereum.</div>
+        <div>You can add an identifier name to verify in the future who will be receiving your will and customize % of funds and the different type of tokens that will inherit.  This plan will ONLY be claimable on Moonbase.</div>
       </Box>
 
       <div className={styles['beneficiariesstep__divider']}></div>
@@ -151,6 +172,7 @@ const BenficiariesStep = ({ onNextStep }: props) => {
         <Box flex={5}>Name</Box>
         <Box flex={5}>Address</Box>
         <Box flex={1}>Claimant</Box>
+        <Box flex={1} marginLeft={10}>% Distr</Box>
         <Box flex={1}></Box>
       </Box>
 
@@ -190,12 +212,13 @@ const BenficiariesStep = ({ onNextStep }: props) => {
           <Select 
             size='lg'
             width='230px'
+            onChange={handleExpirationChange}
           >
-            <option>7 days</option>
-            <option>30 days</option>
-            <option>60 days</option>
-            <option>180 days</option>
-            <option>365 days</option>
+            <option value={7}>7 days</option>
+            <option value={30}>30 days</option>
+            <option value={60}>60 days</option>
+            <option value={180}>180 days</option>
+            <option value={365}>365 days</option>
           </Select>
         </Box>
         
@@ -230,7 +253,7 @@ const BenficiariesStep = ({ onNextStep }: props) => {
           color='#5F4DFF'
           fontSize='14px'
           marginRight='80px'
-          onClick={() => onNextStep(0)}
+          onClick={() => onPrevStep()}
           variant='ghost'
         >
           Back

@@ -16,7 +16,7 @@ const ConnectStep = ({ onNextStep }: props) => {
   async function handleClick()  {
     await connect(dispatch);
 
-    onNextStep(1);
+    onNextStep();
   }
 
   return (
@@ -46,7 +46,7 @@ const ConnectStep = ({ onNextStep }: props) => {
           <Image 
             alt='AVAX Logo' 
             height='35px' 
-            src='/logos/avax.svg' 
+            src='/logos/moonbeam.png' 
             width='35px' 
           />
           <Box
@@ -54,7 +54,7 @@ const ConnectStep = ({ onNextStep }: props) => {
             letterSpacing='0.25px'
             marginLeft='18px'
           >
-            Avalanche
+            Moonbase
           </Box>
         </Box>
       </div>

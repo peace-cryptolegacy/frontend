@@ -1,19 +1,19 @@
 [
   {
-    "name": "Avalanche",
-    "chainId": 43113,
-    "hexa": "0xA869",
+    "name": "Moonbase",
+    "chainId": 1287,
+    "hexa": "0x507",
     "rpcs": [
-      "https://api.avax-test.network/ext/bc/C/rpc"
+      "https://rpc.api.moonbase.moonbeam.network"
     ],
     "explorers": [
-      "https://testnet.snowtrace.io"
+      "https://moonbase.moonscan.io/"
     ],
     "isSupported": true,
     "isTesnet": true,
     "nativeCurrency": {
-      "name": "AVAX",
-      "symbol": "AVAX",
+      "name": "DEV",
+      "symbol": "DEV",
       "decimals": 18
     }
   }
