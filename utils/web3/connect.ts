@@ -1,10 +1,8 @@
 import { BigNumber } from 'ethers';
 import { changeNetwork, getProvider } from 'utils/web3/provider';
 import { setIsConnecting, setInheritor, setProvider, setTestator } from 'store/reducers/web3';
-import { getInheritor, getTestator } from 'utils/web3/heritage';
 import { providers } from 'ethers';
 
-import type { ITestament } from 'utils/web3/heritage';
 import type { AppDispatch } from 'store';
 
 const supportedChainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID);
@@ -24,21 +22,21 @@ export async function connect(dispatch: AppDispatch) {
     const address: string = await signer.getAddress();
     const balance: BigNumber = await signer.getBalance();
 
-    try {
-      const testator: ITestament | undefined = await getTestator(address);
+    // try {
+    //   const testator: ITestament | undefined = await getTestator(address);
 
-      if (testator) {
-        dispatch(setTestator(testator));
-      }
-    } catch (error) { }
+    //   if (testator) {
+    //     dispatch(setTestator(testator));
+    //   }
+    // } catch (error) { }
 
-    try {
-      const inheritor: ITestament | undefined = await getInheritor(address);
+    // try {
+    //   const inheritor: ITestament | undefined = await getInheritor(address);
 
-      if (inheritor) {
-        dispatch(setInheritor(inheritor));
-      }
-    } catch (error) { }
+    //   if (inheritor) {
+    //     dispatch(setInheritor(inheritor));
+    //   }
+    // } catch (error) { }
 
     dispatch(setProvider({
       address,

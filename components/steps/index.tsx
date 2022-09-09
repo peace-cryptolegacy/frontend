@@ -1,3 +1,6 @@
+// @ts-nocheck
+
+import { writeTestament } from 'utils/web3/heritage';
 import { useState } from 'react';
 import BeneficiariesStep from 'components/steps/beneficiaries-step';
 import classNames from 'classnames';
@@ -37,13 +40,23 @@ const CreatePlan = () => {
         <ReviewStep 
           beneficiaries={beneficiaries}
           onPrevStep={() => setActiveStep(1)} 
-          onNextStep={() => null} 
+          onNextStep={() => handleDeploy()} 
         />
       ),
       key: 'step-distribution',
       title: 'Review your testament'
     }
   ];
+
+  async function handleDeploy() {
+    const address = await writeTestament(
+      beneficiaries.beneficiaries,
+      beneficiaries.expiration
+    );
+
+    console.log("---- ", address);
+    
+  }
 
   function renderStep({ content, key, title }: { content: any, key: string, title: string  }, index: number) {
     return (

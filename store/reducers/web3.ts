@@ -5,16 +5,15 @@ import { getChainById } from 'utils/chains/index';
 import { RootState } from 'store';
 
 import type { Chain } from 'utils/chains/index';
-import type { ITestament } from 'utils/web3/heritage';
 
 export interface Web3State {
   address: string;
   balance: BigNumber;
   chainId: number;
-  inheritor?: ITestament;
+  inheritor?: any;
   isConnected: boolean;
   isConnecting: boolean;
-  testator?: ITestament;
+  testator?: any;
 }
 
 const initialState: Web3State = {
@@ -45,13 +44,13 @@ const web3Slice = createSlice({
         isConnected: true
       };
     },
-    setInheritor(state: Web3State, action: PayloadAction<ITestament>) {
+    setInheritor(state: Web3State, action: PayloadAction<any>) {
       return {
         ...state,
         inheritor: action.payload
       };
     },
-    setTestator(state: Web3State, action: PayloadAction<ITestament | undefined>) {
+    setTestator(state: Web3State, action: PayloadAction<any | undefined>) {
       return {
         ...state,
         testator: action.payload

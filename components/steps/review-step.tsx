@@ -31,13 +31,13 @@ const ReviewStep = ({ beneficiaries, onNextStep, onPrevStep }: props) => {
         <Box flex={1}>
           {beneficiary.isClaimant ? "Yes" : "No"}
         </Box>
-        <Box flex={1}>
+        <Box flex={3}>
           {beneficiary.name}
         </Box>
         <Box flex={1}>
           {beneficiary.distribution} %
         </Box>
-        <Box flex={1}>
+        <Box flex={3}>
           {beneficiary.address}
         </Box>
       </Box>
@@ -91,9 +91,9 @@ const ReviewStep = ({ beneficiaries, onNextStep, onPrevStep }: props) => {
         fontWeight='bold'
       >
         <Box flex={1}>Claimer</Box>
-        <Box flex={1}>Beneficiary</Box>
+        <Box flex={3}>Beneficiary</Box>
         <Box flex={1}>% Funds</Box>
-        <Box flex={1}>Wallet</Box>
+        <Box flex={3}>Wallet</Box>
       </Box>
 
       <div className={styles['beneficiariesstep__divider']}></div>
