@@ -7,6 +7,7 @@
     "nft": "NFT"
   },
   "create-plan": {
+    "welcome": "Bienvenido a ty cryptolegacy!",
     "title-create": "Create testament",
     "title-edit": "Edit testament",
     "max-days-hint": "Select the days without activity in the wallet to activate protocol",
