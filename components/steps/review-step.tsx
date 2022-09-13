@@ -1,20 +1,10 @@
-import { AddIcon, CloseIcon } from '@chakra-ui/icons';
-import { BaseSyntheticEvent, useState } from 'react';
-import { Box, Button, Checkbox, FormControl, FormErrorMessage, Input, InputGroup, InputRightElement, Select } from '@chakra-ui/react';
-import { isAddress } from 'ethers/lib/utils';
+import { Box, Button } from '@chakra-ui/react';
 import styles from 'styles/BeneficiariesStep.module.scss';
 
 type props = {
   beneficiaries: any;
   onNextStep: Function;
   onPrevStep: Function;
-}
-
-type Beneficiary = {
-  name?: string;
-  address: string;
-  isClaimant?: boolean;
-  distribution: number;
 }
 
 const ReviewStep = ({ beneficiaries, onNextStep, onPrevStep }: props) => {

@@ -16,6 +16,10 @@ import TestamentFactory from "utils/web3/TestamentFactory.json";
 const heritageContractAddress =
   process.env.NEXT_PUBLIC_HERITAGE_CONTRACT_ADDRESS;
 
+console.log(heritageContractAddress);
+
+
+
 export interface ITestator {
   inheritor: string;
   status: Status;
@@ -149,7 +153,6 @@ export const writeTestament = async (_inheritors: any, _maxDays: any) => {
   );
 
   return await _execute("writeTestament", [
-    await provider.getSigner().getAddress(),
     claimer.address,
     inheritors,
     BigNumber.from(_maxDays),
