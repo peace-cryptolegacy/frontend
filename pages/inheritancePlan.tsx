@@ -13,6 +13,23 @@ import {
   SliderMark,
   SliderThumb,
   SliderTrack,
+  Link,
+  Text,
+  HStack,
+  Box,
+  TableContainer,
+  Table,
+  TableCaption,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
+  Tfoot,
+  Grid,
+  GridItem,
+  Flex,
+  Spacer,
 } from "@chakra-ui/react";
 import { addTestator, getTestator } from "utils/web3/heritage";
 import { approve } from "utils/web3/erc20";
@@ -25,7 +42,7 @@ import { useAppSelector, useAppDispatch } from "store/hooks";
 import { useTranslation } from "next-i18next";
 import isEmpty from "lodash/isEmpty";
 import styles from "styles/CreatePlan.module.scss";
-
+import { AddIcon, CloseIcon, EmailIcon } from "@chakra-ui/icons";
 import type { Token } from "utils/tokens/index";
 import type { ITestator } from "utils/web3/heritage";
 
@@ -101,8 +118,32 @@ const CreatePlan: FC = () => {
   return (
     <div className={styles.createplan}>
       <Heading as="h1" size="lg" mb="10">
-        {t("create-plan.welcome")}
+        {t("create-plan.title-create")}
       </Heading>
+
+      <FormControl mb="10">
+        <Text mb="5" as="span">
+          Your profile: 0x797...31A9
+        </Text>
+        <Link color="blue" pl="20px">
+          Edit
+        </Link>
+
+        <HStack mt="20px">
+          <Button colorScheme="gray">
+            <EmailIcon color="red.500" mr="10px" />
+            Add
+          </Button>
+          <Button colorScheme="gray">
+            <EmailIcon color="red.500" mr="10px" />
+            Add
+          </Button>
+          <Button colorScheme="gray">
+            <EmailIcon color="red.500" mr="10px" />
+            Add
+          </Button>
+        </HStack>
+      </FormControl>
 
       <FormControl mb="10">
         <FormHelperText mb="5">{t("create-plan.max-days-hint")}</FormHelperText>
@@ -144,55 +185,117 @@ const CreatePlan: FC = () => {
           {t("create-plan.beneficiary-hint")}
         </FormHelperText>
 
-        <Input
-          disabled={!isConnected}
-          id="inheritor"
-          mb="5"
-          onChange={(event: BaseSyntheticEvent) =>
-            setInheritor(event.currentTarget.value)
-          }
-          placeholder={t("create-plan.wallet-address")}
-          type="string"
-          value={inheritor}
-        />
+        <Grid templateColumns="repeat(5, 1fr)" gap={4}>
+          <GridItem colSpan={2} h="100%" bg="papayawhip">
+            <FormControl mb="10" colorScheme="blue">
+              <Input
+                id="inheritor"
+                onChange={(event: BaseSyntheticEvent) =>
+                  setInheritor(event.currentTarget.value)
+                }
+                placeholder="Search pool or token address"
+                type="string"
+                value={inheritor}
+                m="20px"
+                w="75%"
+                borderRadius="16px"
+              />
+              <Flex m="20px">
+                <Text mb="5">Assets on Peace</Text>
+                <Text mb="5" as="span">
+                  $0
+                </Text>
+                <Spacer />
+                <Link color="blue" pl="20px" pt="5px" mr="20px">
+                  Edit
+                </Link>
+                <Button colorScheme="purple" mr="20px">
+                  Add tokens
+                </Button>
+              </Flex>
 
-        <FormHelperText mb="5">{t("create-plan.token-hint")}</FormHelperText>
+              <TableContainer>
+                <Table variant="simple">
+                  <TableCaption>Add tokens to your testament</TableCaption>
+                  <Thead>
+                    <Tr>
+                      <Th>Asset</Th>
+                      <Th>Price</Th>
+                      <Th>Balance</Th>
+                      <Th>Value</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody></Tbody>
+                </Table>
+              </TableContainer>
+            </FormControl>
+          </GridItem>
 
-        <Select
-          onChange={handleTokenChange}
-          placeholder={t("create-plan.token-address")}
-          value={token}
-        >
-          {isEmpty(tokens)
-            ? null
-            : tokens.map((token) => {
-                return (
-                  <option key={token.address} value={token.address}>
-                    {token.name}
-                  </option>
-                );
-              })}
-        </Select>
+          <GridItem colStart={4} colEnd={6} h="100%" bg="papayawhip">
+            <FormControl mb="10" colorScheme="blue">
+              <FormControl m="5" colorScheme="blue">
+                <Input
+                  id="inheritor"
+                  onChange={(event: BaseSyntheticEvent) =>
+                    setInheritor(event.currentTarget.value)
+                  }
+                  placeholder="Search pool or token address"
+                  type="string"
+                  value={inheritor}
+                  w="75%"
+                  borderRadius="16px"
+                />
+              </FormControl>
+              <Flex m="20px">
+                <FormControl mb="10" colorScheme="blue">
+                  <Text>Your heirs</Text>
+                  <Text>2 Beneficiaries</Text>
+                </FormControl>
+                <Spacer />
+                <Link color="blue" pl="20px" pt="5px" mr="20px">
+                  Edit
+                </Link>
+                <Button colorScheme="purple" mr="10px">
+                  Add beneficia
+                </Button>
+              </Flex>
+
+              <TableContainer>
+                <Table variant="simple">
+                  <Thead>
+                    <Tr>
+                      <Th>Bnneficiary</Th>
+                      <Th>Tokens</Th>
+                      <Th>% Funds</Th>
+                      <Th>Value</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    <Tr>
+                      <Td>
+                        <Text>Son</Text>
+                        <Text>0x256...cb07</Text>
+                      </Td>
+                      <Td>None</Td>
+                      <Td>50%</Td>
+                      <Td>$0</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>
+                        <Text>Daughter</Text>
+                        <Text>0x256...cb07</Text>
+                      </Td>
+                      <Td>None</Td>
+                      <Td>50%</Td>
+                      <Td>$0</Td>
+                    </Tr>
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </FormControl>
+          </GridItem>
+        </Grid>
       </FormControl>
-
-      <ButtonGroup className={styles["createplan--submitbuttons"]} gap="10">
-        <Button
-          colorScheme="blue"
-          disabled={!isConnected || token === ""}
-          isLoading={isApproving}
-          onClick={handleApproveButtonClick}
-        >
-          {t("create-plan.approve-allowance")}
-        </Button>
-        <Button
-          colorScheme="blue"
-          disabled={!(isConnected && hasAllowance)}
-          isLoading={isCreatingTestament}
-          onClick={handleCreateTestamentButtonClick}
-        >
-          {t("create-plan.create-testament")}
-        </Button>
-      </ButtonGroup>
     </div>
   );
 };
