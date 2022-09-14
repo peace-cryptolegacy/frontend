@@ -1,9 +1,8 @@
-import { Button } from '@chakra-ui/react';
+import { Button, AspectRatio } from '@chakra-ui/react';
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import { GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
-import Image from 'next/image';
 import styles from 'styles/Claim.module.scss';
 
 const Claim = () => {
@@ -51,7 +50,14 @@ const Claim = () => {
           </div>
 
           <div>
-            <Image src='/images/claim.png' alt='Claim video' width='700px' height='350px' />
+            <iframe 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              src="https://www.youtube.com/embed/YVgfHZMFFFQ" 
+              title="What is MetaMask?" 
+              height="350px"
+              width="700px"
+            >
+            </iframe>
           </div>
         </div>
 
