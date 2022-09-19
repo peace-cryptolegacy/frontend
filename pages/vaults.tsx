@@ -1,6 +1,9 @@
 import { GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
+import { Box } from '@chakra-ui/react';
+import Image from "next/image";
+import styles from 'styles/Vault.module.scss';
 
 const Vaults = () => {
   return (
@@ -11,7 +14,23 @@ const Vaults = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      Vaults
+      <div>
+        <Box display="flex" alignContent="center" flexDirection="column" marginTop={20}>
+          <Box className={styles.title}>💰 Coming soon</Box>
+          <Box className={styles.title}>Yield Optimizer</Box>
+          <Box className={styles.subtitle}>Upgrade your future Wealth</Box>
+
+          <div style={{ maxWidth: '60%', margin: '-80px auto 0 auto'}}>
+            <Image 
+              alt="vault"
+              layout='fixed'
+              height={500}
+              width={400}
+              src="/images/vault.png" 
+            />
+          </div>
+        </Box>
+      </div>
     </div>
   );
 }
