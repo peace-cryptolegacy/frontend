@@ -16,10 +16,6 @@ import TestamentFactory from "utils/web3/TestamentFactory.json";
 const heritageContractAddress =
   process.env.NEXT_PUBLIC_HERITAGE_CONTRACT_ADDRESS;
 
-console.log(heritageContractAddress);
-
-
-
 export interface ITestator {
   inheritor: string;
   status: Status;
@@ -60,8 +56,6 @@ export const addTestator: AddTestator = async (inheritor, maxDays, token) => {
 
 async function _execute(method: string, params: any[] = []): Promise<any> {
   try {
-    console.log(params);
-
     const provider: providers.Web3Provider = await getProvider();
     const signer: providers.JsonRpcSigner = provider.getSigner();
 
@@ -77,8 +71,6 @@ async function _execute(method: string, params: any[] = []): Promise<any> {
 
     return receipt;
   } catch (error) {
-    console.log("---- ", error);
-
     throw handleError(error as Error);
   }
 }

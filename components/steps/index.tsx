@@ -49,13 +49,12 @@ const CreatePlan = () => {
   ];
 
   async function handleDeploy() {
-    const address = await writeTestament(
+    await writeTestament(
       beneficiaries.beneficiaries,
       beneficiaries.expiration
     );
 
-    console.log("---- ", address);
-    
+    window.location.reload();
   }
 
   function renderStep({ content, key, title }: { content: any, key: string, title: string  }, index: number) {
