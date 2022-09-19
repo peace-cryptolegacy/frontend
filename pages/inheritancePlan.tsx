@@ -127,7 +127,7 @@ const CreatePlan: FC = () => {
   return (
     <div className={styles.createplan}>
       <Heading as="h1" size="lg" mb="10">
-        {t("create-plan.title-create")}
+        Welcome to your cryptolegacy!
       </Heading>
 
       <FormControl mb="10">
