@@ -30,6 +30,8 @@ import {
   GridItem,
   Flex,
   Spacer,
+  Image,
+  Stack,
 } from "@chakra-ui/react";
 import { addTestator, getTestator } from "utils/web3/heritage";
 import { approve } from "utils/web3/erc20";
@@ -42,9 +44,16 @@ import { useAppSelector, useAppDispatch } from "store/hooks";
 import { useTranslation } from "next-i18next";
 import isEmpty from "lodash/isEmpty";
 import styles from "styles/CreatePlan.module.scss";
-import { AddIcon, CloseIcon, EmailIcon } from "@chakra-ui/icons";
+import {
+  AddIcon,
+  CloseIcon,
+  EmailIcon,
+  InfoOutlineIcon,
+} from "@chakra-ui/icons";
 import type { Token } from "utils/tokens/index";
 import type { ITestator } from "utils/web3/heritage";
+import inheritancePlanStyle from "styles/InheritancePlan.module.scss";
+import inheritancePlanSvg from "../public/images/inheritancePlan.svg";
 
 const CreatePlan: FC = () => {
   //   const { t } = useTranslation("../../public/common");
@@ -146,152 +155,244 @@ const CreatePlan: FC = () => {
       </FormControl>
 
       <FormControl mb="10">
-        <FormHelperText mb="5">{t("create-plan.max-days-hint")}</FormHelperText>
-
-        <Slider
-          defaultValue={30}
-          isDisabled={!isConnected}
-          max={60}
-          mb="10"
-          min={30}
-          onChange={handleSliderChange}
-          step={15}
-          value={maxDays}
+        <Box
+          alignItems="center"
+          as="button"
+          display="flex"
+          flexDirection="row"
+          marginTop={1}
+          padding="20px 0px"
         >
-          <SliderMark value={30} mt="2" ml="-2.5" fontSize="sm">
-            {t("create-plan.days", { days: 30 })}
-          </SliderMark>
-          <SliderMark value={45} mt="2" ml="-2.5" fontSize="sm">
-            {t("create-plan.days", { days: 45 })}
-          </SliderMark>
-          <SliderMark
-            value={60}
-            mt="2"
-            ml="-10"
-            fontSize="sm"
-            style={{ whiteSpace: "nowrap" }}
-          >
-            {t("create-plan.days", { days: 60 })}
-          </SliderMark>
-
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-
-          <SliderThumb />
-        </Slider>
-
-        <FormHelperText mb="5">
-          {t("create-plan.beneficiary-hint")}
-        </FormHelperText>
-
-        <Grid templateColumns="repeat(5, 1fr)" gap={4}>
-          <GridItem colSpan={2} h="100%" bg="papayawhip">
-            <FormControl mb="10" colorScheme="blue">
-              <Input
-                id="inheritor"
-                onChange={(event: BaseSyntheticEvent) =>
-                  setInheritor(event.currentTarget.value)
-                }
-                placeholder="Search pool or token address"
-                type="string"
-                value={inheritor}
-                m="20px"
-                w="75%"
-                borderRadius="16px"
-              />
-              <Flex m="20px">
-                <Text mb="5">Assets on Peace</Text>
-                <Text mb="5" as="span">
-                  $0
+          <Image
+            alt="AVAX Logo"
+            height="35px"
+            src="/images/inheritancePlan.svg"
+            width="35px"
+          />
+          <Box fontSize="4xl" letterSpacing="0.25px" marginLeft="18px">
+            Inheritance plan
+          </Box>
+        </Box>
+        <div className={inheritancePlanStyle["connectstep"]}>
+          <div className={inheritancePlanStyle["connectstep__container"]}>
+            <Grid templateColumns="repeat(12, 1fr)" gap={4} mt={5}>
+              <GridItem colSpan={1} h="100%">
+                <Text as="span" fontSize="sm">
+                  Days since inactivity
                 </Text>
-                <Spacer />
+                <InfoOutlineIcon ml="10px" />
+                <div
+                  className={
+                    inheritancePlanStyle["connectstep__container__flex"]
+                  }
+                >
+                  <Image
+                    alt="AVAX Logo"
+                    height="25px"
+                    src="/images/moonbase.svg"
+                    width="25px"
+                  />
+                  <Box fontSize="14px" letterSpacing="0.25px" marginLeft="10px">
+                    Moonbase
+                  </Box>
+                </div>
+              </GridItem>
+
+              <GridItem colStart={3} colEnd={10} h="100%">
+                <Slider
+                  defaultValue={30}
+                  isDisabled={!isConnected}
+                  max={60}
+                  mb="10"
+                  min={30}
+                  onChange={handleSliderChange}
+                  step={15}
+                  value={maxDays}
+                  color="#5F4DFF"
+                >
+                  <SliderMark value={30} mt="2" ml="-2.5" fontSize="sm">
+                    {t("create-plan.days", { days: 0 })}
+                  </SliderMark>
+
+                  <SliderMark
+                    value={60}
+                    mt="2"
+                    ml="-10"
+                    fontSize="sm"
+                    style={{ whiteSpace: "nowrap" }}
+                  >
+                    {t("create-plan.days", { days: 365 })}
+                  </SliderMark>
+
+                  <SliderTrack>
+                    <SliderFilledTrack />
+                  </SliderTrack>
+
+                  <SliderThumb color="#5F4DFF" />
+                </Slider>
+              </GridItem>
+
+              <GridItem colStart={11} colEnd={13} h="100%">
                 <Link color="blue" pl="20px" pt="5px" mr="20px">
                   Edit
                 </Link>
-                <Button colorScheme="purple" mr="20px">
-                  Add tokens
+                <Button
+                  backgroundColor="#5F4DFF"
+                  borderRadius={5}
+                  color="#FFFFFF"
+                  fontSize={14}
+                  width="100%"
+                >
+                  Verify file
                 </Button>
-              </Flex>
+              </GridItem>
+            </Grid>
+          </div>
+          <div
+            className={inheritancePlanStyle["connectstep__button__container"]}
+          >
+            Last proof of life: Wed Jun 22, 12:43:23 GMT-0500
+          </div>
+        </div>
 
-              <TableContainer>
-                <Table variant="simple">
-                  <TableCaption>Add tokens to your testament</TableCaption>
-                  <Thead>
-                    <Tr>
-                      <Th>Asset</Th>
-                      <Th>Price</Th>
-                      <Th>Balance</Th>
-                      <Th>Value</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody></Tbody>
-                </Table>
-              </TableContainer>
+        <Grid templateColumns="repeat(5, 1fr)" gap={4} mt={5}>
+          <GridItem colSpan={2} h="100%">
+            <FormControl mb="10" colorScheme="blue">
+              <div className={inheritancePlanStyle["connectstep"]}>
+                <div className={inheritancePlanStyle["connectstep__container"]}>
+                  <div
+                    className={inheritancePlanStyle["connectstep__disclaimer"]}
+                  >
+                    <div className={styles["connectstep__block"]}>
+                      <Input
+                        id="inheritor"
+                        onChange={(event: BaseSyntheticEvent) =>
+                          setInheritor(event.currentTarget.value)
+                        }
+                        placeholder="Search pool or token address"
+                        type="string"
+                        value={inheritor}
+                        mb="30px"
+                        w="75%"
+                        borderRadius="16px"
+                      />
+                    </div>
+                  </div>
+                  <Flex>
+                    <div
+                      className={inheritancePlanStyle["connectstep__container"]}
+                    >
+                      <Text>Assets on Peace</Text>
+                      <Text as="span">$0</Text>
+                    </div>
+                    <Spacer />
+                    <Link color="blue" pl="20px" pt="5px" mr="20px">
+                      Edit
+                    </Link>
+                    <Button
+                      backgroundColor="#5F4DFF"
+                      borderRadius={5}
+                      color="#FFFFFF"
+                      fontSize={14}
+                      width="100%"
+                      mr="20px"
+                    >
+                      Add tokens
+                    </Button>
+                  </Flex>
+
+                  <TableContainer>
+                    <Table variant="simple">
+                      <TableCaption>Add tokens to your testament</TableCaption>
+                      <Thead>
+                        <Tr>
+                          <Th>Asset</Th>
+                          <Th>Price</Th>
+                          <Th>Balance</Th>
+                          <Th>Value</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody></Tbody>
+                    </Table>
+                  </TableContainer>
+                </div>
+              </div>
             </FormControl>
           </GridItem>
 
-          <GridItem colStart={4} colEnd={6} h="100%" bg="papayawhip">
+          <GridItem colStart={4} colEnd={6} h="100%">
             <FormControl mb="10" colorScheme="blue">
-              <FormControl m="5" colorScheme="blue">
-                <Input
-                  id="inheritor"
-                  onChange={(event: BaseSyntheticEvent) =>
-                    setInheritor(event.currentTarget.value)
-                  }
-                  placeholder="Search pool or token address"
-                  type="string"
-                  value={inheritor}
-                  w="75%"
-                  borderRadius="16px"
-                />
-              </FormControl>
-              <Flex m="20px">
-                <FormControl mb="10" colorScheme="blue">
-                  <Text>Your heirs</Text>
-                  <Text>2 Beneficiaries</Text>
-                </FormControl>
-                <Spacer />
-                <Link color="blue" pl="20px" pt="5px" mr="20px">
-                  Edit
-                </Link>
-                <Button colorScheme="purple" mr="10px">
-                  Add beneficia
-                </Button>
-              </Flex>
+              <div className={inheritancePlanStyle["connectstep"]}>
+                <div className={inheritancePlanStyle["connectstep__container"]}>
+                  <FormControl colorScheme="blue">
+                    <Input
+                      id="inheritor"
+                      onChange={(event: BaseSyntheticEvent) =>
+                        setInheritor(event.currentTarget.value)
+                      }
+                      placeholder="Search pool or token"
+                      type="string"
+                      value={inheritor}
+                      w="75%"
+                      mb="10px"
+                      borderRadius="16px"
+                    />
+                  </FormControl>
+                  <Flex m="20px">
+                    <FormControl mb="10" colorScheme="blue">
+                      <Text as="span">Your heirs</Text>{" "}
+                      <InfoOutlineIcon ml="10px" />
+                      <Text>2 Beneficiaries</Text>
+                    </FormControl>
+                    <Spacer />
+                    <Link color="blue" pl="20px" pt="5px" mr="20px">
+                      Edit
+                    </Link>
+                    <Button
+                      backgroundColor="#5F4DFF"
+                      borderRadius={5}
+                      color="#FFFFFF"
+                      fontSize={14}
+                      width="100%"
+                    >
+                      Add beneficiaries
+                    </Button>
+                  </Flex>
 
-              <TableContainer>
-                <Table variant="simple">
-                  <Thead>
-                    <Tr>
-                      <Th>Bnneficiary</Th>
-                      <Th>Tokens</Th>
-                      <Th>% Funds</Th>
-                      <Th>Value</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    <Tr>
-                      <Td>
-                        <Text>Son</Text>
-                        <Text>0x256...cb07</Text>
-                      </Td>
-                      <Td>None</Td>
-                      <Td>50%</Td>
-                      <Td>$0</Td>
-                    </Tr>
-                    <Tr>
-                      <Td>
-                        <Text>Daughter</Text>
-                        <Text>0x256...cb07</Text>
-                      </Td>
-                      <Td>None</Td>
-                      <Td>50%</Td>
-                      <Td>$0</Td>
-                    </Tr>
-                  </Tbody>
-                </Table>
-              </TableContainer>
+                  <TableContainer>
+                    <Table variant="simple">
+                      <Thead>
+                        <Tr>
+                          <Th>Bnneficiary</Th>
+                          <Th>Tokens</Th>
+                          <Th>% Funds</Th>
+                          <Th>Value</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        <Tr>
+                          <Td>
+                            <Text>Son</Text>
+                            <Text>0x256...cb07</Text>
+                          </Td>
+                          <Td>None</Td>
+                          <Td>50%</Td>
+                          <Td>$0</Td>
+                        </Tr>
+                        <Tr>
+                          <Td>
+                            <Text>Daughter</Text>
+                            <Text>0x256...cb07</Text>
+                          </Td>
+                          <Td>None</Td>
+                          <Td>50%</Td>
+                          <Td>$0</Td>
+                        </Tr>
+                      </Tbody>
+                    </Table>
+                  </TableContainer>
+                </div>
+              </div>
             </FormControl>
           </GridItem>
         </Grid>

@@ -1,0 +1,37 @@
+.connectstep {
+  border-radius: 12px;
+  box-shadow: 0px 3px 50px rgba(0, 0, 0, 0.15);
+  padding: 24px 30px;
+
+  &__container {
+    align-items: center;
+    display: block;
+    flex-direction: row;
+    font-size: 22px;
+    font-weight: 400;
+
+    &__text {
+      margin-right: 11px;
+    }
+
+    &__flex {
+      display: flex !important;
+    }
+  }
+
+  &__divider {
+    border: 1px solid #e2e8f0;
+    margin: 25px 0;
+  }
+
+  &__button__container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 25px;
+  }
+
+  &__disclaimer {
+    color: #3d5a80;
+  }
+}
