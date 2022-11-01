@@ -3,8 +3,8 @@ interface Props {
   className?: string;
 }
 
-const Description = ({ text, className }: Props) => {
+const Caption = ({ text, className }: Props) => {
   return <p className={className}>{text}</p>;
 };
 
-export default Description;
+export default Caption;
