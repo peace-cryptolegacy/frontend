@@ -1,5 +1,6 @@
 import React from "react";
 interface Props {
+  icon?: JSX.Element;
   text: string;
   disabled?: boolean;
   className: string;
@@ -7,6 +8,7 @@ interface Props {
 }
 
 const PrimaryButton = ({
+  icon,
   text,
   disabled = false,
   className,
@@ -20,6 +22,7 @@ const PrimaryButton = ({
       }`}
       onClick={onClick}
     >
+      <span className="mr-2">{icon}</span>
       {text}
     </button>
   );
