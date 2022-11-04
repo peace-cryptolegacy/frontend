@@ -5,7 +5,7 @@ interface Props {
 
 const Title = ({ text, className }: Props) => {
   return (
-    <h1 className={`text-3xl font-bold capitalize ${className || ""}`}>
+    <h1 className={`text-3xl font-bold capitalize ${className || ''}`}>
       {text}
     </h1>
   );

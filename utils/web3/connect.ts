@@ -1,7 +1,6 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, providers } from 'ethers';
+import { setIsConnecting, setProvider } from 'store/reducers/web3';
 import { changeNetwork, getProvider } from 'utils/web3/provider';
-import { setIsConnecting, setInheritor, setProvider, setTestator } from 'store/reducers/web3';
-import { providers } from 'ethers';
 
 import type { AppDispatch } from 'store';
 
@@ -38,10 +37,12 @@ export async function connect(dispatch: AppDispatch) {
     //   }
     // } catch (error) { }
 
-    dispatch(setProvider({
-      address,
-      balance
-    }));
+    dispatch(
+      setProvider({
+        address,
+        balance,
+      })
+    );
     dispatch(setIsConnecting(false));
   } catch (error) {
     dispatch(setIsConnecting(false));

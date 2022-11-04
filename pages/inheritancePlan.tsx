@@ -1,11 +1,11 @@
-import { FC } from "react";
-import Section from "components/Section/Section";
-import Title from "components/Title/Title";
-import Caption from "components/Caption/Caption";
-import PrimaryButton from "components/PrimaryButton/PrimaryButton";
-import SecondaryButton from "components/SecondaryButton/SecondaryButton";
-import RangeSlider from "components/RangeSlider/RangeSlider";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Caption from 'components/Caption/Caption';
+import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
+import RangeSlider from 'components/RangeSlider/RangeSlider';
+import SecondaryButton from 'components/SecondaryButton/SecondaryButton';
+import Section from 'components/Section/Section';
+import Title from 'components/Title/Title';
+import { FC } from 'react';
 
 const CreatePlan: FC = () => {
   return (
@@ -16,28 +16,28 @@ const CreatePlan: FC = () => {
           <div className="flex">
             <Caption
               text="Your profile: 0x797...31A9"
-              className="text-black my-5 text-left"
+              className="my-5 text-left text-black"
             ></Caption>
-            <SecondaryButton text={"Edit"} className="" />
+            <SecondaryButton text={'Edit'} className="" />
           </div>
           <div className="flex space-x-3">
             <PrimaryButton
-              icon={<FontAwesomeIcon icon={["fab", "twitter"]} />}
+              icon={<FontAwesomeIcon icon={['fab', 'twitter']} />}
               disabled={true}
-              text={"Add"}
-              className={"w-1/12 text-green"}
+              text={'Add'}
+              className={'w-1/12 text-green'}
             />
             <PrimaryButton
               icon={<FontAwesomeIcon icon="envelope" />}
               disabled={true}
-              text={"Add"}
-              className={"w-1/12"}
+              text={'Add'}
+              className={'w-1/12'}
             />
             <PrimaryButton
-              icon={<FontAwesomeIcon icon={["fab", "discord"]} />}
+              icon={<FontAwesomeIcon icon={['fab', 'discord']} />}
               disabled={true}
-              text={"Add"}
-              className={"w-1/12"}
+              text={'Add'}
+              className={'w-1/12'}
             />
           </div>
         </>
@@ -45,79 +45,79 @@ const CreatePlan: FC = () => {
 
       <Title text="Inheritance plan" className="pt-20 pb-10"></Title>
 
-      <Section className="bg-white shadow-2xl rounded-xl p-10">
+      <Section className="rounded-xl bg-white p-10 shadow-2xl">
         <>
-          <Section className="flex-col px-0 py-0 p-0 w-1/4 justify-center">
+          <Section className="w-1/4 flex-col justify-center p-0">
             <>
               <Caption
                 text="Days since inactivity"
-                className="text-black text-left "
+                className="text-left text-black "
               ></Caption>
               <Caption
                 text="0 Days"
-                className="text-black text-left text-2xl"
+                className="text-left text-2xl text-black"
               ></Caption>
               <Caption
                 text="Moonbase"
-                className="text-black text-left "
+                className="text-left text-black "
               ></Caption>
             </>
           </Section>
 
-          <Section className="flex-col w-2/4 justify-center">
+          <Section className="w-2/4 flex-col justify-center">
             <>
               <RangeSlider />
               <p>Last proof of life: Wed Jun 22, 12:43:23 GMT-0500</p>
             </>
           </Section>
 
-          <div className="flex w-1/4 justify-end items-center">
-            <SecondaryButton text={"Edit"} className="h-12 " />
+          <div className="flex w-1/4 items-center justify-end">
+            <SecondaryButton text={'Edit'} className="h-12 " />
             <PrimaryButton
               disabled={false}
-              text={"Verify life"}
-              className={"w-32 h-12 "}
+              text={'Verify life'}
+              className={'h-12 w-32 '}
             />
           </div>
         </>
       </Section>
 
-      <Section className="  space-x-20 justify-between mt-20 ">
+      <Section className="  mt-20 justify-between space-x-20 ">
         <>
-          <div className="card1 bg-white shadow-2xl rounded-xl p-10 w-2/4 flex flex-col">
-            <div className="flex mb-6">
+          <div className="flex w-2/4 flex-col rounded-xl bg-white p-10 shadow-2xl">
+            <div className="mb-6 flex">
               <label className="relative block w-3/4">
                 <span className="sr-only">Search</span>
                 <span className="absolute inset-y-0 left-0 flex items-center pl-6">
                   <FontAwesomeIcon icon="magnifying-glass" />
                 </span>
                 <input
-                  className="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-full py-2 pl-12 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
+                  className="block w-full rounded-full border bg-white py-2 pl-12 pr-3 shadow-sm placeholder:italic focus:outline-none focus:ring-1 sm:text-sm"
                   placeholder="Search pools or token address"
                   type="text"
                   name="search"
                 />
               </label>
-              <div className="text-green w-1/4 flex justify-end items-center cursor-pointer">
+              <div className="flex w-1/4 cursor-pointer items-center justify-end text-green">
                 <FontAwesomeIcon icon="sliders" />
               </div>
             </div>
 
-            <div className="flex justify-between mb-10">
+            <div className="mb-10 flex justify-between">
               <div className="flex flex-col justify-center">
                 <Caption
                   text="Assets on Peace"
                   className="text-black "
                 ></Caption>
-                <Caption text="$0" className="text-black text-2xl"></Caption>
+                <Caption text="$0" className="text-2xl text-black"></Caption>
               </div>
 
-              <div className="flex w-1/4 justify-end items-center">
-                <SecondaryButton text={"Edit"} className="h-12 " />
+              <div className="flex w-1/4 items-center justify-end">
+                <SecondaryButton text={'Edit'} className="h-12 " />
                 <PrimaryButton
                   disabled={false}
-                  text={"Add tokens"}
-                  className={"w-auto h-auto "}
+                  text={'Add tokens'}
+                  className={'h-auto w-auto '}
                 />
               </div>
             </div>
@@ -150,39 +150,39 @@ const CreatePlan: FC = () => {
             </table>
           </div>
 
-          <div className="card2 bg-white shadow-2xl rounded-xl p-10 w-2/4 flex flex-col ">
-            <div className="flex mb-6">
+          <div className="flex w-2/4 flex-col rounded-xl bg-white p-10 shadow-2xl ">
+            <div className="mb-6 flex">
               <label className="relative block w-3/4">
                 <span className="sr-only">Search</span>
                 <span className="absolute inset-y-0 left-0 flex items-center pl-6">
                   <FontAwesomeIcon icon="magnifying-glass" />
                 </span>
                 <input
-                  className="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-full py-2 pl-12 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
+                  className="block w-full rounded-full border bg-white py-2 pl-12 pr-3 shadow-sm placeholder:italic focus:outline-none focus:ring-1 sm:text-sm"
                   placeholder="Search pools or token address"
                   type="text"
                   name="search"
                 />
               </label>
-              <div className="text-green w-1/4 flex justify-end items-center cursor-pointer">
+              <div className="flex w-1/4 cursor-pointer items-center justify-end text-green">
                 <FontAwesomeIcon icon="sliders" />
               </div>
             </div>
-            <div className="flex justify-between mb-10">
+            <div className="mb-10 flex justify-between">
               <div className="flex flex-col justify-between">
                 <Caption
                   text="Assets on Peace"
                   className="text-black "
                 ></Caption>
-                <Caption text="$0" className="text-black text-2xl"></Caption>
+                <Caption text="$0" className="text-2xl text-black"></Caption>
               </div>
 
-              <div className="flex w-1/4 justify-end items-center">
-                <SecondaryButton text={"Edit"} className="h-12 " />
+              <div className="flex w-1/4 items-center justify-end">
+                <SecondaryButton text={'Edit'} className="h-12 " />
                 <PrimaryButton
                   disabled={false}
-                  text={"Add beneficiaries"}
-                  className={"w-auto h-auto "}
+                  text={'Add beneficiaries'}
+                  className={'h-auto w-auto '}
                 />
               </div>
             </div>

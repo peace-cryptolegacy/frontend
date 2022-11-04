@@ -26,11 +26,11 @@ export const changeNetwork = async (chainId: number) => {
     nativeCurrency: {
       name: chain.nativeCurrency.name,
       symbol: chain.nativeCurrency.symbol,
-      decimals: chain.nativeCurrency.decimals
-    }
+      decimals: chain.nativeCurrency.decimals,
+    },
   };
 
   const web3Wrapper = await getProvider();
 
   await web3Wrapper.send('wallet_addEthereumChain', [networkConfig]);
-}
+};

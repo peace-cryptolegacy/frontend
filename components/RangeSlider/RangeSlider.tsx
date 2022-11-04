@@ -1,12 +1,7 @@
-import Section from "components/Section/Section";
-import React, { useState } from "react";
-import { Range } from "react-range";
+import { useState } from 'react';
+import { Range } from 'react-range';
 
-interface Props {
-  className?: string;
-}
-
-const RangeSlider = ({ className }: Props) => {
+const RangeSlider = () => {
   const [values, setValues] = useState([59]);
 
   return (
@@ -22,7 +17,7 @@ const RangeSlider = ({ className }: Props) => {
         renderTrack={({ props, children }) => (
           <div
             {...props}
-            className="w-full h-3 pr-2 my-4 bg-purple-300 rounded-md"
+            className="my-4 h-3 w-full rounded-md bg-purple-300 pr-2"
           >
             {children}
           </div>
@@ -30,7 +25,7 @@ const RangeSlider = ({ className }: Props) => {
         renderThumb={({ props }) => (
           <div
             {...props}
-            className="w-5 h-5 transform translate-x-10 bg-purple-900 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className=" h-5 w-5 translate-x-10 rounded-full bg-purple-900 focus:outline-none focus:ring-2 focus:ring-offset-2"
           />
         )}
       />

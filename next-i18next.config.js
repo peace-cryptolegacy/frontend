@@ -4,6 +4,6 @@ module.exports = {
     locales: ['en'],
   },
   react: {
-    useSuspense: false
-  }
+    useSuspense: false,
+  },
 };

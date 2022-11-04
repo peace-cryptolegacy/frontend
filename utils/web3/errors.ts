@@ -5,6 +5,8 @@ export function handleError(error: Error): string | undefined {
   const message: string | undefined = get(error, 'error.data.message');
 
   if (code !== 4001) {
-    return message ? message.replace('execution reverted:', '').trim() : 'An unexpected error happened.';
+    return message
+      ? message.replace('execution reverted:', '').trim()
+      : 'An unexpected error happened.';
   }
 }

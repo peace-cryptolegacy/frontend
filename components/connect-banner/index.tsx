@@ -6,11 +6,13 @@ import styles from 'styles/ConnectBanner.module.scss';
 
 const ConnectBanner = () => {
   const address: string = useAppSelector(getAddress);
-  const isConnecting: boolean = useAppSelector(state => state.web3.isConnecting);
+  const isConnecting: boolean = useAppSelector(
+    (state) => state.web3.isConnecting
+  );
 
   const dispatch = useAppDispatch();
-  
-  function handleClick()  {
+
+  function handleClick() {
     connect(dispatch);
   }
 
@@ -20,7 +22,10 @@ const ConnectBanner = () => {
     <div className={styles.connectbanner}>
       <div className={styles['connectbanner__title']}>
         <span>Welcome to your</span>
-        <span className={styles['connectbanner__title--blue']}> cryptolegacy</span>
+        <span className={styles['connectbanner__title--blue']}>
+          {' '}
+          cryptolegacy
+        </span>
         <span>!</span>
       </div>
 
@@ -29,21 +34,21 @@ const ConnectBanner = () => {
       </div>
 
       <Button
-        background='#5F4DFF'
-        border-radius='5px'
-        color='#FFFFFF'
-        fontSize='14'
+        background="#5F4DFF"
+        border-radius="5px"
+        color="#FFFFFF"
+        fontSize="14"
         fontWeight={500}
-        height='48px'
+        height="48px"
         isLoading={isConnecting}
-        marginTop='20px'
+        marginTop="20px"
         onClick={handleClick}
-        width='420px'
+        width="420px"
       >
         Login via web3 wallet
       </Button>
     </div>
   );
-}
+};
 
 export default ConnectBanner;

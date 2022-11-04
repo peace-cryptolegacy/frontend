@@ -6,14 +6,16 @@ import styles from 'styles/ConnectStep.module.scss';
 
 type props = {
   onNextStep: Function;
-}
+};
 
 const ConnectStep = ({ onNextStep }: props) => {
-  const isConnecting: boolean = useAppSelector(state => state.web3.isConnecting);
+  const isConnecting: boolean = useAppSelector(
+    (state) => state.web3.isConnecting
+  );
 
   const dispatch = useAppDispatch();
-  
-  async function handleClick()  {
+
+  async function handleClick() {
     await connect(dispatch);
 
     onNextStep();
@@ -31,46 +33,41 @@ const ConnectStep = ({ onNextStep }: props) => {
         </span>
 
         <Box
-          alignItems='center'
-          as='button' 
-          backgroundColor='#FFFFFF'
-          border='1px solid #E2E8F0'
-          borderRadius={ 11 }
-          boxShadow='0px 5px 15px 5px rgba(0,0,0,0.05)'
-          display='flex'
-          flexDirection='row'
+          alignItems="center"
+          as="button"
+          backgroundColor="#FFFFFF"
+          border="1px solid #E2E8F0"
+          borderRadius={11}
+          boxShadow="0px 5px 15px 5px rgba(0,0,0,0.05)"
+          display="flex"
+          flexDirection="row"
           marginTop={1}
-          mr='20px'
-          padding='5px 20px'
+          mr="20px"
+          padding="5px 20px"
         >
-          <Image 
-            alt='AVAX Logo' 
-            height='35px' 
-            src='/logos/moonbeam.png' 
-            width='35px' 
+          <Image
+            alt="AVAX Logo"
+            height="35px"
+            src="/logos/moonbeam.png"
+            width="35px"
           />
-          <Box
-            fontSize='14px'
-            letterSpacing='0.25px'
-            marginLeft='18px'
-          >
+          <Box fontSize="14px" letterSpacing="0.25px" marginLeft="18px">
             Moonbase
           </Box>
         </Box>
       </div>
 
-
       <div className={styles['connectstep__divider']}></div>
 
       <div className={styles['connectstep__button__container']}>
-        <Button 
+        <Button
           backgroundColor="#5F4DFF"
           borderRadius={5}
-          color='#FFFFFF' 
+          color="#FFFFFF"
           fontSize={14}
           fontWeight={500}
-          height='48px'
-          isLoading={isConnecting} 
+          height="48px"
+          isLoading={isConnecting}
           onClick={handleClick}
           width={320}
         >
@@ -79,10 +76,12 @@ const ConnectStep = ({ onNextStep }: props) => {
       </div>
 
       <div className={styles['connectstep__disclaimer']}>
-        By connecting a wallet, you agree to Peace Labs Terms of Service and acknowledge that you have read and understand the Peace Protocol Disclaimer.
+        By connecting a wallet, you agree to Peace Labs Terms of Service and
+        acknowledge that you have read and understand the Peace Protocol
+        Disclaimer.
       </div>
     </div>
   );
-}
+};
 
 export default ConnectStep;

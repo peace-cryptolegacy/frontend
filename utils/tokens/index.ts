@@ -1,4 +1,4 @@
-const tokens: ITokens = require("utils/tokens/tokens.json");
+const tokens: ITokens = require('utils/tokens/tokens.json');
 
 export interface IToken {
   address: string;

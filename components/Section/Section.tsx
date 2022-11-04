@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface Props {
   className?: string;
@@ -6,7 +6,7 @@ interface Props {
 }
 
 const Section = ({ className, children }: Props) => {
-  return <div className={`flex  ${className || ""}`}>{children}</div>;
+  return <div className={`flex  ${className || ''}`}>{children}</div>;
 };
 
 export default Section;

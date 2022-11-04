@@ -23,7 +23,7 @@ const initialState: Web3State = {
   inheritor: undefined,
   isConnected: false,
   isConnecting: false,
-  testator: undefined
+  testator: undefined,
 };
 
 const web3Slice = createSlice({
@@ -33,49 +33,54 @@ const web3Slice = createSlice({
     setChainId(state: Web3State, action: PayloadAction<{ chainId: number }>) {
       return {
         ...state,
-        chainId: action.payload.chainId
+        chainId: action.payload.chainId,
       };
     },
-    setProvider(state: Web3State, action: PayloadAction<{ address: string, balance: BigNumber }>) {
+    setProvider(
+      state: Web3State,
+      action: PayloadAction<{ address: string; balance: BigNumber }>
+    ) {
       return {
         ...state,
         address: action.payload.address,
         balance: action.payload.balance,
-        isConnected: true
+        isConnected: true,
       };
     },
     setInheritor(state: Web3State, action: PayloadAction<any>) {
       return {
         ...state,
-        inheritor: action.payload
+        inheritor: action.payload,
       };
     },
     setTestator(state: Web3State, action: PayloadAction<any | undefined>) {
       return {
         ...state,
-        testator: action.payload
+        testator: action.payload,
       };
     },
     setIsConnecting(state: Web3State, action: PayloadAction<boolean>) {
       return {
         ...state,
-        isConnecting: action.payload
+        isConnecting: action.payload,
       };
-    }
-  }
-})
+    },
+  },
+});
 
 export const {
   setIsConnecting,
   setChainId,
   setInheritor,
   setProvider,
-  setTestator
+  setTestator,
 } = web3Slice.actions;
 
 export const getAddress = (state: RootState) => state.web3.address;
-export const getBalance = (state: RootState) => fromWei(state.web3.balance).toFixed(2);
-export const getChainInfo = (state: RootState): Chain | undefined => getChainById(state.web3.chainId);
+export const getBalance = (state: RootState) =>
+  fromWei(state.web3.balance).toFixed(2);
+export const getChainInfo = (state: RootState): Chain | undefined =>
+  getChainById(state.web3.chainId);
 export const getIsConnected = (state: RootState) => state.web3.isConnected;
 export const getInheritor = (state: RootState) => state.web3.inheritor;
 export const getTestator = (state: RootState) => state.web3.testator;

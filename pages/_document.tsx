@@ -1,4 +1,4 @@
-import { Head, Html, Main, NextScript } from "next/document";
+import { Head, Html, Main, NextScript } from 'next/document';
 
 export default function Document() {
   return (
@@ -17,18 +17,18 @@ export default function Document() {
       </Head>
       <body
         className={`${
-          process.env.NODE_ENV === "development" && "debug-screens"
+          process.env.NODE_ENV === 'development' && 'debug-screens'
         }`}
       >
         <div
           style={{
             background:
-              "linear-gradient(180deg, #F3ECFE 0%, rgba(243, 236, 254, 0) 100%)",
+              'linear-gradient(180deg, #F3ECFE 0%, rgba(243, 236, 254, 0) 100%)',
             height: 400,
             left: 0,
-            position: "absolute",
+            position: 'absolute',
             top: 0,
-            width: "100%",
+            width: '100%',
             zIndex: -1,
           }}
         ></div>

@@ -1,20 +1,11 @@
-// @ts-nocheck
-
-import {
-  BigNumber,
-  Contract,
-  ContractReceipt,
-  ContractTransaction,
-  providers,
-  utils,
-} from "ethers";
-import { getProvider } from "utils/web3/provider";
-import { handleError } from "utils/web3/errors";
-import get from "lodash/get";
-import TestamentFactory from "utils/web3/TestamentFactory.json";
+import { BigNumber, Contract, ContractTransaction, providers } from 'ethers';
+import get from 'lodash/get';
+import { handleError } from 'utils/web3/errors';
+import { getProvider } from 'utils/web3/provider';
+import TestamentFactory from 'utils/web3/TestamentFactory.json';
 
 const heritageContractAddress =
-  process.env.NEXT_PUBLIC_HERITAGE_CONTRACT_ADDRESS;
+  process.env.NEXT_PUBLIC_HERITAGE_CONTRACT_ADDRESS ?? '';
 
 export interface ITestator {
   inheritor: string;
@@ -24,10 +15,10 @@ export interface ITestator {
   maxDays: number;
 }
 
+// eslint-disable-next-line no-unused-vars
 type AddTestator = (inheritor: string, maxDays: number, token: string) => void;
+// eslint-disable-next-line no-unused-vars
 type GetTestator = (tpestator: string) => Promise<ITestator | undefined>;
-type Inherit = () => Promise<void>;
-type UpdateProof = () => Promise<void>;
 
 export const addTestator: AddTestator = async (inheritor, maxDays, token) => {
   try {
@@ -48,9 +39,9 @@ export const addTestator: AddTestator = async (inheritor, maxDays, token) => {
 
     await tx.wait();
   } catch (error) {
-    const message: string = get(error, "error.data.message", "");
+    const message: string = get(error, 'error.data.message', '');
 
-    throw message.replace("execution reverted:", "").trim();
+    throw message.replace('execution reverted:', '').trim();
   }
 };
 
@@ -128,12 +119,10 @@ export const getTestator: GetTestator = async (testator) => {
 // uint16 _maxDays
 
 export const writeTestament = async (_inheritors: any, _maxDays: any) => {
-  const provider: providers.Web3Provider = await getProvider();
-
   const claimer = _inheritors.find(({ isClaimant }) => isClaimant);
 
   const inheritors = _inheritors.map(
-    ({ address, distribution, isClaimant, name }) => {
+    ({ address, distribution, isClaimant }) => {
       // return {
       //   inheritorAddress: address,
       //   inheritedPercentage: BigNumber.from(distribution),
@@ -144,7 +133,7 @@ export const writeTestament = async (_inheritors: any, _maxDays: any) => {
     }
   );
 
-  return await _execute("writeTestament", [
+  return await _execute('writeTestament', [
     claimer.address,
     inheritors,
     BigNumber.from(_maxDays),

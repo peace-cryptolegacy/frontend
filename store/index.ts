@@ -5,20 +5,17 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActionPaths: [
-          'payload.balance',
-          'payload.proofOfTimestamp'
-        ],
+        ignoredActionPaths: ['payload.balance', 'payload.proofOfTimestamp'],
         ignoredPaths: [
           'web3.balance',
           'web3.inheritor.proofOfTimestamp',
-          'web3.testator.proofOfTimestamp'
-        ]
+          'web3.testator.proofOfTimestamp',
+        ],
       },
     }),
   reducer: {
-    web3: web3Reducer
-  }
+    web3: web3Reducer,
+  },
 });
 
 export type AppDispatch = typeof store.dispatch;

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 interface Props {
   icon?: JSX.Element;
   text: string;
@@ -17,8 +17,8 @@ const PrimaryButton = ({
   return (
     <button
       disabled={disabled}
-      className={`px-4 py-2 font-bold bg-purple-900 rounded-xl text-white capitalize disabled:opacity-25 ${
-        className || ""
+      className={`rounded-xl bg-purple-900 px-4 py-2 font-bold capitalize text-white disabled:opacity-25 ${
+        className || ''
       }`}
       onClick={onClick}
     >

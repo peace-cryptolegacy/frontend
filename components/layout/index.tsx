@@ -7,14 +7,12 @@ const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <div className={styles.layout}>
       <Navbar />
-      
-      <main className={styles['layout__body']}>
-        {children}
-      </main>
-      
+
+      <main className={styles['layout__body']}>{children}</main>
+
       <Footer />
     </div>
-  )
-}
+  );
+};
 
 export default Layout;
