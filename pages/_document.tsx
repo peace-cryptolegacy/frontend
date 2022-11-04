@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { Head, Html, Main, NextScript } from 'next/document';
 
 export default function Document() {
@@ -16,17 +17,14 @@ export default function Document() {
         />
       </Head>
       <body
-        className={`${
+        className={clsx(
           process.env.NODE_ENV === 'development' && 'debug-screens'
-        }`}
+        )}
+        style={{
+          background:
+            'linear-gradient(85.17deg, rgba(93, 181, 234, 0.15) 0%, rgba(95, 77, 255, 0.15) 56.39%, rgba(227, 23, 146, 0.15) 110.48%)',
+        }}
       >
-        <div
-          className="absolute h-full w-full"
-          style={{
-            background:
-              'linear-gradient(85.17deg, rgba(93, 181, 234, 0.15) 0%, rgba(95, 77, 255, 0.15) 56.39%, rgba(227, 23, 146, 0.15) 110.48%)',
-          }}
-        ></div>
         <Main />
         <NextScript />
       </body>
