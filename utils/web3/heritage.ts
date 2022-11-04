@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { BigNumber, Contract, ContractTransaction, providers } from 'ethers';
 import get from 'lodash/get';
 import { handleError } from 'utils/web3/errors';

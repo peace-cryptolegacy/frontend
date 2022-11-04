@@ -1,11 +1,12 @@
 import { Box, Button, ButtonProps, HStack } from '@chakra-ui/react';
-import ConnectWallet from 'components/connect-wallet';
-import { useTranslation } from 'next-i18next';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
+import ConnectWallet from 'components/connect-wallet';
+import Image from 'next/image';
 import styles from 'styles/Navbar.module.scss';
 
-type GetButtonProps = () => ButtonProps;
+// eslint-disable-next-line no-unused-vars
+type GetButtonProps = (token: string) => ButtonProps;
 
 const Navbar = () => {
   const { t } = useTranslation('common');
