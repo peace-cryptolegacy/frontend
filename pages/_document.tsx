@@ -21,15 +21,10 @@ export default function Document() {
         }`}
       >
         <div
+          className="absolute h-full w-full"
           style={{
             background:
-              'linear-gradient(180deg, #F3ECFE 0%, rgba(243, 236, 254, 0) 100%)',
-            height: 400,
-            left: 0,
-            position: 'absolute',
-            top: 0,
-            width: '100%',
-            zIndex: -1,
+              'linear-gradient(85.17deg, rgba(93, 181, 234, 0.15) 0%, rgba(95, 77, 255, 0.15) 56.39%, rgba(227, 23, 146, 0.15) 110.48%)',
           }}
         ></div>
         <Main />
