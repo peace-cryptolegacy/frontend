@@ -23,6 +23,7 @@
     "@openzeppelin/contracts": "^4.6.0",
     "@reduxjs/toolkit": "^1.8.2",
     "classnames": "^2.3.1",
+    "clsx": "^1.2.1",
     "date-fns": "^2.28.0",
     "eslint-plugin-tailwindcss": "^3.6.2",
     "ethers": "^5.6.8",
