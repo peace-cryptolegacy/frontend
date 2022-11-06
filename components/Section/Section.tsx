@@ -2,11 +2,19 @@ import React from 'react';
 
 interface Props {
   className?: string;
-  children: JSX.Element;
+  children: React.ReactNode;
+  props?: React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  >;
 }
 
-const Section = ({ className, children }: Props) => {
-  return <div className={`flex  ${className || ''}`}>{children}</div>;
+const Section = ({ className, children, props }: Props) => {
+  return (
+    <div {...props} className={`flex  ${className || ''}`}>
+      {children}
+    </div>
+  );
 };
 
 export default Section;

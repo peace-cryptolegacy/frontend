@@ -13,9 +13,11 @@ function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <ConnectBanner />
+      <main>
+        <ConnectBanner />
 
-      <CreatePlan />
+        <CreatePlan />
+      </main>
     </div>
   );
 }

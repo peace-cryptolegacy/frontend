@@ -1,17 +1,21 @@
-import { ReactNode } from 'react';
 import Footer from 'components/footer';
+import Menu from 'components/menu/menu';
 import Navbar from 'components/navbar';
-import styles from 'styles/Layout.module.scss';
+import Section from 'components/Section/Section';
+import { ReactNode } from 'react';
 
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className={styles.layout}>
-      <Navbar />
-
-      <main className={styles['layout__body']}>{children}</main>
-
-      <Footer />
-    </div>
+    <>
+      <Section className="overflow-x-hidden">
+        <Menu />
+        <div className="mx-auto px-24">
+          <Navbar />
+          {children}
+          <Footer />
+        </div>
+      </Section>
+    </>
   );
 };
 

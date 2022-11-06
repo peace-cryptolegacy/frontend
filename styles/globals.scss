@@ -5,7 +5,7 @@
 html,
 body {
   padding: 0;
-  margin: 0;
+  margin: 0 auto;
 }
 
 a {
@@ -16,10 +16,13 @@ a {
 * {
   box-sizing: border-box;
   color: #1d2b4f;
-  font-size: 14px;
   letter-spacing: 0.25px;
 }
 
 .block {
   display: block;
+}
+
+.h4 {
+  @apply text-base font-medium capitalize;
 }
