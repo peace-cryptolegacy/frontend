@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx}',
@@ -12,22 +14,27 @@ module.exports = {
       xl: '1280px',
       '2xl': '1536px',
     },
-    colors: {
-      black: '#000',
-      white: '#fff',
-      green: '#61F2E2',
-      purple: {
-        100: '#EBDEFF',
-        300: '#F3ECFE',
-        900: '#5F4DFF',
-      },
-      transparent: 'transparent',
-    },
+
+    // This is overridden by the chakra theme
     fontFamily: {
-      sans: ['Graphik', 'sans-serif'],
-      serif: ['Merriweather', 'serif'],
+      sans: ["'Readex Pro'", ...defaultTheme.fontFamily.sans],
     },
-    extend: {},
+    extend: {
+      colors: {
+        black: '#000',
+        white: '#fff',
+        green: '#61F2E2',
+        purple: {
+          100: '#EBDEFF',
+          300: '#F3ECFE',
+          900: '#5F4DFF',
+        },
+        transparent: 'transparent',
+      },
+    },
+    backgroundImage: {
+      logo: 'linear-gradient(172.89deg, #5DB5EA 4.39%, #5F4DFF 51.8%, #E31792 97.28%)',
+    },
   },
   plugins: [
     require('tailwindcss-debug-screens'),

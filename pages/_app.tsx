@@ -1,23 +1,22 @@
-import '../styles/globals.scss';
-import { AppProps } from 'next/app';
-import { appWithTranslation } from 'next-i18next';
-import { ChakraProvider } from '@chakra-ui/react';
-import { extendTheme } from '@chakra-ui/react';
-import { Provider } from 'react-redux';
-import { providers } from 'ethers';
-import { setChainId } from 'store/reducers/web3';
-import { store } from 'store';
-import { useEffect } from 'react';
-import Layout from 'components/layout';
-// why import with require? https://github.com/FortAwesome/Font-Awesome/issues/19348
-// import { library } from "@fortawesome/fontawesome-svg-core";
-const { library } = require('@fortawesome/fontawesome-svg-core');
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import {
   faEnvelope,
   faMagnifyingGlass,
   faSliders,
 } from '@fortawesome/free-solid-svg-icons';
+import Layout from 'components/layout';
+import { providers } from 'ethers';
+import { appWithTranslation } from 'next-i18next';
+import { AppProps } from 'next/app';
+import { useEffect } from 'react';
+import { Provider } from 'react-redux';
+import { store } from 'store';
+import { setChainId } from 'store/reducers/web3';
+import '../styles/globals.scss';
+// why import with require? https://github.com/FortAwesome/Font-Awesome/issues/19348
+// import { library } from "@fortawesome/fontawesome-svg-core";
+const { library } = require('@fortawesome/fontawesome-svg-core');
 
 const theme = extendTheme({
   components: {

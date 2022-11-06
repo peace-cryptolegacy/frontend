@@ -1,8 +1,8 @@
 import { Box, Button, ButtonProps, HStack } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
 import ConnectWallet from 'components/connect-wallet';
+import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import styles from 'styles/Navbar.module.scss';
 
 // eslint-disable-next-line no-unused-vars
@@ -24,7 +24,12 @@ const Navbar = () => {
 
   return (
     <div className={styles.navbar}>
-      <Image src="/logo.png" alt="Peace Logo" width="144px" height="48px" />
+      <Image
+        src="/logos/logo.png"
+        alt="Peace Logo"
+        width="156px"
+        height="42px"
+      />
 
       <HStack className={styles['navbar__button__container']}>
         <Button {...getButtonProps('/')}>{t('navbar.inheritance')}</Button>
