@@ -1,6 +1,6 @@
 import Footer from 'components/footer';
 import Menu from 'components/menu/menu';
-import Navbar from 'components/navbar';
+import Navbar from 'components/navbar/Navbar';
 import Section from 'components/Section/Section';
 import { ReactNode } from 'react';
 
@@ -9,7 +9,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
     <>
       <Section className="overflow-x-hidden">
         <Menu />
-        <div className="mx-auto px-24">
+        <div className="mx-auto w-full px-24">
           <Navbar />
           {children}
           <Footer />
