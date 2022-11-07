@@ -15,7 +15,7 @@ a {
 
 * {
   box-sizing: border-box;
-  color: #1d2b4f;
+  color: #0f172a;
   letter-spacing: 0.25px;
 }
 
@@ -24,5 +24,19 @@ a {
 }
 
 .h4 {
-  @apply text-base font-medium capitalize;
+  @apply text-base font-medium capitalize text-darkBlue;
+}
+
+.h2 {
+  @apply text-3xl font-medium capitalize text-darkBlue;
+}
+
+.text-gradient {
+  @apply bg-mainHorizontal bg-clip-text text-transparent;
+}
+
+@layer {
+  p {
+    @apply text-blueGray #{!important};
+  }
 }

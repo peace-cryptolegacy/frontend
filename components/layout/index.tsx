@@ -9,10 +9,12 @@ const Layout = ({ children }: { children: ReactNode }) => {
     <>
       <Section className="overflow-x-hidden">
         <Menu />
-        <div className="mx-auto w-full px-24">
-          <Navbar />
-          {children}
-          <Footer />
+        <div className="flex w-full justify-center px-24">
+          <div>
+            <Navbar />
+            {children}
+            <Footer />
+          </div>
         </div>
       </Section>
     </>

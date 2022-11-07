@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import HorizontalRule from 'components/horizontal-line/HorizontalRule';
+import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
 import List from 'components/list/List';
 import ListItem from 'components/list/ListItem';
 import ListItemIcon from 'components/list/ListItemIcon';
@@ -59,7 +59,7 @@ const Menu: FC = () => {
                 <div
                   className={clsx(
                     router.route !== route && 'hidden',
-                    'absolute right-0 h-8 w-[5px] rounded-l-xl bg-logo'
+                    'absolute right-0 h-8 w-[5px] rounded-l-xl bg-mainVertical'
                   )}
                 ></div>
               </ListItem>
