@@ -8,14 +8,16 @@ const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <>
       <Section className="overflow-x-hidden">
-        <Menu />
-        <div className="flex w-full justify-center px-24">
-          <div>
-            <Navbar />
-            {children}
-            <Footer />
+        <>
+          <Menu />
+          <div className="layout__cotainer flex w-full justify-center px-24">
+            <div>
+              <Navbar />
+              {children}
+              <Footer />
+            </div>
           </div>
-        </div>
+        </>
       </Section>
     </>
   );
