@@ -9,39 +9,37 @@ import { FC } from 'react';
 
 const CreatePlan: FC = () => {
   return (
-    <div className="px-20 py-10">
-      <Section className="flex-col">
-        <>
-          <Title text="Welcome to your cryptolegacy!"></Title>
-          <div className="flex">
-            <Caption
-              text="Your profile: 0x797...31A9"
-              className="my-5 text-left text-black"
-            ></Caption>
-            <SecondaryButton text={'Edit'} className="" />
-          </div>
-          <div className="flex space-x-3">
-            <PrimaryButton
-              icon={<FontAwesomeIcon icon={['fab', 'twitter']} />}
-              disabled={true}
-              text={'Add'}
-              className={'w-1/12 text-green'}
-            />
-            <PrimaryButton
-              icon={<FontAwesomeIcon icon="envelope" />}
-              disabled={true}
-              text={'Add'}
-              className={'w-1/12'}
-            />
-            <PrimaryButton
-              icon={<FontAwesomeIcon icon={['fab', 'discord']} />}
-              disabled={true}
-              text={'Add'}
-              className={'w-1/12'}
-            />
-          </div>
-        </>
-      </Section>
+    <Section className="flex-col justify-end py-10">
+      <section className="flex flex-col">
+        <Title text="Welcome to your cryptolegacy!"></Title>
+        <div className="flex">
+          <Caption
+            text="Your profile: 0x797...31A9"
+            className="my-5 text-left text-black"
+          ></Caption>
+          <SecondaryButton text={'Edit'} className="" />
+        </div>
+        <div className="flex space-x-3">
+          <PrimaryButton
+            icon={<FontAwesomeIcon icon={['fab', 'twitter']} />}
+            disabled={true}
+            text={'Add'}
+            className={'w-1/12 text-green'}
+          />
+          <PrimaryButton
+            icon={<FontAwesomeIcon icon="envelope" />}
+            disabled={true}
+            text={'Add'}
+            className={'w-1/12'}
+          />
+          <PrimaryButton
+            icon={<FontAwesomeIcon icon={['fab', 'discord']} />}
+            disabled={true}
+            text={'Add'}
+            className={'w-1/12'}
+          />
+        </div>
+      </section>
 
       <Title text="Inheritance plan" className="pt-20 pb-10"></Title>
 
@@ -216,7 +214,7 @@ const CreatePlan: FC = () => {
           </div>
         </>
       </Section>
-    </div>
+    </Section>
   );
 };
 

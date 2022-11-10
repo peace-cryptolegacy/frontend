@@ -1,3 +1,4 @@
+/* eslint-disable tailwindcss/no-custom-classname */
 import Footer from 'components/footer';
 import Menu from 'components/menu/menu';
 import Navbar from 'components/navbar/Navbar';
@@ -10,12 +11,12 @@ const Layout = ({ children }: { children: ReactNode }) => {
       <Section className="overflow-x-hidden">
         <>
           <Menu />
-          <div className="layout__cotainer flex w-full justify-center px-24">
-            <div>
+          <div className="layout__container flex h-full w-full flex-col px-96">
+            <>
               <Navbar />
               {children}
               <Footer />
-            </div>
+            </>
           </div>
         </>
       </Section>

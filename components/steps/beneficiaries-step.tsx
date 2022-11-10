@@ -12,19 +12,27 @@ import { isAddress } from 'ethers/lib/utils';
 import { BaseSyntheticEvent, useState } from 'react';
 import styles from 'styles/BeneficiariesStep.module.scss';
 
-type props = {
+interface Props {
+  stepperClassName?: string;
+  renderStepper: Function;
   onNextStep: Function;
   onPrevStep: Function;
-};
+}
 
 type Beneficiary = {
+  stepperClassname?: string;
   name?: string;
   address: string;
   isClaimant?: boolean;
   distribution: number;
 };
 
-const BeneficiariesStep = ({ onNextStep, onPrevStep }: props) => {
+const BeneficiariesStep = ({
+  stepperClassName,
+  renderStepper,
+  onNextStep,
+  onPrevStep,
+}: Props) => {
   const defaultBeneficiary = {
     name: '',
     address: '',
@@ -170,8 +178,9 @@ const BeneficiariesStep = ({ onNextStep, onPrevStep }: props) => {
   }
 
   return (
-    <div className={styles['beneficiariesstep']}>
-      <Box className={styles['beneficiariesstep__disclaimer']}>
+    <div className={`${stepperClassName || ''}`}>
+      {renderStepper()}
+      <Box className="py-6">
         <div>
           Your inheritance plan will have one or more beneficiaries, you can
           select which of them could activate the protocol after inactivity time
