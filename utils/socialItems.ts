@@ -2,22 +2,22 @@ const socialItems = {
   Linkedin: {
     name: 'Linkedin',
     icon: '/logos/linkedin.png',
-    alt: 'Linkedin',
+    alt: 'linkedin',
   },
   Twitter: {
     name: 'Twitter',
     icon: '/logos/twitter.png',
-    alt: 'Twitter',
+    alt: 'twitter',
   },
   Medium: {
     name: 'Medium',
     icon: '/logos/medium.png',
-    alt: 'Medium',
+    alt: 'medium',
   },
   Telegram: {
     name: 'Telegram',
     icon: '/logos/telegram.png',
-    alt: 'Telegram',
+    alt: 'telegram',
   },
 };
 

@@ -44,5 +44,6 @@ module.exports = {
   plugins: [
     require('tailwindcss-debug-screens'),
     require('prettier-plugin-tailwindcss'),
+    require('@tailwindcss/forms'),
   ],
 };

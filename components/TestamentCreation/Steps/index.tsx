@@ -2,10 +2,9 @@
 
 import { writeTestament } from 'utils/web3/heritage';
 import { useState } from 'react';
-import BeneficiariesStep from 'components/steps/beneficiaries-step';
+import BeneficiariesStep from 'components/TestamentCreation/Steps/beneficiaries-step';
 import PlanSelection from 'components/TestamentCreation/Steps/PlanSelection';
-import ReviewStep from 'components/steps/review-step';
-import styles from 'styles/Steps.module.scss';
+import ReviewStep from 'components/TestamentCreation/Steps/review-step';
 import Stepper from 'components/Stepper/Stepper';
 import Title from 'components/Title/Title';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
@@ -27,7 +26,7 @@ const CreatePlan = () => {
     {
       content: (
         <PlanSelection
-          stepperClassName="w-full rounded-xl bg-white px-32 py-9 drop-shadow-lg"
+          stepperClassName=""
           renderStepper={() => renderStepper()}
           onNextStep={() => setActiveStep(1)}
         />
@@ -38,7 +37,7 @@ const CreatePlan = () => {
     {
       content: (
         <BeneficiariesStep
-          stepperClassName="w-full rounded-xl bg-white px-32 py-9 drop-shadow-lg"
+          stepperClassName=""
           renderStepper={() => renderStepper()}
           onPrevStep={() => setActiveStep(0)}
           onNextStep={(beneficiaries: any, expiration: any) => {
@@ -56,7 +55,7 @@ const CreatePlan = () => {
     {
       content: (
         <ReviewStep
-          stepperClassName="w-full rounded-xl bg-white px-32 py-9 drop-shadow-lg"
+          stepperClassName=""
           renderStepper={() => renderStepper()}
           beneficiaries={beneficiaries}
           onPrevStep={() => setActiveStep(1)}
@@ -88,7 +87,9 @@ const CreatePlan = () => {
   return (
     <div className="mb-24">
       {renderTitle()}
-      <div className={styles['steps']}>{steps.map(renderStep)}</div>
+      <div className="w-full rounded-xl bg-white px-32 py-9 drop-shadow-lg">
+        {steps.map(renderStep)}
+      </div>
     </div>
   );
 };

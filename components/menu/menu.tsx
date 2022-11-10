@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
 import List from 'components/list/List';
@@ -18,13 +19,16 @@ const Menu: FC = () => {
   return (
     <menu className="fixed top-0 z-10 flex  h-screen min-w-[250px] flex-col items-center rounded-r-3xl bg-white">
       <div className="flex py-10">
-        <Image
-          src={logo}
-          alt="Peace Logo"
-          width={156}
-          height={42}
-          objectFit="contain"
-        />
+        <Link href="/">
+          <Image
+            src={logo}
+            alt="Peace Logo"
+            width={156}
+            height={42}
+            objectFit="contain"
+            className="cursor-pointer"
+          />
+        </Link>
       </div>
       <div className="mb-20 w-full px-8">
         <HorizontalRule />
@@ -72,8 +76,8 @@ const Menu: FC = () => {
         <HorizontalRule />
       </div>
       <Section className="my-7 w-full justify-evenly">
-        {Object.entries(socialItems).map(([key, { icon, alt }]) => (
-          <Image src={icon} alt={alt} width={18} height={18} key={key} />
+        {Object.entries(socialItems).map(([key, { alt }]) => (
+          <FontAwesomeIcon key={key} icon={['fab', alt]} size="lg" />
         ))}
       </Section>
     </menu>
