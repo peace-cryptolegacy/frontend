@@ -2,14 +2,14 @@
 
 import { writeTestament } from 'utils/web3/heritage';
 import { useState } from 'react';
-import BeneficiariesStep from 'components/TestamentCreation/Steps/beneficiaries-step';
+import PlanCustomization from 'components/TestamentCreation/Steps/PlanCustomization';
 import PlanSelection from 'components/TestamentCreation/Steps/PlanSelection';
-import ReviewStep from 'components/TestamentCreation/Steps/review-step';
+import PlanReview from 'components/TestamentCreation/Steps/PlanReview';
 import Stepper from 'components/Stepper/Stepper';
 import Title from 'components/Title/Title';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
 
-const CreatePlan = () => {
+const Steps = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
   const [beneficiaries, setBeneficiares] = useState({});
   const stepsLabel = ['Select Plan', 'Customize Plan', 'Review Plan'];
@@ -36,7 +36,7 @@ const CreatePlan = () => {
     },
     {
       content: (
-        <BeneficiariesStep
+        <PlanCustomization
           stepperClassName=""
           renderStepper={() => renderStepper()}
           onPrevStep={() => setActiveStep(0)}
@@ -54,7 +54,7 @@ const CreatePlan = () => {
     },
     {
       content: (
-        <ReviewStep
+        <PlanReview
           stepperClassName=""
           renderStepper={() => renderStepper()}
           beneficiaries={beneficiaries}
@@ -85,13 +85,13 @@ const CreatePlan = () => {
   }
 
   return (
-    <div className="mb-24">
+    <div className="mb-12">
       {renderTitle()}
-      <div className="w-full rounded-xl bg-white px-32 py-9 drop-shadow-lg">
+      <div className="w-fit rounded-xl bg-white px-32 py-9 drop-shadow-lg">
         {steps.map(renderStep)}
       </div>
     </div>
   );
 };
 
-export default CreatePlan;
+export default Steps;

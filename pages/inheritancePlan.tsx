@@ -19,7 +19,7 @@ const CreatePlan: FC = () => {
           ></Caption>
           <SecondaryButton text={'Edit'} className="" />
         </div>
-        <div className="flex space-x-3">
+        <div className="flex w-screen space-x-3">
           <PrimaryButton
             icon={<FontAwesomeIcon icon={['fab', 'twitter']} />}
             disabled={true}

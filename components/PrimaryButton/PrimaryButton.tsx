@@ -17,7 +17,7 @@ const PrimaryButton = ({
   return (
     <button
       disabled={disabled}
-      className={`rounded-xl bg-purple-900 px-4 py-2 font-bold capitalize text-white disabled:opacity-25 ${
+      className={`rounded-xl bg-purple-900 py-4 font-bold capitalize text-white disabled:opacity-25 ${
         className || ''
       }`}
       onClick={onClick}

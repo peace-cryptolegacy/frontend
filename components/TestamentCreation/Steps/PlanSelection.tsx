@@ -49,13 +49,13 @@ const Protection = ({ stepperClassName, renderStepper, onNextStep }: Props) => {
         <span className="mb-11 inline-block">
           Select the protection for your Assets
         </span>
-        <List className="grid grid-cols-2 gap-x-14 gap-y-12">
+        <List className="grid grid-cols-1 gap-x-14 gap-y-12 2xl:grid-cols-2">
           {menuItems[0].subMenu?.map(
             ({ icon, title, description, alt, route, comingSoon }) => {
               return (
                 <React.Fragment key={title}>
                   <ListItem
-                    gradientBorder={selectedSubItem?.title === title}
+                    isSelected={selectedSubItem?.title === title}
                     classNameInnerDiv="!gap-2 !px-4"
                     onClick={() => setSelectedSubItem({ title, route })}
                     className={clsx(
@@ -94,7 +94,7 @@ const Protection = ({ stepperClassName, renderStepper, onNextStep }: Props) => {
             }
           ) ?? ''}
         </List>
-        <div className="mt-12 flex w-full justify-end">
+        <div className="mt-12 flex w-full justify-center">
           <PrimaryButton
             text={'Continue'}
             className={'!py-4 !px-14'}

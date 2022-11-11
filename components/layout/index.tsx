@@ -11,7 +11,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
       <Section className="overflow-x-hidden">
         <>
           <Menu />
-          <div className="layout__container flex h-full w-full flex-col px-96">
+          <div className="layout__container flex h-full w-full max-w-fit flex-col pl-96 pr-24">
             <>
               <Navbar />
               {children}

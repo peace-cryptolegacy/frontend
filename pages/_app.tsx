@@ -4,6 +4,8 @@ import {
   faEnvelope,
   faMagnifyingGlass,
   faSliders,
+  faXmark,
+  faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import Layout from 'components/layout';
 import { providers } from 'ethers';
@@ -32,7 +34,7 @@ const theme = extendTheme({
   },
 });
 
-library.add(fab, faEnvelope, faMagnifyingGlass, faSliders);
+library.add(fab, faEnvelope, faMagnifyingGlass, faSliders, faXmark, faTrash);
 
 function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
