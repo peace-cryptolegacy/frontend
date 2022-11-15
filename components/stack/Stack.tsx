@@ -14,7 +14,7 @@ const Stack = ({ children, direction, justifyItems, className }: Props) => {
         'flex gap-4',
         direction === 'row'
           ? justifyItems
-            ? 'flex-row' + ' justify-items-' + justifyItems
+            ? 'flex-row' + ' items-' + justifyItems
             : 'flex-row items-center'
           : 'flex-col',
         className
