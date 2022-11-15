@@ -24,7 +24,7 @@ type Beneficiary = {
 const PlanCustomization = ({
   stepperClassName,
   renderStepper,
-  // onNextStep,
+  onNextStep,
   onPrevStep,
 }: Props) => {
   const defaultBeneficiary = {
@@ -36,12 +36,12 @@ const PlanCustomization = ({
   const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([
     defaultBeneficiary,
   ]);
-  // const [expiration, setExpiration] = useState<number>(7);
+  const [expiration, setExpiration] = useState<number>(7);
   const [errors, setErrors] = useState<boolean[]>([false]);
 
-  // function handleExpirationChange(event: any) {
-  //   setExpiration(Number(event.target.value));
-  // }
+  function handleExpirationChange(event: any) {
+    setExpiration(Number(event.target.value));
+  }
 
   function handleAddBeneficiary() {
     setBeneficiaries([...beneficiaries, defaultBeneficiary]);
@@ -80,7 +80,7 @@ const PlanCustomization = ({
   // }
 
   async function handleContinueClick() {
-    // onNextStep(beneficiaries, expiration);
+    onNextStep(beneficiaries, expiration);
   }
 
   function handleCloseIconClick(index: number) {
@@ -184,7 +184,10 @@ const PlanCustomization = ({
           className="my-3 text-left text-black"
         ></Caption>
         <div className="flex justify-between">
-          <select className="form-select w-2/6 rounded px-4 py-3">
+          <select
+            className="form-select w-2/6 rounded px-4 py-3"
+            onChange={handleExpirationChange}
+          >
             <option value={7}>7 days</option>
             <option value={30}>30 days</option>
             <option value={60}>60 days</option>

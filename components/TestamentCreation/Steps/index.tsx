@@ -8,16 +8,34 @@ import PlanReview from 'components/TestamentCreation/Steps/PlanReview';
 import Stepper from 'components/Stepper/Stepper';
 import Title from 'components/Title/Title';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
+import { useLocalStorage } from 'utils/hooks/useLocalStorage';
+import { initialValue } from 'mock/index';
+
+// interface UserData {
+//   activeStep: string;
+//   beneficiaries?: [];
+// }
 
 const Steps = () => {
-  const [activeStep, setActiveStep] = useState<number>(0);
+  // const [activeStep, setUserData] = useState<number>(0);
   const [beneficiaries, setBeneficiares] = useState({});
   const stepsLabel = ['Select Plan', 'Customize Plan', 'Review Plan'];
+  console.log('first');
+  // const [activeStep, setUserData] = useLocalStorage('activeStep', 0);
+  const { item: userData, saveItem: setUserData } = useLocalStorage(
+    'USER_DATA',
+    initialValue
+  );
+  console.log('second : ', userData.activeStep);
 
   const renderStepper = () => {
     return (
       <>
-        <Stepper steps={stepsLabel} className="mb-7" activeStep={activeStep} />
+        <Stepper
+          steps={stepsLabel}
+          className="mb-7"
+          activeStep={userData.activeStep}
+        />
         <HorizontalRule />
       </>
     );
@@ -28,9 +46,9 @@ const Steps = () => {
         <PlanSelection
           stepperClassName=""
           renderStepper={() => renderStepper()}
-          onNextStep={() => setActiveStep(1)}
+          onNextStep={() => setUserData({ ...userData, activeStep: 1 })}
         />
-      ), // <ConnectStep onNextStep={() => setActiveStep(1)} />
+      ), // <ConnectStep onNextStep={() => setUserData(1)} />
       key: 'step-connect',
       title: 'Time To Protect Our Wealth ✌️',
     },
@@ -39,9 +57,9 @@ const Steps = () => {
         <PlanCustomization
           stepperClassName=""
           renderStepper={() => renderStepper()}
-          onPrevStep={() => setActiveStep(0)}
+          onPrevStep={() => setUserData({ ...userData, activeStep: 0 })}
           onNextStep={(beneficiaries: any, expiration: any) => {
-            setActiveStep(2);
+            setUserData({ ...userData, activeStep: 2 });
             setBeneficiares({
               beneficiaries,
               expiration,
@@ -58,7 +76,7 @@ const Steps = () => {
           stepperClassName=""
           renderStepper={() => renderStepper()}
           beneficiaries={beneficiaries}
-          onPrevStep={() => setActiveStep(1)}
+          onPrevStep={() => setUserData({ ...userData, activeStep: 1 })}
           onNextStep={() => handleDeploy()}
         />
       ),
@@ -74,21 +92,33 @@ const Steps = () => {
   }
 
   function renderTitle() {
-    return <Title text={steps[activeStep].title}></Title>;
+    return (
+      <>
+        <Title text={steps && steps[userData.activeStep].title}></Title>
+      </>
+    );
   }
 
-  function renderStep(
-    { content }: { content: any; key: string; title: string },
-    index: number
-  ) {
-    return <>{index === activeStep ? content : null}</>;
+  function renderStep() {
+    return steps[userData.activeStep].content;
   }
+
+  // function renderStep(
+  //   { content }: { content: any; key: string; title: string },
+  //   index: number
+  // ) {
+  //   // setUserData(activeStep);
+  //   return (
+  //     <div key={index}>{index === userData.activeStep ? content : <></>}</div>
+  //   );
+  // }
 
   return (
     <div className="mb-12">
       {renderTitle()}
       <div className="w-fit rounded-xl bg-white px-32 py-9 drop-shadow-lg">
-        {steps.map(renderStep)}
+        {renderStep(steps)}
+        {/* {steps.map(renderStep)} */}
       </div>
     </div>
   );

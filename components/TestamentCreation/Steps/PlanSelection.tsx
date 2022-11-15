@@ -10,6 +10,8 @@ import Image from 'next/image';
 // import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import menuItems from 'utils/menuItems';
+import { initialValue } from 'mock/index';
+import { useLocalStorage } from 'utils/hooks/useLocalStorage';
 
 interface Props {
   stepperClassName?: string;
@@ -18,6 +20,11 @@ interface Props {
 }
 
 const Protection = ({ stepperClassName, renderStepper, onNextStep }: Props) => {
+  const { item: userData, saveItem: setUserData } = useLocalStorage(
+    'USER_DATA',
+    initialValue
+  );
+
   // const router = useRouter();
   const [selectedSubItem, setSelectedSubItem] = useState<{
     title: string;
@@ -57,7 +64,10 @@ const Protection = ({ stepperClassName, renderStepper, onNextStep }: Props) => {
                   <ListItem
                     isSelected={selectedSubItem?.title === title}
                     classNameInnerDiv="!gap-2 !px-4"
-                    onClick={() => setSelectedSubItem({ title, route })}
+                    onClick={() => {
+                      setUserData({ ...userData, planSelected: title });
+                      setSelectedSubItem({ title, route });
+                    }}
                     className={clsx(
                       selectedSubItem?.title !== title &&
                         '!gap-2 rounded-3xl border-2 border-gray-200 px-5 py-3',
