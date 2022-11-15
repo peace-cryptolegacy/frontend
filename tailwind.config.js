@@ -30,8 +30,11 @@ module.exports = {
           900: '#5F4DFF',
         },
         transparent: 'transparent',
-        darkBlue: '#0f172a',
-        blueGray: '#475569',
+        blue: {
+          dark: '#0f172a',
+          gray: '#475569',
+          'gray-light': '#64748B',
+        },
       },
     },
     backgroundImage: {
@@ -44,5 +47,9 @@ module.exports = {
   plugins: [
     require('tailwindcss-debug-screens'),
     require('prettier-plugin-tailwindcss'),
+    function ({ addVariant }) {
+      addVariant('child', '& > *');
+      addVariant('child-hover', '& > *:hover');
+    },
   ],
 };
