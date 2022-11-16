@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint --fix ./",
     "format": "prettier --write ./",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "pre-commit": "npx lint-staged && npx tsc --noEmit --pretty"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.2",
