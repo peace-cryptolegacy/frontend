@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import web3Reducer from 'store/reducers/web3';
+import testamentInfoReducer from 'store/reducers/testamentInfo';
 
 export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
@@ -15,6 +16,7 @@ export const store = configureStore({
     }),
   reducer: {
     web3: web3Reducer,
+    testamentInfo: testamentInfoReducer,
   },
 });
 

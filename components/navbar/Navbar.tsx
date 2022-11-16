@@ -6,7 +6,7 @@ import { FC } from 'react';
 
 const Navbar: FC = () => {
   return (
-    <Section className="mb-32 mt-6">
+    <Section className="mt-6 mb-12">
       <div className="min-w-[440px]">
         <TextField
           startAdornment={

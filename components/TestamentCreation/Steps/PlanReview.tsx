@@ -1,4 +1,6 @@
 import { Box, Button } from '@chakra-ui/react';
+import Caption from 'components/Caption/Caption';
+import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
 import styles from 'styles/BeneficiariesStep.module.scss';
 
 interface Props {
@@ -9,7 +11,7 @@ interface Props {
   onPrevStep: Function;
 }
 
-const ReviewStep = ({
+const PlanReview = ({
   stepperClassName,
   renderStepper,
   beneficiaries,
@@ -35,17 +37,19 @@ const ReviewStep = ({
   return (
     <div className={`${stepperClassName || ''}`}>
       {renderStepper()}
-      <Box className="py-6">
-        <div>
-          You’re about to create a new Testament on Moonbase and will have to
-          confirm a transaction with your currently connected wallet.
-        </div>
-        <br />
-        <div>
-          After you create this Testament, you will need to approve which tokens
-          you would like to distribute after the following conditions you set:
-        </div>
-      </Box>
+
+      <div className="flex flex-col py-2">
+        <Caption
+          text="You’re about to create a new Testament on Moonbase and will have to
+          confirm a transaction with your currently connected wallet."
+          className="my-2 text-left text-black"
+        ></Caption>
+        <Caption
+          text="After you create this Testament, you will need to approve which tokens
+          you would like to distribute after the following conditions you set:"
+          className="my-2 text-left text-black"
+        ></Caption>
+      </div>
 
       <div className={styles['beneficiariesstep__divider']}></div>
       <Box color="#000000" marginBottom={5}>
@@ -100,7 +104,7 @@ const ReviewStep = ({
 
       <div className={styles['beneficiariesstep__divider']}></div>
 
-      <Box display="flex" flexDirection="row" justifyContent="center">
+      <div className="flex justify-center">
         <Button
           color="#5F4DFF"
           fontSize="14px"
@@ -111,17 +115,14 @@ const ReviewStep = ({
           Back
         </Button>
 
-        <Button
-          backgroundColor="#5F4DFF"
-          color="#FFFFFF"
+        <PrimaryButton
+          text={'Create'}
+          className={'!py-4 !px-14'}
           onClick={() => onNextStep()}
-          width="180px"
-        >
-          Create
-        </Button>
-      </Box>
+        />
+      </div>
     </div>
   );
 };
 
-export default ReviewStep;
+export default PlanReview;

@@ -1,58 +1,58 @@
-.steps {
-  &__step {
-    &:last-child {
-      .steps__step__stepper__line {
-        border-left: 3px solid white;
-        z-index: -1;
-      }
-    }
+// .steps {
+//   &__step {
+//     &:last-child {
+//       .steps__step__stepper__line {
+//         border-left: 3px solid white;
+//         z-index: -1;
+//       }
+//     }
 
-    background-color: cream;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    padding: 10px;
+//     background-color: cream;
+//     display: flex;
+//     flex-direction: row;
+//     justify-content: flex-start;
+//     padding: 10px;
 
-    &__stepper {
-      position: relative;
+//     &__stepper {
+//       position: relative;
 
-      &__header {
-        display: flex;
-        flex-direction: row;
-        position: absolute;
-      }
+//       &__header {
+//         display: flex;
+//         flex-direction: row;
+//         position: absolute;
+//       }
 
-      &__title {
-        font-weight: 500;
-        margin-left: 40px;
-        position: absolute;
-        white-space: nowrap;
-      }
+//       &__title {
+//         font-weight: 500;
+//         margin-left: 40px;
+//         position: absolute;
+//         white-space: nowrap;
+//       }
 
-      &__circle {
-        align-items: center;
-        background: #ebdeff;
-        border-radius: 100%;
-        color: #5f4dff;
-        display: flex;
-        font-size: 11px;
-        height: 22px;
-        justify-content: center;
-        width: 22px;
-      }
+//       &__circle {
+//         align-items: center;
+//         background: #ebdeff;
+//         border-radius: 100%;
+//         color: #5f4dff;
+//         display: flex;
+//         font-size: 11px;
+//         height: 22px;
+//         justify-content: center;
+//         width: 22px;
+//       }
 
-      &__line {
-        background: #e2e8f0;
-        height: 100%;
-        left: 9px;
-        position: absolute;
-        top: 23px;
-        width: 1px;
-      }
-    }
+//       &__line {
+//         background: #e2e8f0;
+//         height: 100%;
+//         left: 9px;
+//         position: absolute;
+//         top: 23px;
+//         width: 1px;
+//       }
+//     }
 
-    &__content {
-      margin: 50px 0 20px 50px;
-    }
-  }
-}
+//     &__content {
+//       margin: 50px 0 20px 50px;
+//     }
+//   }
+// }

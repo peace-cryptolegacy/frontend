@@ -1,16 +1,10 @@
-import { AddIcon, CloseIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Button,
-  Checkbox,
-  FormControl,
-  FormErrorMessage,
-  Input,
-  Select,
-} from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons';
+import { Button } from '@chakra-ui/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Caption from 'components/Caption/Caption';
+import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
 import { isAddress } from 'ethers/lib/utils';
 import { BaseSyntheticEvent, useState } from 'react';
-import styles from 'styles/BeneficiariesStep.module.scss';
 
 interface Props {
   stepperClassName?: string;
@@ -27,7 +21,7 @@ type Beneficiary = {
   distribution: number;
 };
 
-const BeneficiariesStep = ({
+const PlanCustomization = ({
   stepperClassName,
   renderStepper,
   onNextStep,
@@ -100,124 +94,97 @@ const BeneficiariesStep = ({
 
   function renderRow(beneficiary: Beneficiary, index: number) {
     return (
-      <Box
-        display="flex"
-        flexDirection="row"
-        marginBottom="15px"
-        key={`beneficiary-${index}`}
-      >
-        <FormControl flex={5}>
-          <Input
-            height="50px"
+      <tr className="">
+        <td className="text-left">
+          <input
+            type="text"
+            className="w-11/12 rounded text-pink-500"
+            placeholder="Beneficiary name"
+            required
             onChange={(event: BaseSyntheticEvent) => {
               handleChange('name', event.target.value, index);
             }}
-            placeholder="Beneficiary name"
             value={beneficiary.name}
-            width="80%"
           />
-        </FormControl>
-
-        <FormControl flex={5} isInvalid={errors[index]}>
-          <Input
-            height="50px"
-            onChange={(event: BaseSyntheticEvent) =>
-              handleChange('address', event.target.value, index)
-            }
-            onBlur={() => handleAddressBlur(index)}
-            placeholder="Beneficiary address *"
+        </td>
+        <td className="text-left">
+          <input
+            type="text"
+            className="w-11/12 rounded text-pink-500"
+            placeholder="Beneficiary address*"
             required
+            onChange={(event: BaseSyntheticEvent) => {
+              handleChange('address', event.target.value, index);
+            }}
+            onBlur={() => handleAddressBlur(index)}
             value={beneficiary.address}
-            width="80%"
           />
-          <FormErrorMessage>
-            The address format is not correct.
-          </FormErrorMessage>
-        </FormControl>
-
-        <Box
-          alignContent="center"
-          display="flex"
-          flexDirection="row"
-          justifyContent="center"
-          flex={1}
-        >
-          <Checkbox
-            isChecked={beneficiary.isClaimant}
+        </td>
+        <td className="text-left">
+          <input
+            type="checkbox"
+            className="rounded text-purple-600"
+            checked={beneficiary.isClaimant}
             onChange={(event: BaseSyntheticEvent) =>
               handleClaimantChange(event.target.checked, index)
             }
-          ></Checkbox>
-        </Box>
-
-        <FormControl flex={1}>
-          <Input
-            marginLeft={10}
-            height="50px"
+          />
+        </td>
+        <td className="text-left">
+          <input
+            type="number"
+            className="w-6/12 rounded text-pink-500"
+            placeholder="100%"
+            required
             onChange={(event: BaseSyntheticEvent) =>
               handleChange('distribution', event.target.value, index)
             }
-            required
-            value={beneficiary.distribution}
-            type="number"
           />
-        </FormControl>
-
-        <Box
-          alignItems="center"
-          cursor="pointer"
-          display="flex"
-          flex={1}
-          justifyContent="flex-end"
-          marginRight={10}
-        >
-          <CloseIcon onClick={() => handleCloseIconClick(index)} />
-        </Box>
-      </Box>
+        </td>
+        <td>
+          <FontAwesomeIcon
+            className="cursor-pointer"
+            icon="trash"
+            onClick={() => handleCloseIconClick(1)}
+          />
+        </td>
+      </tr>
     );
   }
 
   return (
     <div className={`${stepperClassName || ''}`}>
       {renderStepper()}
-      <Box className="py-6">
-        <div>
-          Your inheritance plan will have one or more beneficiaries, you can
+      <div className="my-6 flex flex-col">
+        <Caption
+          text="Your inheritance plan will have one or more beneficiaries, you can
           select which of them could activate the protocol after inactivity time
-          passed.
-        </div>
-        <br />
-        <div>
-          You can add an identifier name to verify in the future who will be
+          passed."
+          className="my-3 text-left text-black"
+        ></Caption>
+        <Caption
+          text="You can add an identifier name to verify in the future who will be
           receiving your will and customize % of funds and the different type of
           tokens that will inherit. This plan will ONLY be claimable on
-          Moonbase.
-        </div>
-      </Box>
+          Moonbase."
+          className="my-3 text-left text-black"
+        ></Caption>
+      </div>
 
-      <div className={styles['beneficiariesstep__divider']}></div>
+      <table className="my-6 w-full table-fixed text-left">
+        <thead>
+          <tr className="">
+            <th>Name</th>
+            <th>Address</th>
+            <th className="w-1/12">Claimant</th>
+            <th className="w-2/12">% Distr</th>
+            <th className="w-1/12"></th>
+          </tr>
+        </thead>
+        <tbody>{beneficiaries.map(renderRow)}</tbody>
+      </table>
 
-      <Box color="#64748B" display="flex" flexDirection="row" fontWeight="bold">
-        <Box flex={5}>Name</Box>
-        <Box flex={5}>Address</Box>
-        <Box flex={1}>Claimant</Box>
-        <Box flex={1} marginLeft={10}>
-          % Distr
-        </Box>
-        <Box flex={1}></Box>
-      </Box>
-
-      <div className={styles['beneficiariesstep__divider']}></div>
-
-      {beneficiaries.map(renderRow)}
-
-      <Box
-        display="flex"
-        flexDirection="row"
-        justifyContent="center"
-        marginBottom="30px"
-        marginTop="30px"
-      >
+      <div className="flex justify-center">
         <Button
           color="#5F4DFF"
           fontSize="14px"
@@ -227,26 +194,27 @@ const BeneficiariesStep = ({
         >
           Add another beneficiary
         </Button>
-      </Box>
+      </div>
 
-      <Box marginBottom="20px">
-        Choose how many days and which beneficiaries need to sign for the funds
-        to be released:
-      </Box>
-
-      <Box display="flex">
-        <Box marginRight="150px">
-          <Select size="lg" width="230px" onChange={handleExpirationChange}>
+      <div className="my-6 flex flex-col ">
+        <Caption
+          text="Choose how many days and which beneficiaries need to sign for the funds
+          to be released:"
+          className="my-3 text-left text-black"
+        ></Caption>
+        <div className="flex justify-between">
+          <select
+            className="form-select w-2/6 rounded px-4 py-3"
+            onChange={handleExpirationChange}
+          >
             <option value={7}>7 days</option>
             <option value={30}>30 days</option>
             <option value={60}>60 days</option>
             <option value={180}>180 days</option>
             <option value={365}>365 days</option>
-          </Select>
-        </Box>
+          </select>
 
-        <Box>
-          <Select size="lg" width="230px">
+          <select className="form-select   w-2/6 rounded px-4 py-3">
             <option>Just peace</option>
 
             {beneficiaries.map((beneficiary, index) => {
@@ -256,13 +224,11 @@ const BeneficiariesStep = ({
                 </option>
               );
             })}
-          </Select>
-        </Box>
-      </Box>
+          </select>
+        </div>
+      </div>
 
-      <div className={styles['beneficiariesstep__divider']}></div>
-
-      <Box display="flex" flexDirection="row" justifyContent="center">
+      <div className="my-6 flex justify-center">
         <Button
           color="#5F4DFF"
           fontSize="14px"
@@ -272,18 +238,14 @@ const BeneficiariesStep = ({
         >
           Back
         </Button>
-
-        <Button
-          backgroundColor="#5F4DFF"
-          color="#FFFFFF"
+        <PrimaryButton
+          text={'Continue'}
+          className={'!py-4 !px-14'}
           onClick={handleContinueClick}
-          width="180px"
-        >
-          Continue
-        </Button>
-      </Box>
+        />
+      </div>
     </div>
   );
 };
 
-export default BeneficiariesStep;
+export default PlanCustomization;

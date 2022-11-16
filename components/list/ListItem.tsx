@@ -4,14 +4,14 @@ import { ComponentPropsWithoutRef } from 'react';
 type Props = {
   children: React.ReactNode;
   className?: string;
-  gradientBorder?: boolean;
+  isSelected?: boolean;
   classNameOuterDiv?: string;
   classNameInnerDiv?: string;
 } & ComponentPropsWithoutRef<'li'>;
 
 const ListItem = ({
   children,
-  gradientBorder,
+  isSelected,
   classNameOuterDiv,
   classNameInnerDiv,
   className,
@@ -20,19 +20,19 @@ const ListItem = ({
   return (
     <li
       {...props}
-      className={clsx(!gradientBorder && 'flex items-center gap-10', className)}
+      className={clsx(!isSelected && 'flex items-center gap-10', className)}
     >
-      {gradientBorder ? (
+      {isSelected ? (
         <div
           className={clsx(
-            gradientBorder && 'rounded-3xl bg-mainVertical p-1 drop-shadow-xl',
+            isSelected && 'rounded-3xl bg-mainVertical p-1 drop-shadow-xl',
             classNameOuterDiv
           )}
         >
           <div
             className={clsx(
               'flex items-center gap-10 rounded-3xl bg-white px-6 py-2',
-              gradientBorder && 'border-2',
+              isSelected && 'border-2',
               classNameInnerDiv
             )}
           >

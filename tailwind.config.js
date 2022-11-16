@@ -47,6 +47,7 @@ module.exports = {
   plugins: [
     require('tailwindcss-debug-screens'),
     require('prettier-plugin-tailwindcss'),
+    require('@tailwindcss/forms'),
     function ({ addVariant }) {
       addVariant('child', '& > *');
       addVariant('child-hover', '& > *:hover');
