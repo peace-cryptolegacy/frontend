@@ -1,0 +1,154 @@
+import Box from 'components/Box/Box';
+import PercentageBar from 'components/percentageBar/PercentageBar';
+import Section from 'components/Section/Section';
+import SocialButtons from 'components/SocialButtons/SocialButtons';
+import Stack from 'components/stack/Stack';
+import Tabs from 'components/tabs/Tabs';
+import { NextPage } from 'next';
+import Image from 'next/image';
+import { useState } from 'react';
+
+const Assets: NextPage = () => {
+  const [activeTab, setActiveTab] = useState(0);
+  const [performanceChartActiveTab, setPerformanceChartActiveTab] = useState(3);
+
+  const socialIcons = [
+    {
+      route: '/icons/twitter-white.png',
+      alt: 'twitter',
+    },
+    {
+      route: '/icons/email-white.png',
+      alt: 'email',
+    },
+    {
+      route: '/icons/discord-white.png',
+      alt: 'discord',
+    },
+  ];
+
+  const tokens = [
+    {
+      name: 'Ethereum',
+      icon: '/logos/symbols/eth.png',
+      amount: 20,
+    },
+    {
+      name: 'Binance',
+      icon: '/logos/symbols/bnb.png',
+      amount: 20,
+    },
+    {
+      name: 'Avalanche',
+      icon: '/logos/symbols/avax.png',
+      amount: 20,
+    },
+    {
+      name: 'Moonbeam',
+      icon: '/logos/symbols/moonbeam-black.png',
+      amount: 20,
+    },
+  ];
+
+  return (
+    <>
+      <Section className="justify-between gap-8">
+        <Stack className="capitalize">
+          <Stack direction="row" className="gap-10">
+            <Stack direction="row">
+              <div className="relative h-[53px] w-[50px]">
+                <Image
+                  src="/icons/portfolio.png"
+                  layout="fill"
+                  alt="portfolio"
+                  objectFit="contain"
+                />
+              </div>
+              <h3 className="text-gradient h2">Portfolio</h3>
+            </Stack>
+            <span>All networks</span>
+          </Stack>
+          <Stack className="!gap-2.5">
+            <span className="text-blue-gray">Your profile</span>
+            <span className="text-2xl">Juvencrypto</span>
+            <Stack direction="row" className="cursor-pointer">
+              <span className="text-blue-gray">0x797..31A9b</span>
+              <Image
+                src="/icons/copy.png"
+                width={13}
+                height={15}
+                alt="copy"
+                objectFit="contain"
+              />
+            </Stack>
+            <SocialButtons className="mt-3" socialIcons={socialIcons} />
+          </Stack>
+        </Stack>
+        <Box className="min-w-[334px] basis-2/6 rounded-lg bg-white p-8 capitalize drop-shadow-lg">
+          <Stack className="!gap-1">
+            <h4 className="text-blue-gray">net worth</h4>
+            <span className="text-3xl">$80.00</span>
+          </Stack>
+          <span className="my-4 block text-blue-gray">Portfolio Breakdown</span>
+          <div className="space-y-4">
+            <PercentageBar name={'Total Assets'} percentage={100} />
+            <PercentageBar name={'On Peace'} percentage={50} />
+          </div>
+        </Box>
+      </Section>
+
+      <Tabs
+        tabs={['Tokens', 'Collectibles', 'Wallet Activity']}
+        value={activeTab}
+        setValue={setActiveTab}
+        className="mt-12"
+      />
+
+      <div className="mt-12 grid grid-cols-2 gap-8">
+        <Box>
+          <Stack direction="row" className="justify-between">
+            <h4 className="block capitalize text-blue-gray">Performance</h4>
+            <Tabs
+              tabs={['1D', '1W', '1M', '1Y']}
+              value={performanceChartActiveTab}
+              setValue={setPerformanceChartActiveTab}
+              className="!gap-3 text-sm"
+              underline={false}
+            />
+          </Stack>
+          <span className="mb-5 block text-3xl">$80.00</span>
+          <div className="relative h-48 w-full">
+            <Image
+              src="/images/assets-chart.png"
+              layout="fill"
+              alt="chart"
+              objectFit="contain"
+            />
+          </div>
+        </Box>
+        <Box>
+          <h5 className="capitalize text-blue-gray">Network Allocation</h5>
+          <div className="mt-6 grid grid-cols-2 gap-x-10 gap-y-12">
+            {tokens.map((token) => {
+              return (
+                <Stack key={token.name} direction="row">
+                  <div className="relative h-8 w-8 shrink-0">
+                    <Image src={token.icon} layout="fill" alt={token.name} />
+                  </div>
+                  <div>
+                    <span className="block whitespace-nowrap text-xs text-blue-gray">
+                      Assets on {token.name}
+                    </span>
+                    <span className="block">${token.amount}</span>
+                  </div>
+                </Stack>
+              );
+            })}
+          </div>
+        </Box>
+      </div>
+    </>
+  );
+};
+
+export default Assets;

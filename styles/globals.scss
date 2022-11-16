@@ -30,11 +30,11 @@ a {
 }
 
 .h4 {
-  @apply text-base font-medium capitalize text-darkBlue;
+  @apply text-base font-medium capitalize text-blue-dark;
 }
 
 .h2 {
-  @apply text-3xl font-medium capitalize text-darkBlue;
+  @apply text-3xl font-medium capitalize text-blue-dark;
 }
 
 .text-gradient {
@@ -43,6 +43,6 @@ a {
 
 @layer {
   p {
-    @apply text-blueGray #{!important};
+    @apply text-blue-gray #{!important};
   }
 }
