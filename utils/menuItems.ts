@@ -1,3 +1,5 @@
+import { PlanSelection } from 'utils/constants/PlanSelection';
+
 const menuItems = [
   // icon path relative to folder public
   {
@@ -12,6 +14,8 @@ const menuItems = [
         description: 'Transfer and distribute your assets to your loved ones.',
         alt: 'Inheritance Plan',
         route: '/inheritancePlan',
+        comingSoon: false,
+        planId: PlanSelection.INHERITANCE,
       },
       {
         icon: '/icons/backup-wallet.png',
@@ -20,6 +24,8 @@ const menuItems = [
           'Don’t lose your assets again, create a backup of your funds.',
         alt: 'Backup Wallet',
         route: '/backup-wallet',
+        comingSoon: false,
+        planId: PlanSelection.BACKUP_WALLET,
       },
       {
         icon: '/icons/expender-wallet.png',
@@ -29,6 +35,7 @@ const menuItems = [
         alt: 'Expender Wallet',
         route: '/expender-wallet',
         comingSoon: true,
+        planId: PlanSelection.EXPENDER_WALLET,
       },
       {
         icon: '/icons/migration-wallet.png',
@@ -38,6 +45,7 @@ const menuItems = [
         alt: 'Migration Wallet',
         route: '/migration-wallet',
         comingSoon: true,
+        planId: PlanSelection.MIGRATION_WALLET,
       },
     ],
   },

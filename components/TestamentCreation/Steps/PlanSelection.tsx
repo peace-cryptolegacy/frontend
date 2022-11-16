@@ -21,7 +21,7 @@ interface Props {
 
 const Protection = ({ stepperClassName, renderStepper, onNextStep }: Props) => {
   const { item: userData, saveItem: setUserData } = useLocalStorage(
-    'USER_DATA',
+    'TESTAMENT_INFO',
     initialValue
   );
 
@@ -58,14 +58,17 @@ const Protection = ({ stepperClassName, renderStepper, onNextStep }: Props) => {
         </span>
         <List className="grid grid-cols-1 gap-x-14 gap-y-12 2xl:grid-cols-2">
           {menuItems[0].subMenu?.map(
-            ({ icon, title, description, alt, route, comingSoon }) => {
+            ({ icon, title, description, alt, route, comingSoon, planId }) => {
               return (
                 <React.Fragment key={title}>
                   <ListItem
                     isSelected={selectedSubItem?.title === title}
                     classNameInnerDiv="!gap-2 !px-4"
                     onClick={() => {
-                      setUserData({ ...userData, planSelected: title });
+                      setUserData({
+                        ...userData,
+                        selectedPlan: planId,
+                      });
                       setSelectedSubItem({ title, route });
                     }}
                     className={clsx(

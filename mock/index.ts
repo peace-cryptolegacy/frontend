@@ -1,5 +1,7 @@
 export const initialValue = {
-  planSelected: 0,
+  selectedPlan: 0,
   activeStep: 0,
   beneficiaries: [],
+  expirationDays: 0,
+  beneficiariesAffected: 0,
 };

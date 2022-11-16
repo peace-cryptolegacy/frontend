@@ -3,8 +3,8 @@ import { Button } from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Caption from 'components/Caption/Caption';
 import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
-// import { isAddress } from 'ethers/lib/utils';
-import { useState } from 'react';
+import { isAddress } from 'ethers/lib/utils';
+import { BaseSyntheticEvent, useState } from 'react';
 
 interface Props {
   stepperClassName?: string;
@@ -47,37 +47,37 @@ const PlanCustomization = ({
     setBeneficiaries([...beneficiaries, defaultBeneficiary]);
   }
 
-  // function handleAddressBlur(index: number) {
-  //   setErrors([
-  //     ...errors.slice(0, index),
-  //     !isAddress(beneficiaries[index].address),
-  //     ...errors.slice(index + 1),
-  //   ]);
-  // }
+  function handleAddressBlur(index: number) {
+    setErrors([
+      ...errors.slice(0, index),
+      !isAddress(beneficiaries[index].address),
+      ...errors.slice(index + 1),
+    ]);
+  }
 
-  // function handleChange(key: string, value: string, index: number) {
-  //   setBeneficiaries([
-  //     ...beneficiaries.slice(0, index),
-  //     {
-  //       ...beneficiaries[index],
-  //       [key]: value,
-  //     },
-  //     ...beneficiaries.slice(index + 1),
-  //   ]);
-  // }
+  function handleChange(key: string, value: string, index: number) {
+    setBeneficiaries([
+      ...beneficiaries.slice(0, index),
+      {
+        ...beneficiaries[index],
+        [key]: value,
+      },
+      ...beneficiaries.slice(index + 1),
+    ]);
+  }
 
-  // function handleClaimantChange(value: string, index: number) {
-  //   const nextBeneficiaries = beneficiaries.map(
-  //     (beneficiary, beneficiaryIndex) => {
-  //       return {
-  //         ...beneficiary,
-  //         isClaimant: index === beneficiaryIndex,
-  //       };
-  //     }
-  //   );
+  function handleClaimantChange(value: string, index: number) {
+    const nextBeneficiaries = beneficiaries.map(
+      (beneficiary, beneficiaryIndex) => {
+        return {
+          ...beneficiary,
+          isClaimant: index === beneficiaryIndex,
+        };
+      }
+    );
 
-  //   setBeneficiaries(nextBeneficiaries);
-  // }
+    setBeneficiaries(nextBeneficiaries);
+  }
 
   async function handleContinueClick() {
     onNextStep(beneficiaries, expiration);
@@ -92,7 +92,7 @@ const PlanCustomization = ({
     setErrors([...errors.slice(0, index), ...errors.slice(index + 1)]);
   }
 
-  function renderRow() {
+  function renderRow(beneficiary: Beneficiary, index: number) {
     return (
       <tr className="">
         <td className="text-left">
@@ -101,18 +101,34 @@ const PlanCustomization = ({
             className="w-11/12 rounded text-pink-500"
             placeholder="Beneficiary name"
             required
+            onChange={(event: BaseSyntheticEvent) => {
+              handleChange('name', event.target.value, index);
+            }}
+            value={beneficiary.name}
           />
         </td>
         <td className="text-left">
           <input
             type="text"
             className="w-11/12 rounded text-pink-500"
-            placeholder="Beneficiary name"
+            placeholder="Beneficiary address*"
             required
+            onChange={(event: BaseSyntheticEvent) => {
+              handleChange('address', event.target.value, index);
+            }}
+            onBlur={() => handleAddressBlur(index)}
+            value={beneficiary.address}
           />
         </td>
         <td className="text-left">
-          <input type="checkbox" className="rounded text-purple-600" />
+          <input
+            type="checkbox"
+            className="rounded text-purple-600"
+            checked={beneficiary.isClaimant}
+            onChange={(event: BaseSyntheticEvent) =>
+              handleClaimantChange(event.target.checked, index)
+            }
+          />
         </td>
         <td className="text-left">
           <input
@@ -120,6 +136,9 @@ const PlanCustomization = ({
             className="w-6/12 rounded text-pink-500"
             placeholder="100%"
             required
+            onChange={(event: BaseSyntheticEvent) =>
+              handleChange('distribution', event.target.value, index)
+            }
           />
         </td>
         <td>

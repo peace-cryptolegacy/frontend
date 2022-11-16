@@ -1,7 +1,6 @@
 // @ts-nocheck
 
 import { writeTestament } from 'utils/web3/heritage';
-import { useState } from 'react';
 import PlanCustomization from 'components/TestamentCreation/Steps/PlanCustomization';
 import PlanSelection from 'components/TestamentCreation/Steps/PlanSelection';
 import PlanReview from 'components/TestamentCreation/Steps/PlanReview';
@@ -10,6 +9,16 @@ import Title from 'components/Title/Title';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
 import { useLocalStorage } from 'utils/hooks/useLocalStorage';
 import { initialValue } from 'mock/index';
+import { useAppSelector, useAppDispatch } from 'store/hooks';
+import {
+  // getActiveStep,
+  setActiveStep,
+  setSelectedPlan,
+  setExpirationDays,
+  setBeneficiariesAffected,
+  setBeneficiaries,
+  getBeneficiaries,
+} from 'store/reducers/testamentInfo';
 
 // interface UserData {
 //   activeStep: string;
@@ -17,16 +26,35 @@ import { initialValue } from 'mock/index';
 // }
 
 const Steps = () => {
-  // const [activeStep, setUserData] = useState<number>(0);
-  const [beneficiaries, setBeneficiares] = useState({});
+  const dispatch = useAppDispatch();
+  // const activeStep: number = useAppSelector(getActiveStep);
+  const beneficiaries: [] = useAppSelector(getBeneficiaries);
   const stepsLabel = ['Select Plan', 'Customize Plan', 'Review Plan'];
   console.log('first');
-  // const [activeStep, setUserData] = useLocalStorage('activeStep', 0);
   const { item: userData, saveItem: setUserData } = useLocalStorage(
-    'USER_DATA',
+    'TESTAMENT_INFO',
     initialValue
   );
+
+  dispatch(setActiveStep({ activeStep: userData.activeStep }));
+  dispatch(setSelectedPlan({ selectedPlan: userData.selectedPlan }));
+  dispatch(setExpirationDays({ expirationDays: userData.expirationDays }));
+  // dispatch(setBeneficiaries({ beneficiaries: userData.beneficiaries }));
+  dispatch(
+    setBeneficiariesAffected({
+      beneficiariesAffected: userData.beneficiariesAffected,
+    })
+  );
+
+  // dispatch(setBeneficiaries({ selectedPlan: userData.beneficiaries }));
+  dispatch(
+    setBeneficiariesAffected({ selectedPlan: userData.beneficiariesAffected })
+  );
+
   console.log('second : ', userData.activeStep);
+
+  const getUpdatedUserData = () =>
+    JSON.parse(localStorage.getItem('TESTAMENT_INFO'));
 
   const renderStepper = () => {
     return (
@@ -46,7 +74,20 @@ const Steps = () => {
         <PlanSelection
           stepperClassName=""
           renderStepper={() => renderStepper()}
-          onNextStep={() => setUserData({ ...userData, activeStep: 1 })}
+          onNextStep={() => {
+            const updatedUserData = getUpdatedUserData();
+            dispatch(
+              setActiveStep({
+                activeStep: 1,
+                selectedPlan: updatedUserData.selectedPlan,
+              })
+            );
+            setUserData({
+              ...updatedUserData,
+              activeStep: 1,
+              selectedPlan: updatedUserData.selectedPlan,
+            });
+          }}
         />
       ), // <ConnectStep onNextStep={() => setUserData(1)} />
       key: 'step-connect',
@@ -57,12 +98,19 @@ const Steps = () => {
         <PlanCustomization
           stepperClassName=""
           renderStepper={() => renderStepper()}
-          onPrevStep={() => setUserData({ ...userData, activeStep: 0 })}
+          onPrevStep={() => {
+            const updatedUserData = getUpdatedUserData();
+            setUserData({ ...updatedUserData, activeStep: 0 });
+          }}
           onNextStep={(beneficiaries: any, expiration: any) => {
-            setUserData({ ...userData, activeStep: 2 });
-            setBeneficiares({
+            const updatedUserData = getUpdatedUserData();
+            dispatch(setActiveStep({ activeStep: 2 }));
+            dispatch(setBeneficiaries(beneficiaries));
+            dispatch(setExpirationDays({ expirationDays: expiration }));
+            setUserData({
+              ...updatedUserData,
+              expirationDays: expiration,
               beneficiaries,
-              expiration,
             });
           }}
         />
@@ -76,7 +124,10 @@ const Steps = () => {
           stepperClassName=""
           renderStepper={() => renderStepper()}
           beneficiaries={beneficiaries}
-          onPrevStep={() => setUserData({ ...userData, activeStep: 1 })}
+          onPrevStep={() => {
+            const updatedUserData = getUpdatedUserData();
+            setUserData({ ...updatedUserData, activeStep: 1 });
+          }}
           onNextStep={() => handleDeploy()}
         />
       ),
@@ -103,22 +154,11 @@ const Steps = () => {
     return steps[userData.activeStep].content;
   }
 
-  // function renderStep(
-  //   { content }: { content: any; key: string; title: string },
-  //   index: number
-  // ) {
-  //   // setUserData(activeStep);
-  //   return (
-  //     <div key={index}>{index === userData.activeStep ? content : <></>}</div>
-  //   );
-  // }
-
   return (
     <div className="mb-12">
       {renderTitle()}
       <div className="w-fit rounded-xl bg-white px-32 py-9 drop-shadow-lg">
         {renderStep(steps)}
-        {/* {steps.map(renderStep)} */}
       </div>
     </div>
   );
