@@ -78,7 +78,7 @@ const MyPlans: NextPage = () => {
             <div className="mx-auto max-w-[369px]">
               <div className="relative mx-auto mt-24 h-14 w-[216px]">
                 <Image
-                  src="/logos/peace-logo-216:54.png"
+                  src="/logos/peace-logo-216x54.png"
                   alt="peace"
                   layout="fill"
                   objectFit="contain"
