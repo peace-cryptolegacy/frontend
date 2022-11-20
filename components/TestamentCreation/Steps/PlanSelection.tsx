@@ -8,10 +8,10 @@ import Stack from 'components/stack/Stack';
 
 import Image from 'next/image';
 // import { useRouter } from 'next/router';
-import React, { useState } from 'react';
-import menuItems from 'utils/menuItems';
 import { initialValue } from 'mock/index';
+import React, { useState } from 'react';
 import { useLocalStorage } from 'utils/hooks/useLocalStorage';
+import menuItems from 'utils/menuItems';
 
 interface Props {
   stepperClassName?: string;
@@ -57,8 +57,11 @@ const Protection = ({ stepperClassName, renderStepper, onNextStep }: Props) => {
           Select the protection for your Assets
         </span>
         <List className="grid grid-cols-1 gap-x-14 gap-y-12 2xl:grid-cols-2">
-          {menuItems[0].subMenu?.map(
-            ({ icon, title, description, alt, route, comingSoon, planId }) => {
+          {Object.entries(menuItems.Protection.subMenu)?.map(
+            ([
+              ,
+              { icon, title, description, alt, route, comingSoon, planId },
+            ]) => {
               return (
                 <React.Fragment key={title}>
                   <ListItem

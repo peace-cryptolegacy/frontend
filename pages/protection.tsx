@@ -32,7 +32,7 @@ const Protection: NextPage = () => {
       </h2>
       <div className=" max-w-[1400px] rounded-xl bg-white px-32 py-9 drop-shadow-lg">
         <>
-          <Stepper steps={steps} className="mb-7" />
+          <Stepper activeStep={0} steps={steps} className="mb-7" />
           <HorizontalRule />
           <Stack direction="row" className="my-8 !gap-9">
             <span className="inline">Select your Network</span>
@@ -50,8 +50,8 @@ const Protection: NextPage = () => {
             Select the protection for your Assets
           </span>
           <List className="grid grid-cols-2 gap-x-14 gap-y-12">
-            {menuItems[0].subMenu?.map(
-              ({ icon, title, description, alt, route, comingSoon }) => {
+            {Object.entries(menuItems.Protection.subMenu)?.map(
+              ([, { icon, title, description, alt, route, comingSoon }]) => {
                 return (
                   <React.Fragment key={title}>
                     <ListItem

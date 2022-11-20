@@ -9,8 +9,9 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 const Assets: NextPage = () => {
-  const [activeTab, setActiveTab] = useState(0);
-  const [performanceChartActiveTab, setPerformanceChartActiveTab] = useState(3);
+  const [activeTab, setActiveTab] = useState('Tokens');
+  const [performanceChartActiveTab, setPerformanceChartActiveTab] =
+    useState('1D');
 
   const socialIcons = [
     {

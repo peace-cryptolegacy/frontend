@@ -23,7 +23,7 @@ module.exports = {
       colors: {
         black: '#000',
         white: '#fff',
-        green: '#61F2E2',
+        'green-bluish': '#61F2E2',
         purple: {
           100: '#EBDEFF',
           300: '#F3ECFE',
@@ -35,6 +35,9 @@ module.exports = {
           gray: '#475569',
           'gray-light': '#64748B',
         },
+      },
+      gridTemplateColumns: {
+        13: 'repeat(13, minmax(0, 1fr))',
       },
     },
     backgroundImage: {

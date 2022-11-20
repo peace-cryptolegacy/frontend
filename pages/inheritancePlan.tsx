@@ -24,7 +24,7 @@ const CreatePlan: FC = () => {
             icon={<FontAwesomeIcon icon={['fab', 'twitter']} />}
             disabled={true}
             text={'Add'}
-            className={'w-1/12 text-green'}
+            className={'w-1/12 text-green-bluish'}
           />
           <PrimaryButton
             icon={<FontAwesomeIcon icon="envelope" />}
@@ -96,7 +96,7 @@ const CreatePlan: FC = () => {
                   name="search"
                 />
               </label>
-              <div className="flex w-1/4 cursor-pointer items-center justify-end text-green">
+              <div className="flex w-1/4 cursor-pointer items-center justify-end text-green-bluish">
                 <FontAwesomeIcon icon="sliders" />
               </div>
             </div>
@@ -162,7 +162,7 @@ const CreatePlan: FC = () => {
                   name="search"
                 />
               </label>
-              <div className="flex w-1/4 cursor-pointer items-center justify-end text-green">
+              <div className="flex w-1/4 cursor-pointer items-center justify-end text-green-bluish">
                 <FontAwesomeIcon icon="sliders" />
               </div>
             </div>
