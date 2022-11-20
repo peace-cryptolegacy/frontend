@@ -2,10 +2,11 @@ import clsx from 'clsx';
 import { ComponentPropsWithoutRef } from 'react';
 
 type Props = {
-  variant?: 'primary' | 'secondary' | 'fancy';
+  variant?: 'primary' | 'secondary' | 'basic' | 'fancy' | 'gradientBorder';
   size?: 'sm' | 'base' | 'lg';
   icon?: JSX.Element;
   text: string;
+  disabled?: boolean;
   props?: any;
   className?: string;
 } & ComponentPropsWithoutRef<'button'>;
@@ -15,30 +16,53 @@ const Button = ({
   size,
   icon,
   text,
+  disabled,
   className,
-  props,
+  ...props
 }: Props) => {
   const renderButton = () => {
-    if (variant === 'fancy') {
-      return (
-        <button
-          {...props}
-          className={clsx(
-            'rounded-2xl bg-mainVertical p-1.5',
-            size === 'sm' && 'w-[1px]',
-            size === 'base' && 'w-[1px]',
-            size === 'lg' && 'w-[369px]',
-            className
-          )}
-        >
-          <div className=" rounded-2xl bg-black py-4">
+    return (
+      <button
+        {...props}
+        className={clsx(
+          ['fancy', 'gradientBorder'].includes(variant) && 'bg-mainVertical',
+          variant === 'fancy' && 'p-1.5',
+          variant === 'gradientBorder' && 'p-0.5',
+          !['fancy', 'gradientBorder'].includes(variant) && 'py-4',
+          variant === 'basic' && 'border-[1px] border-gray-300 bg-white',
+          size === 'sm' && 'w-[200px]',
+          size === 'base' && 'w-[260px]',
+          size === 'lg' && 'w-[369px]',
+          disabled && 'cursor-not-allowed opacity-50',
+          'rounded-2xl',
+          className
+        )}
+      >
+        {['fancy', 'gradientBorder'].includes(variant) ? (
+          <div
+            className={clsx(
+              variant === 'fancy' ? 'bg-black' : 'bg-white',
+              'rounded-2xl py-4'
+            )}
+          >
             <span className="mr-2">{icon}</span>
-            <span className="h3 capitalize !text-white">{text}</span>
+            <span
+              className={clsx(
+                variant === 'fancy' ? 'text-white' : 'text-black',
+                'capitalize'
+              )}
+            >
+              {text}
+            </span>
           </div>
-        </button>
-      );
-    }
-    return null;
+        ) : (
+          <>
+            {icon && <span className="mr-2">{icon}</span>}
+            <span className="font-medium capitalize">{text}</span>
+          </>
+        )}
+      </button>
+    );
   };
 
   return renderButton();

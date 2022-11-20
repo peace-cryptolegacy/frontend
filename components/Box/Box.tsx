@@ -2,19 +2,27 @@ import clsx from 'clsx';
 import { ReactNode } from 'react';
 
 type Props = {
+  gradient?: boolean;
   children: ReactNode | ReactNode[];
   className?: string;
 };
 
-const Box = ({ children, className }: Props) => {
+const Box = ({ gradient = false, children, className }: Props) => {
   return (
     <div
       className={clsx(
-        'rounded-lg bg-white py-7 px-9 drop-shadow-lg',
+        gradient ? 'bg-mainHorizontal p-2' : 'bg-white py-7 px-9',
+        'rounded-lg drop-shadow-lg',
         className
       )}
     >
-      {children}
+      {gradient ? (
+        <div className="bg-white py-7 px-9">
+          <div>{children}</div>
+        </div>
+      ) : (
+        children
+      )}
     </div>
   );
 };

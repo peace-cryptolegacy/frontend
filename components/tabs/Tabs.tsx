@@ -5,8 +5,8 @@ import { Dispatch, SetStateAction } from 'react';
 
 type Props = {
   tabs: string[];
-  value: number;
-  setValue: Dispatch<SetStateAction<number>>;
+  value: string;
+  setValue: Dispatch<SetStateAction<string>> | (() => void);
   className?: string;
   underline?: boolean;
 };
@@ -18,7 +18,7 @@ const Tabs = ({
   className,
   underline = true,
 }: Props) => {
-  const handleTabChange = (key: number) => setValue(key);
+  const handleTabChange = (tab: string) => setValue(tab);
 
   return (
     <List
@@ -27,13 +27,13 @@ const Tabs = ({
         className
       )}
     >
-      {tabs.map((tab, key) => {
-        if (value === key) {
+      {tabs.map((tab) => {
+        if (value === tab) {
           return (
             <ListItem
               key={tab}
               className="relative block"
-              onClick={() => handleTabChange(key)}
+              onClick={() => handleTabChange(tab)}
             >
               <span className="text-gradient">{tab}</span>
               {underline && (
@@ -43,7 +43,7 @@ const Tabs = ({
           );
         }
         return (
-          <ListItem key={tab} onClick={() => handleTabChange(key)}>
+          <ListItem key={tab} onClick={() => handleTabChange(tab)}>
             {tab}
           </ListItem>
         );

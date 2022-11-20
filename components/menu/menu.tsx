@@ -1,3 +1,4 @@
+import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
@@ -36,39 +37,42 @@ const Menu: FC = () => {
 
       <div className="flex h-full w-full">
         <List className="flex h-full w-full flex-col space-y-14">
-          {menuItems.map(({ title, icon, route, alt }, key) => {
-            return (
-              <ListItem
-                key={key}
-                className={clsx(
-                  key === menuItems.length - 1 && '!mt-auto pb-10',
-                  router.route === route && 'relative w-full',
-                  'cursor-pointer pl-12 pr-4'
-                )}
-              >
-                <Section className="gap-10">
-                  <ListItemIcon>
-                    <Image src={icon} alt={alt} width={24} height={23} />
-                  </ListItemIcon>
-                  <Link href={route}>
-                    <span
-                      className={clsx('h4', {
-                        'text-gray-500': router.route !== route,
-                      })}
-                    >
-                      {title}
-                    </span>
-                  </Link>
-                </Section>
-                <div
+          {Object.entries(menuItems).map(
+            ([, { title, icon, route, alt }], key) => {
+              return (
+                <ListItem
+                  key={key}
                   className={clsx(
-                    router.route !== route && 'hidden',
-                    'absolute right-0 h-8 w-[5px] rounded-l-xl bg-mainVertical'
+                    key === Object.keys(menuItems).length - 1 &&
+                      '!mt-auto pb-10',
+                    router.route === route && 'relative w-full',
+                    'cursor-pointer pl-12 pr-4'
                   )}
-                ></div>
-              </ListItem>
-            );
-          })}
+                >
+                  <Section className="gap-10">
+                    <ListItemIcon>
+                      <Image src={icon} alt={alt} width={24} height={23} />
+                    </ListItemIcon>
+                    <Link href={route}>
+                      <span
+                        className={clsx('h4', {
+                          'text-gray-500': router.route !== route,
+                        })}
+                      >
+                        {title}
+                      </span>
+                    </Link>
+                  </Section>
+                  <div
+                    className={clsx(
+                      router.route !== route && 'hidden',
+                      'absolute right-0 h-8 w-[5px] rounded-l-xl bg-mainVertical'
+                    )}
+                  ></div>
+                </ListItem>
+              );
+            }
+          )}
         </List>
       </div>
 
@@ -77,7 +81,11 @@ const Menu: FC = () => {
       </div>
       <Section className="my-7 w-full justify-evenly">
         {Object.entries(socialItems).map(([key, { alt }]) => (
-          <FontAwesomeIcon key={key} icon={['fab', alt]} size="lg" />
+          <FontAwesomeIcon
+            key={key}
+            icon={['fab', alt as IconName]}
+            size="lg"
+          />
         ))}
       </Section>
     </menu>

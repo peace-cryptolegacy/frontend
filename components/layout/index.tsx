@@ -12,17 +12,16 @@ type Props = {
 
 const Layout = ({ children }: Props) => {
   const router = useRouter();
-  const { beneficiarylogin } = router.query;
 
   const renderLayout = () => {
-    if (beneficiarylogin) {
+    if (router.route === '/beneficiary-login') {
       return <>{children}</>;
     }
     return (
       <Section className="overflow-x-hidden">
         <>
           <Menu />
-          <div className="layout__container flex h-full w-full max-w-fit flex-col pl-96 pr-24">
+          <div className="layout__container flex h-full w-full max-w-[1440px] flex-col pl-96 pr-24">
             <>
               <Navbar />
               {children}
