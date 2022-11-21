@@ -19,6 +19,7 @@ import {
   setBeneficiaries,
   getBeneficiaries,
 } from 'store/reducers/testamentInfo';
+import { useEffect } from 'react';
 
 // interface UserData {
 //   activeStep: string;
@@ -36,22 +37,24 @@ const Steps = () => {
     initialValue
   );
 
-  dispatch(setActiveStep({ activeStep: userData.activeStep }));
-  dispatch(setSelectedPlan({ selectedPlan: userData.selectedPlan }));
-  dispatch(setExpirationDays({ expirationDays: userData.expirationDays }));
-  // dispatch(setBeneficiaries({ beneficiaries: userData.beneficiaries }));
-  dispatch(
-    setBeneficiariesAffected({
-      beneficiariesAffected: userData.beneficiariesAffected,
-    })
-  );
+  useEffect(() => {
+    // dispatch(setActiveStep({ activeStep: userData.activeStep }));
+    dispatch(setSelectedPlan({ selectedPlan: userData.selectedPlan }));
+    dispatch(setExpirationDays({ expirationDays: userData.expirationDays }));
+    // dispatch(setBeneficiaries({ beneficiaries: userData.beneficiaries }));
+    dispatch(
+      setBeneficiariesAffected({
+        beneficiariesAffected: userData.beneficiariesAffected,
+      })
+    );
 
-  // dispatch(setBeneficiaries({ selectedPlan: userData.beneficiaries }));
-  dispatch(
-    setBeneficiariesAffected({ selectedPlan: userData.beneficiariesAffected })
-  );
+    // dispatch(setBeneficiaries({ selectedPlan: userData.beneficiaries }));
+    dispatch(
+      setBeneficiariesAffected({ selectedPlan: userData.beneficiariesAffected })
+    );
 
-  console.log('second : ', userData.activeStep);
+    console.log('component did mount : ', userData.activeStep);
+  }, []);
 
   const getUpdatedUserData = () =>
     JSON.parse(localStorage.getItem('TESTAMENT_INFO'));
@@ -79,6 +82,10 @@ const Steps = () => {
             dispatch(
               setActiveStep({
                 activeStep: 1,
+              })
+            );
+            dispatch(
+              setSelectedPlan({
                 selectedPlan: updatedUserData.selectedPlan,
               })
             );
@@ -97,6 +104,7 @@ const Steps = () => {
       content: (
         <PlanCustomization
           stepperClassName=""
+          beneficiaries={userData.beneficiaries}
           renderStepper={() => renderStepper()}
           onPrevStep={() => {
             const updatedUserData = getUpdatedUserData();
@@ -104,11 +112,18 @@ const Steps = () => {
           }}
           onNextStep={(beneficiaries: any, expiration: any) => {
             const updatedUserData = getUpdatedUserData();
-            dispatch(setActiveStep({ activeStep: 2 }));
+            alert('active step 2');
+            dispatch(
+              setActiveStep({
+                activeStep: 2,
+              })
+            );
+
             dispatch(setBeneficiaries(beneficiaries));
             dispatch(setExpirationDays({ expirationDays: expiration }));
             setUserData({
               ...updatedUserData,
+              activeStep: 2,
               expirationDays: expiration,
               beneficiaries,
             });
@@ -123,7 +138,7 @@ const Steps = () => {
         <PlanReview
           stepperClassName=""
           renderStepper={() => renderStepper()}
-          beneficiaries={beneficiaries}
+          beneficiaries={userData.beneficiaries}
           onPrevStep={() => {
             const updatedUserData = getUpdatedUserData();
             setUserData({ ...updatedUserData, activeStep: 1 });

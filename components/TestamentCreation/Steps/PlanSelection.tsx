@@ -7,13 +7,14 @@ import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
 import Stack from 'components/stack/Stack';
 
 import Image from 'next/image';
-// import { useRouter } from 'next/router';
-import { initialValue } from 'mock/index';
-import React, { useState } from 'react';
-import { useLocalStorage } from 'utils/hooks/useLocalStorage';
+// import { useRouter } from 'next/router';d upstream
+import React from 'react';
 import menuItems from 'utils/menuItems';
+import { initialValue } from 'mock/index';
+import { useLocalStorage } from 'utils/hooks/useLocalStorage';
 
 interface Props {
+  selectedPlan: number;
   stepperClassName?: string;
   renderStepper: Function;
   onNextStep: Function;
@@ -24,12 +25,6 @@ const Protection = ({ stepperClassName, renderStepper, onNextStep }: Props) => {
     'TESTAMENT_INFO',
     initialValue
   );
-
-  // const router = useRouter();
-  const [selectedSubItem, setSelectedSubItem] = useState<{
-    title: string;
-    route: string;
-  }>();
 
   // const steps = ['Select Plan', 'Customize Plan', 'Review Plan'];
 
@@ -58,24 +53,20 @@ const Protection = ({ stepperClassName, renderStepper, onNextStep }: Props) => {
         </span>
         <List className="grid grid-cols-1 gap-x-14 gap-y-12 2xl:grid-cols-2">
           {Object.entries(menuItems.Protection.subMenu)?.map(
-            ([
-              ,
-              { icon, title, description, alt, route, comingSoon, planId },
-            ]) => {
+            ([, { icon, title, description, alt, comingSoon, planId }]) => {
               return (
                 <React.Fragment key={title}>
                   <ListItem
-                    isSelected={selectedSubItem?.title === title}
+                    isSelected={userData.selectedPlan === planId}
                     classNameInnerDiv="!gap-2 !px-4"
                     onClick={() => {
                       setUserData({
                         ...userData,
                         selectedPlan: planId,
                       });
-                      setSelectedSubItem({ title, route });
                     }}
                     className={clsx(
-                      selectedSubItem?.title !== title &&
+                      userData.selectedPlan !== planId &&
                         '!gap-2 rounded-3xl border-2 border-gray-200 px-5 py-3',
                       'relative cursor-pointer'
                     )}

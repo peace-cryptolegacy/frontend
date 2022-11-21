@@ -8,6 +8,7 @@ import { BaseSyntheticEvent, useState } from 'react';
 
 interface Props {
   stepperClassName?: string;
+  beneficiaries: any;
   renderStepper: Function;
   onNextStep: Function;
   onPrevStep: Function;

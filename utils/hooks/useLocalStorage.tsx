@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { IUserData } from 'mock/index';
 
-function useLocalStorage(itemName: string, initialValue: object) {
+function useLocalStorage(itemName: string, initialValue: IUserData) {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState(initialValue);
