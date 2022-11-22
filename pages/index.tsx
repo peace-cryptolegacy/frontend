@@ -1,11 +1,12 @@
 // import ConnectBanner from 'components/connect-banner';
-import TestamentCreation from 'components/TestamentCreation';
+import ActiveProtections from 'components/protection/inheritancePlan/ActiveProtections';
 import { GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 // import Head from 'next/head';
 
 function Home() {
-  return <TestamentCreation />;
+  // return <TestamentCreation />;
+  return <ActiveProtections />;
 }
 
 export const getStaticProps: GetStaticProps = async ({
