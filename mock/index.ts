@@ -5,7 +5,7 @@ export interface IBeneficiary {
   distribution: number;
 }
 
-export interface IUserData {
+export interface ITestamentInfo {
   selectedPlan: number;
   activeStep: number;
   beneficiaries: IBeneficiary[];
@@ -13,7 +13,7 @@ export interface IUserData {
   beneficiariesAffected: number;
 }
 
-export const initialValue: IUserData = {
+export const testamentInfoInitialValue: ITestamentInfo = {
   selectedPlan: 0,
   activeStep: 0,
   beneficiaries: [

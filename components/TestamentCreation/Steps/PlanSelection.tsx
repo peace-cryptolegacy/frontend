@@ -9,7 +9,7 @@ import Stack from 'components/stack/Stack';
 import Image from 'next/image';
 import React from 'react';
 import menuItems from 'utils/menuItems';
-import { initialValue } from 'mock/index';
+import { testamentInfoInitialValue } from 'mock/index';
 import { useLocalStorage } from 'utils/hooks/useLocalStorage';
 
 interface Props {
@@ -24,9 +24,9 @@ const PlanSelection = ({
   renderStepper,
   onNextStep,
 }: Props) => {
-  const { item: userData, saveItem: setUserData } = useLocalStorage(
+  const { item: testamentInfo, saveItem: setTestamentInfo } = useLocalStorage(
     'TESTAMENT_INFO',
-    initialValue
+    testamentInfoInitialValue
   );
 
   async function handleClick() {
@@ -58,16 +58,16 @@ const PlanSelection = ({
               return (
                 <React.Fragment key={title}>
                   <ListItem
-                    isSelected={userData.selectedPlan === planId}
+                    isSelected={testamentInfo.selectedPlan === planId}
                     classNameInnerDiv="!gap-2 !px-4"
                     onClick={() => {
-                      setUserData({
-                        ...userData,
+                      setTestamentInfo({
+                        ...testamentInfo,
                         selectedPlan: planId,
                       });
                     }}
                     className={clsx(
-                      userData.selectedPlan !== planId &&
+                      testamentInfo.selectedPlan !== planId &&
                         '!gap-2 rounded-3xl border-2 border-gray-200 px-5 py-3',
                       'relative cursor-pointer'
                     )}

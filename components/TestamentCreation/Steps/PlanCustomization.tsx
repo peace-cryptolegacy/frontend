@@ -4,12 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Caption from 'components/Caption/Caption';
 import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
 import { isAddress } from 'ethers/lib/utils';
-import { IBeneficiary, IUserData } from 'mock';
+import { IBeneficiary, ITestamentInfo } from 'mock';
 import { BaseSyntheticEvent, useState } from 'react';
 
 interface Props {
   stepperClassName?: string;
-  userData: IUserData;
+  testamentInfo: ITestamentInfo;
   renderStepper: Function;
   onNextStep: Function;
   onPrevStep: Function;
@@ -17,7 +17,7 @@ interface Props {
 
 const PlanCustomization = ({
   stepperClassName,
-  userData,
+  testamentInfo,
   renderStepper,
   onNextStep,
   onPrevStep,
@@ -30,11 +30,11 @@ const PlanCustomization = ({
   };
 
   const [beneficiaries, setBeneficiaries] = useState<IBeneficiary[]>(
-    userData.beneficiaries
+    testamentInfo.beneficiaries
   );
 
   const [expirationDays, setExpirationDays] = useState<number>(
-    userData.expirationDays || 7
+    testamentInfo.expirationDays || 7
   );
   const [errors, setErrors] = useState<boolean[]>([false]);
 

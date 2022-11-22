@@ -8,7 +8,7 @@ import Stepper from 'components/Stepper/Stepper';
 import Title from 'components/Title/Title';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
 import { useLocalStorage } from 'utils/hooks/useLocalStorage';
-import { initialValue } from 'mock/index';
+import { testamentInfoInitialValue } from 'mock/index';
 import { useAppSelector, useAppDispatch } from 'store/hooks';
 import {
   setActiveStep,
@@ -25,25 +25,27 @@ const Steps = () => {
   const dispatch = useAppDispatch();
   const beneficiaries: [] = useAppSelector(getBeneficiaries);
   const stepsLabel = ['Select Plan', 'Customize Plan', 'Review Plan'];
-  const { item: userData, saveItem: setUserData } = useLocalStorage(
+  const { item: testamentInfo, saveItem: setTestamentInfo } = useLocalStorage(
     'TESTAMENT_INFO',
-    initialValue
+    testamentInfoInitialValue
   );
 
-  const getUpdatedUserData = () =>
+  const getUpdatedTestamentInfo = () =>
     JSON.parse(localStorage.getItem('TESTAMENT_INFO'));
 
   useEffect(() => {
-    dispatch(setSelectedPlan({ selectedPlan: userData.selectedPlan }));
-    dispatch(setActiveStep({ activeStep: userData.activeStep }));
-    dispatch(setBeneficiaries({ beneficiaries: userData.beneficiaries }));
-    dispatch(setExpirationDays({ expirationDays: userData.expirationDays }));
+    dispatch(setSelectedPlan({ selectedPlan: testamentInfo.selectedPlan }));
+    dispatch(setActiveStep({ activeStep: testamentInfo.activeStep }));
+    dispatch(setBeneficiaries({ beneficiaries: testamentInfo.beneficiaries }));
+    dispatch(
+      setExpirationDays({ expirationDays: testamentInfo.expirationDays })
+    );
     dispatch(
       setBeneficiariesAffected({
-        beneficiariesAffected: userData.beneficiariesAffected,
+        beneficiariesAffected: testamentInfo.beneficiariesAffected,
       })
     );
-  }, [dispatch, userData]);
+  }, [dispatch, testamentInfo]);
 
   const renderStepper = () => {
     return (
@@ -51,7 +53,7 @@ const Steps = () => {
         <Stepper
           steps={stepsLabel}
           className="mb-7"
-          activeStep={userData.activeStep}
+          activeStep={testamentInfo.activeStep}
         />
         <HorizontalRule />
       </>
@@ -64,7 +66,7 @@ const Steps = () => {
           stepperClassName=""
           renderStepper={() => renderStepper()}
           onNextStep={() => {
-            const updatedUserData = getUpdatedUserData();
+            const updatedTestamentInfo = getUpdatedTestamentInfo();
             dispatch(
               setActiveStep({
                 activeStep: 1,
@@ -72,17 +74,17 @@ const Steps = () => {
             );
             dispatch(
               setSelectedPlan({
-                selectedPlan: updatedUserData.selectedPlan,
+                selectedPlan: updatedTestamentInfo.selectedPlan,
               })
             );
-            setUserData({
-              ...updatedUserData,
+            setTestamentInfo({
+              ...updatedTestamentInfo,
               activeStep: 1,
-              selectedPlan: updatedUserData.selectedPlan,
+              selectedPlan: updatedTestamentInfo.selectedPlan,
             });
           }}
         />
-      ), // <ConnectStep onNextStep={() => setUserData(1)} />
+      ), // <ConnectStep onNextStep={() => setTestamentInfo(1)} />
       key: 'step-connect',
       title: 'Time To Protect Our Wealth ✌️',
     },
@@ -90,17 +92,17 @@ const Steps = () => {
       content: (
         <PlanCustomization
           stepperClassName=""
-          userData={userData}
+          testamentInfo={testamentInfo}
           renderStepper={() => renderStepper()}
           onPrevStep={() => {
-            const updatedUserData = getUpdatedUserData();
-            setUserData({ ...updatedUserData, activeStep: 0 });
+            const updatedTestamentInfo = getUpdatedTestamentInfo();
+            setTestamentInfo({ ...updatedTestamentInfo, activeStep: 0 });
           }}
           onNextStep={(
             beneficiaries: IBeneficiary[],
             expirationDays: number
           ) => {
-            const updatedUserData = getUpdatedUserData();
+            const updatedTestamentInfo = getUpdatedTestamentInfo();
             dispatch(
               setActiveStep({
                 activeStep: 2,
@@ -109,8 +111,8 @@ const Steps = () => {
 
             dispatch(setBeneficiaries(beneficiaries));
             dispatch(setExpirationDays({ expirationDays }));
-            setUserData({
-              ...updatedUserData,
+            setTestamentInfo({
+              ...updatedTestamentInfo,
               activeStep: 2,
               expirationDays,
               beneficiaries,
@@ -126,10 +128,10 @@ const Steps = () => {
         <PlanReview
           stepperClassName=""
           renderStepper={() => renderStepper()}
-          beneficiaries={userData.beneficiaries}
+          beneficiaries={testamentInfo.beneficiaries}
           onPrevStep={() => {
-            const updatedUserData = getUpdatedUserData();
-            setUserData({ ...updatedUserData, activeStep: 1 });
+            const updatedTestamentInfo = getUpdatedTestamentInfo();
+            setTestamentInfo({ ...updatedTestamentInfo, activeStep: 1 });
           }}
           onNextStep={() => handleDeploy()}
         />
@@ -148,13 +150,13 @@ const Steps = () => {
   function renderTitle() {
     return (
       <>
-        <Title text={steps && steps[userData.activeStep].title}></Title>
+        <Title text={steps && steps[testamentInfo.activeStep].title}></Title>
       </>
     );
   }
 
   function renderStep() {
-    return steps[userData.activeStep].content;
+    return steps[testamentInfo.activeStep].content;
   }
 
   return (
