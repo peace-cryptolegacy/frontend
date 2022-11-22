@@ -18,10 +18,10 @@ const Layout = ({ children }: Props) => {
       return <>{children}</>;
     }
     return (
-      <Section className="overflow-x-hidden">
+      <Section className="justify-center overflow-x-hidden">
         <>
           <Menu />
-          <div className="layout__container flex h-screen w-full flex-col pl-96 pr-24">
+          <div className="flex h-screen w-full max-w-[1600px] flex-col pl-[calc(250px+64px)] pr-[64px]">
             <>
               <Navbar />
               {children}

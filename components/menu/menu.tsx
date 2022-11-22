@@ -18,7 +18,7 @@ const Menu: FC = () => {
   const router = useRouter();
 
   return (
-    <menu className="fixed top-0 z-10 flex  h-screen min-w-[250px] flex-col items-center rounded-r-3xl bg-white">
+    <menu className="fixed inset-0 z-10 flex h-screen max-w-[250px] flex-col items-center rounded-r-3xl bg-white">
       <div className="flex py-10">
         <Link href="/">
           <Image
