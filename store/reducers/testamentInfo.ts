@@ -34,6 +34,9 @@ const testamentInfoSlice = createSlice({
       state: TestamentInfo,
       action: PayloadAction<{ activeStep: number }>
     ) {
+      console.log('"setactivestep reducer!!!!!!!!!!!!!!"');
+      console.log('setactivestep reducer');
+      console.log(action.payload.activeStep);
       return {
         ...state,
         activeStep: action.payload.activeStep,

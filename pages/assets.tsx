@@ -52,7 +52,7 @@ const Assets: NextPage = () => {
   ];
 
   return (
-    <>
+    <div className="max-w-[1280px]">
       <Section className="justify-between gap-8">
         <Stack className="capitalize">
           <Stack direction="row" className="gap-10">
@@ -148,7 +148,7 @@ const Assets: NextPage = () => {
           </div>
         </Box>
       </div>
-    </>
+    </div>
   );
 };
 

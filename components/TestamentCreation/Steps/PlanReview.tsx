@@ -87,9 +87,7 @@ const PlanReview = ({
 
       <div className={styles['beneficiariesstep__divider']}></div>
 
-      <Box marginBottom={5}>
-        {beneficiaries.beneficiaries.length} Beneficiaries
-      </Box>
+      <Box marginBottom={5}>{beneficiaries.length} Beneficiaries</Box>
 
       <Box color="#64748B" display="flex" flexDirection="row" fontWeight="bold">
         <Box flex={1}>Claimer</Box>
@@ -100,7 +98,7 @@ const PlanReview = ({
 
       <div className={styles['beneficiariesstep__divider']}></div>
 
-      {beneficiaries.beneficiaries.map(renderRow)}
+      {beneficiaries.map(renderRow)}
 
       <div className={styles['beneficiariesstep__divider']}></div>
 

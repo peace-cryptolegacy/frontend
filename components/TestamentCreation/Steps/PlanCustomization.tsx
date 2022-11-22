@@ -4,25 +4,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Caption from 'components/Caption/Caption';
 import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
 import { isAddress } from 'ethers/lib/utils';
+import { IBeneficiary, ITestamentInfo } from 'mock';
 import { BaseSyntheticEvent, useState } from 'react';
 
 interface Props {
   stepperClassName?: string;
+  testamentInfo: ITestamentInfo;
   renderStepper: Function;
   onNextStep: Function;
   onPrevStep: Function;
 }
 
-type Beneficiary = {
-  stepperClassname?: string;
-  name?: string;
-  address: string;
-  isClaimant?: boolean;
-  distribution: number;
-};
-
 const PlanCustomization = ({
   stepperClassName,
+  testamentInfo,
   renderStepper,
   onNextStep,
   onPrevStep,
@@ -33,14 +28,18 @@ const PlanCustomization = ({
     isClaimant: false,
     distribution: 0,
   };
-  const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([
-    defaultBeneficiary,
-  ]);
-  const [expiration, setExpiration] = useState<number>(7);
+
+  const [beneficiaries, setBeneficiaries] = useState<IBeneficiary[]>(
+    testamentInfo.beneficiaries
+  );
+
+  const [expirationDays, setExpirationDays] = useState<number>(
+    testamentInfo.expirationDays || 7
+  );
   const [errors, setErrors] = useState<boolean[]>([false]);
 
   function handleExpirationChange(event: any) {
-    setExpiration(Number(event.target.value));
+    setExpirationDays(Number(event.target.value));
   }
 
   function handleAddBeneficiary() {
@@ -80,7 +79,7 @@ const PlanCustomization = ({
   }
 
   async function handleContinueClick() {
-    onNextStep(beneficiaries, expiration);
+    onNextStep(beneficiaries, expirationDays);
   }
 
   function handleCloseIconClick(index: number) {
@@ -92,7 +91,7 @@ const PlanCustomization = ({
     setErrors([...errors.slice(0, index), ...errors.slice(index + 1)]);
   }
 
-  function renderRow(beneficiary: Beneficiary, index: number) {
+  function renderRow(beneficiary: IBeneficiary, index: number) {
     return (
       <tr className="">
         <td className="text-left">
@@ -139,6 +138,7 @@ const PlanCustomization = ({
             onChange={(event: BaseSyntheticEvent) =>
               handleChange('distribution', event.target.value, index)
             }
+            value={beneficiary.distribution}
           />
         </td>
         <td>
@@ -206,6 +206,7 @@ const PlanCustomization = ({
           <select
             className="form-select w-2/6 rounded px-4 py-3"
             onChange={handleExpirationChange}
+            value={expirationDays}
           >
             <option value={7}>7 days</option>
             <option value={30}>30 days</option>

@@ -55,7 +55,6 @@ const Protection: NextPage = () => {
                 return (
                   <React.Fragment key={title}>
                     <ListItem
-                      gradientBorder={selectedSubItem?.title === title}
                       classNameInnerDiv="!gap-2 !px-4"
                       onClick={() => setSelectedSubItem({ title, route })}
                       className={clsx(

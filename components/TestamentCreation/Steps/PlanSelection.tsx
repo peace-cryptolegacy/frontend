@@ -7,31 +7,27 @@ import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
 import Stack from 'components/stack/Stack';
 
 import Image from 'next/image';
-// import { useRouter } from 'next/router';
-import { initialValue } from 'mock/index';
-import React, { useState } from 'react';
-import { useLocalStorage } from 'utils/hooks/useLocalStorage';
+import React from 'react';
 import menuItems from 'utils/menuItems';
+import { testamentInfoInitialValue } from 'mock/index';
+import { useLocalStorage } from 'utils/hooks/useLocalStorage';
 
 interface Props {
+  selectedPlan: number;
   stepperClassName?: string;
   renderStepper: Function;
   onNextStep: Function;
 }
 
-const Protection = ({ stepperClassName, renderStepper, onNextStep }: Props) => {
-  const { item: userData, saveItem: setUserData } = useLocalStorage(
+const PlanSelection = ({
+  stepperClassName,
+  renderStepper,
+  onNextStep,
+}: Props) => {
+  const { item: testamentInfo, saveItem: setTestamentInfo } = useLocalStorage(
     'TESTAMENT_INFO',
-    initialValue
+    testamentInfoInitialValue
   );
-
-  // const router = useRouter();
-  const [selectedSubItem, setSelectedSubItem] = useState<{
-    title: string;
-    route: string;
-  }>();
-
-  // const steps = ['Select Plan', 'Customize Plan', 'Review Plan'];
 
   async function handleClick() {
     onNextStep();
@@ -58,24 +54,20 @@ const Protection = ({ stepperClassName, renderStepper, onNextStep }: Props) => {
         </span>
         <List className="grid grid-cols-1 gap-x-14 gap-y-12 2xl:grid-cols-2">
           {Object.entries(menuItems.Protection.subMenu)?.map(
-            ([
-              ,
-              { icon, title, description, alt, route, comingSoon, planId },
-            ]) => {
+            ([, { icon, title, description, alt, comingSoon, planId }]) => {
               return (
                 <React.Fragment key={title}>
                   <ListItem
-                    isSelected={selectedSubItem?.title === title}
+                    isSelected={testamentInfo.selectedPlan === planId}
                     classNameInnerDiv="!gap-2 !px-4"
                     onClick={() => {
-                      setUserData({
-                        ...userData,
+                      setTestamentInfo({
+                        ...testamentInfo,
                         selectedPlan: planId,
                       });
-                      setSelectedSubItem({ title, route });
                     }}
                     className={clsx(
-                      selectedSubItem?.title !== title &&
+                      testamentInfo.selectedPlan !== planId &&
                         '!gap-2 rounded-3xl border-2 border-gray-200 px-5 py-3',
                       'relative cursor-pointer'
                     )}
@@ -122,4 +114,4 @@ const Protection = ({ stepperClassName, renderStepper, onNextStep }: Props) => {
   );
 };
 
-export default Protection;
+export default PlanSelection;

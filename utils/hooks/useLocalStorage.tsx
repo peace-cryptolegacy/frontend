@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { ITestamentInfo } from 'mock/index';
 
-function useLocalStorage(itemName: string, initialValue: object) {
+function useLocalStorage(itemName: string, initialValue: ITestamentInfo) {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState(initialValue);
@@ -9,7 +10,6 @@ function useLocalStorage(itemName: string, initialValue: object) {
     try {
       const localStorageItem = window.localStorage.getItem(itemName);
       let parsedItem;
-
       if (!localStorageItem) {
         localStorage.setItem(itemName, JSON.stringify(initialValue));
         parsedItem = initialValue;
