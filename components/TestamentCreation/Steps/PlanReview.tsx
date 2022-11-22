@@ -18,12 +18,6 @@ const PlanReview = ({
   onNextStep,
   onPrevStep,
 }: Props) => {
-  console.log('plan review!!!!!!!');
-  console.log('plan review!!!!!!!');
-  console.log('plan review!!!!!!!');
-  console.log(beneficiaries);
-  console.log('plan review!!!!!!!');
-  console.log('');
   function renderRow(beneficiary: any, index: any) {
     return (
       <Box

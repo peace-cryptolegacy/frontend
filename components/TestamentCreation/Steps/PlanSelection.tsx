@@ -7,7 +7,6 @@ import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
 import Stack from 'components/stack/Stack';
 
 import Image from 'next/image';
-// import { useRouter } from 'next/router';d upstream
 import React from 'react';
 import menuItems from 'utils/menuItems';
 import { initialValue } from 'mock/index';
@@ -20,13 +19,15 @@ interface Props {
   onNextStep: Function;
 }
 
-const Protection = ({ stepperClassName, renderStepper, onNextStep }: Props) => {
+const PlanSelection = ({
+  stepperClassName,
+  renderStepper,
+  onNextStep,
+}: Props) => {
   const { item: userData, saveItem: setUserData } = useLocalStorage(
     'TESTAMENT_INFO',
     initialValue
   );
-
-  // const steps = ['Select Plan', 'Customize Plan', 'Review Plan'];
 
   async function handleClick() {
     onNextStep();
@@ -113,4 +114,4 @@ const Protection = ({ stepperClassName, renderStepper, onNextStep }: Props) => {
   );
 };
 
-export default Protection;
+export default PlanSelection;

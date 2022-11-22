@@ -11,7 +11,6 @@ import { useLocalStorage } from 'utils/hooks/useLocalStorage';
 import { initialValue } from 'mock/index';
 import { useAppSelector, useAppDispatch } from 'store/hooks';
 import {
-  // getActiveStep,
   setActiveStep,
   setSelectedPlan,
   setExpirationDays,
@@ -26,7 +25,6 @@ const Steps = () => {
   const dispatch = useAppDispatch();
   const beneficiaries: [] = useAppSelector(getBeneficiaries);
   const stepsLabel = ['Select Plan', 'Customize Plan', 'Review Plan'];
-  console.log('first');
   const { item: userData, saveItem: setUserData } = useLocalStorage(
     'TESTAMENT_INFO',
     initialValue
@@ -162,7 +160,7 @@ const Steps = () => {
   return (
     <div className="mb-12">
       {renderTitle()}
-      <div className="w-fit rounded-xl bg-white px-32 py-9 drop-shadow-lg">
+      <div className="max-w-[1280px] rounded-xl bg-white px-32 py-9 drop-shadow-lg">
         {renderStep(steps)}
       </div>
     </div>

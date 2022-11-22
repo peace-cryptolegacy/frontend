@@ -21,7 +21,7 @@ const Layout = ({ children }: Props) => {
       <Section className="overflow-x-hidden">
         <>
           <Menu />
-          <div className="layout__container flex h-full w-full max-w-[1440px] flex-col pl-96 pr-24">
+          <div className="layout__container flex h-screen w-full flex-col pl-96 pr-24">
             <>
               <Navbar />
               {children}
