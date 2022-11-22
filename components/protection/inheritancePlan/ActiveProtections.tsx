@@ -18,7 +18,7 @@ const ActiveProtections = () => {
   const network = 'moonbeam';
   const tokenMapping = tokenMappings[network as keyof typeof tokenMappings];
 
-  const testmentHistory = [
+  const testamentHistory = [
     {
       action: {
         type: 'Edited',
@@ -166,7 +166,7 @@ const ActiveProtections = () => {
                 <h4 className="h4">History Activity</h4>
                 <Box className="flex h-full flex-col">
                   <div className="space-y-8">
-                    {testmentHistory.map((history, index) => (
+                    {testamentHistory.map((history, index) => (
                       <Stack
                         key={index}
                         direction="row"

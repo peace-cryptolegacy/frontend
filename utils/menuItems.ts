@@ -7,7 +7,7 @@ const menuItems =
       title: 'Protection',
       icon: '/icons/protection.png',
       alt: 'Protection',
-      route: '/',
+      route: '/protection',
       subMenu: {
         'Inheritance Plan': {
           icon: '/icons/inheritance-plan.png',
