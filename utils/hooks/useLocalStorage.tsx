@@ -10,7 +10,6 @@ function useLocalStorage(itemName: string, initialValue: IUserData) {
     try {
       const localStorageItem = window.localStorage.getItem(itemName);
       let parsedItem;
-
       if (!localStorageItem) {
         localStorage.setItem(itemName, JSON.stringify(initialValue));
         parsedItem = initialValue;

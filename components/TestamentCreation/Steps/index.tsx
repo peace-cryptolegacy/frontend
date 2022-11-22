@@ -20,15 +20,10 @@ import {
   getBeneficiaries,
 } from 'store/reducers/testamentInfo';
 import { useEffect } from 'react';
-
-// interface UserData {
-//   activeStep: string;
-//   beneficiaries?: [];
-// }
+import { IBeneficiary } from 'mock';
 
 const Steps = () => {
   const dispatch = useAppDispatch();
-  // const activeStep: number = useAppSelector(getActiveStep);
   const beneficiaries: [] = useAppSelector(getBeneficiaries);
   const stepsLabel = ['Select Plan', 'Customize Plan', 'Review Plan'];
   console.log('first');
@@ -37,27 +32,20 @@ const Steps = () => {
     initialValue
   );
 
+  const getUpdatedUserData = () =>
+    JSON.parse(localStorage.getItem('TESTAMENT_INFO'));
+
   useEffect(() => {
-    // dispatch(setActiveStep({ activeStep: userData.activeStep }));
     dispatch(setSelectedPlan({ selectedPlan: userData.selectedPlan }));
+    dispatch(setActiveStep({ activeStep: userData.activeStep }));
+    dispatch(setBeneficiaries({ beneficiaries: userData.beneficiaries }));
     dispatch(setExpirationDays({ expirationDays: userData.expirationDays }));
-    // dispatch(setBeneficiaries({ beneficiaries: userData.beneficiaries }));
     dispatch(
       setBeneficiariesAffected({
         beneficiariesAffected: userData.beneficiariesAffected,
       })
     );
-
-    // dispatch(setBeneficiaries({ selectedPlan: userData.beneficiaries }));
-    dispatch(
-      setBeneficiariesAffected({ selectedPlan: userData.beneficiariesAffected })
-    );
-
-    console.log('component did mount : ', userData.activeStep);
-  }, []);
-
-  const getUpdatedUserData = () =>
-    JSON.parse(localStorage.getItem('TESTAMENT_INFO'));
+  }, [dispatch, userData]);
 
   const renderStepper = () => {
     return (
@@ -104,15 +92,17 @@ const Steps = () => {
       content: (
         <PlanCustomization
           stepperClassName=""
-          beneficiaries={userData.beneficiaries}
+          userData={userData}
           renderStepper={() => renderStepper()}
           onPrevStep={() => {
             const updatedUserData = getUpdatedUserData();
             setUserData({ ...updatedUserData, activeStep: 0 });
           }}
-          onNextStep={(beneficiaries: any, expiration: any) => {
+          onNextStep={(
+            beneficiaries: IBeneficiary[],
+            expirationDays: number
+          ) => {
             const updatedUserData = getUpdatedUserData();
-            alert('active step 2');
             dispatch(
               setActiveStep({
                 activeStep: 2,
@@ -120,11 +110,11 @@ const Steps = () => {
             );
 
             dispatch(setBeneficiaries(beneficiaries));
-            dispatch(setExpirationDays({ expirationDays: expiration }));
+            dispatch(setExpirationDays({ expirationDays }));
             setUserData({
               ...updatedUserData,
               activeStep: 2,
-              expirationDays: expiration,
+              expirationDays,
               beneficiaries,
             });
           }}
