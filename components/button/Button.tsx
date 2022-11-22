@@ -3,7 +3,7 @@ import { ComponentPropsWithoutRef } from 'react';
 
 type Props = {
   variant?: 'primary' | 'secondary' | 'basic' | 'fancy' | 'gradientBorder';
-  size?: 'sm' | 'base' | 'lg';
+  size?: 'xs' | 'sm' | 'base' | 'lg';
   icon?: JSX.Element;
   text: string;
   disabled?: boolean;
@@ -25,16 +25,17 @@ const Button = ({
       <button
         {...props}
         className={clsx(
-          ['fancy', 'gradientBorder'].includes(variant) && 'bg-mainVertical',
+          ['fancy', 'gradientBorder'].includes(variant) &&
+            'rounded-2xl bg-mainVertical',
           variant === 'fancy' && 'p-1.5',
           variant === 'gradientBorder' && 'p-0.5',
-          !['fancy', 'gradientBorder'].includes(variant) && 'py-4',
+          !['fancy', 'gradientBorder'].includes(variant) && 'rounded-lg py-4',
           variant === 'basic' && 'border-[1px] border-gray-300 bg-white',
+          size === 'xs' && 'w-[140px]',
           size === 'sm' && 'w-[200px]',
           size === 'base' && 'w-[260px]',
           size === 'lg' && 'w-[369px]',
           disabled && 'cursor-not-allowed opacity-50',
-          'rounded-2xl',
           className
         )}
       >
@@ -42,7 +43,10 @@ const Button = ({
           <div
             className={clsx(
               variant === 'fancy' ? 'bg-black' : 'bg-white',
-              'rounded-2xl py-4'
+              ['fancy', 'gradientBorder'].includes(variant)
+                ? 'rounded-2xl'
+                : 'rounded-lg',
+              'py-4'
             )}
           >
             <span className="mr-2">{icon}</span>

@@ -14,13 +14,16 @@ import Image from 'next/image';
 
 import History from 'components/myPlans/History';
 import InheritancePlan from 'components/myPlans/InheritancePlan';
+import Tab from 'components/tabs/Tab';
+import TabGroup from 'components/tabs/TabGroup';
+import TabPanel from 'components/tabs/TabPanel';
+import TabPanels from 'components/tabs/TabPanels';
 import { useEffect, useState } from 'react';
 import menuItems from 'utils/menuItems';
 import { UserPlans } from 'utils/Types';
 
 const MyPlans: NextPage = () => {
   const [userPlans, setUserPlans] = useState<UserPlans>();
-  const [activeTab, setActiveTab] = useState<string>('Pending Claims');
   const [activeClaim, setActiveClaim] = useState<
     'Inheritance Plan' | 'Backup Wallet'
   >();
@@ -117,110 +120,104 @@ const MyPlans: NextPage = () => {
   };
 
   const renderPage = () => {
-    if (activeClaim) {
-      if (activeClaim === 'Inheritance Plan') {
-        return (
-          <InheritancePlan
-            claimersSignatures={claimersSignatures}
-            updateDialogContent={updateDialogContent}
-            setActiveClaim={setActiveClaim}
-          />
-        );
-      }
-      if (activeClaim === 'Backup Wallet') {
-        return <></>;
-      }
-    }
-
     return (
-      <>
-        {activeTab === 'Pending Claims' && (
-          <Section className="gap-20">
-            {userPlans?.map((plan) => {
-              const { title, description, icon, myPlansButtonText } =
-                menuItems.Protection.subMenu[plan];
-              return (
-                <Box
-                  key={title}
-                  className="flex max-w-sm flex-col justify-between rounded-xl"
-                >
-                  <Stack direction="row">
-                    <div className="relative h-[96px] w-[86px] shrink-0">
-                      <Image
-                        src={icon}
-                        alt={title}
-                        layout="fill"
-                        objectFit="contain"
+      <TabPanels>
+        <TabPanel>
+          {activeClaim === 'Inheritance Plan' ? (
+            <InheritancePlan
+              claimersSignatures={claimersSignatures}
+              updateDialogContent={updateDialogContent}
+              setActiveClaim={setActiveClaim}
+            />
+          ) : activeClaim === 'Backup Wallet' ? (
+            <></>
+          ) : (
+            activeClaim === undefined && (
+              <Section className="gap-20">
+                {userPlans?.map((plan) => {
+                  const { title, description, icon, myPlansButtonText } =
+                    menuItems.Protection.subMenu[plan];
+                  return (
+                    <Box
+                      key={title}
+                      className="flex max-w-sm flex-col justify-between rounded-xl"
+                    >
+                      <Stack direction="row">
+                        <div className="relative h-[96px] w-[86px] shrink-0">
+                          <Image
+                            src={icon}
+                            alt={title}
+                            layout="fill"
+                            objectFit="contain"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <h4 className="h4">{title}</h4>
+                          <p>{description}</p>
+                        </div>
+                      </Stack>
+                      <Button
+                        text={myPlansButtonText}
+                        variant="basic"
+                        className="mt-6 w-full"
+                        onClick={() => setActiveClaim(title as any)}
                       />
-                    </div>
-                    <div className="space-y-1">
-                      <h4 className="h4">{title}</h4>
-                      <p>{description}</p>
-                    </div>
-                  </Stack>
-                  <Button
-                    text={myPlansButtonText}
-                    variant="basic"
-                    className="mt-6 w-full"
-                    onClick={() => setActiveClaim(title as any)}
-                  />
-                </Box>
-              );
-            })}
-          </Section>
-        )}
-
-        {activeTab === 'History' && <History />}
-      </>
+                    </Box>
+                  );
+                })}
+              </Section>
+            )
+          )}
+        </TabPanel>
+        <TabPanel>
+          <History />
+        </TabPanel>
+      </TabPanels>
     );
   };
 
   return (
     <>
-      <>
-        <Stack direction="row">
-          <Image
-            src="/icons/inheritance-plan.png"
-            alt="protection"
-            objectFit="contain"
-            height={96}
-            width={86}
-          />
-          <h2 className="h2 text-gradient">Welcome to Claim Process</h2>
-        </Stack>
-        <Tabs
-          className="my-10"
-          tabs={['Pending Claims', 'History']}
-          value={activeTab}
-          setValue={(newValue) => {
-            setActiveClaim(undefined);
-            setActiveTab(newValue);
-          }}
-          underline={true}
-        />
-      </>
-      {renderPage()};
-      <Dialog isOpen={isDialogOpen} onClose={closeCompleteSignatureModal}>
-        <div className="mb-4 flex w-full justify-end">
-          <FontAwesomeIcon
-            icon={faXmark}
-            size="2xl"
-            style={{ cursor: 'pointer' }}
-            onClick={() => setIsDialogOpen(false)}
-          />
-        </div>
-        <HeadlessDialog.Title as="h3" className="h3 text-center">
-          {dialog?.title}
-        </HeadlessDialog.Title>
-        <Stack className="mt-4 mb-5 items-center !gap-10">
-          <HeadlessDialog.Description>
-            <p className="text-sm">{dialog?.description}</p>
-          </HeadlessDialog.Description>
-          {dialog?.body}
+      <TabGroup>
+        <>
+          <Stack direction="row">
+            <Image
+              src="/icons/inheritance-plan.png"
+              alt="protection"
+              objectFit="contain"
+              height={96}
+              width={86}
+            />
+            <h2 className="h2 text-gradient">Welcome to Claim Process</h2>
+          </Stack>
+          <Tabs className="my-10">
+            <Tab>Pending Claims</Tab>
+            <Tab>History</Tab>
+          </Tabs>
+        </>
+        {renderPage()};
+        <Dialog isOpen={isDialogOpen} onClose={closeCompleteSignatureModal}>
+          <div className="mb-4 flex w-full justify-end">
+            <FontAwesomeIcon
+              icon={faXmark}
+              size="2xl"
+              style={{ cursor: 'pointer' }}
+              onClick={() => setIsDialogOpen(false)}
+            />
+          </div>
+          <HeadlessDialog.Title as="h3" className="h3 text-center">
+            {dialog?.title}
+          </HeadlessDialog.Title>
+          <Stack className="mt-4 mb-5 items-center !gap-10">
+            <HeadlessDialog.Description>
+              <p className="text-sm">{dialog?.description}</p>
+            </HeadlessDialog.Description>
+            {dialog?.body}
 
-          {dialog?.action}
-        </Stack>
-      </Dialog>
+            {dialog?.action}
+          </Stack>
+        </Dialog>
+      </TabGroup>
     </>
   );
 };

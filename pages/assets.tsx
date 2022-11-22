@@ -3,16 +3,15 @@ import PercentageBar from 'components/percentageBar/PercentageBar';
 import Section from 'components/Section/Section';
 import SocialButtons from 'components/SocialButtons/SocialButtons';
 import Stack from 'components/stack/Stack';
+import Tab from 'components/tabs/Tab';
+import TabGroup from 'components/tabs/TabGroup';
+import TabPanel from 'components/tabs/TabPanel';
+import TabPanels from 'components/tabs/TabPanels';
 import Tabs from 'components/tabs/Tabs';
 import { NextPage } from 'next';
 import Image from 'next/image';
-import { useState } from 'react';
 
 const Assets: NextPage = () => {
-  const [activeTab, setActiveTab] = useState('Tokens');
-  const [performanceChartActiveTab, setPerformanceChartActiveTab] =
-    useState('1D');
-
   const socialIcons = [
     {
       route: '/icons/twitter-white.png',
@@ -98,56 +97,82 @@ const Assets: NextPage = () => {
         </Box>
       </Section>
 
-      <Tabs
-        tabs={['Tokens', 'Collectibles', 'Wallet Activity']}
-        value={activeTab}
-        setValue={setActiveTab}
-        className="mt-12"
-      />
-
-      <div className="mt-12 grid grid-cols-2 gap-8">
-        <Box>
-          <Stack direction="row" className="justify-between">
-            <h4 className="block capitalize text-blue-gray">Performance</h4>
-            <Tabs
-              tabs={['1D', '1W', '1M', '1Y']}
-              value={performanceChartActiveTab}
-              setValue={setPerformanceChartActiveTab}
-              className="!gap-3 text-sm"
-              underline={false}
-            />
-          </Stack>
-          <span className="mb-5 block text-3xl">$80.00</span>
-          <div className="relative h-48 w-full">
-            <Image
-              src="/images/assets-chart.png"
-              layout="fill"
-              alt="chart"
-              objectFit="contain"
-            />
-          </div>
-        </Box>
-        <Box>
-          <h5 className="capitalize text-blue-gray">Network Allocation</h5>
-          <div className="mt-6 grid grid-cols-2 gap-x-10 gap-y-12">
-            {tokens.map((token) => {
-              return (
-                <Stack key={token.name} direction="row">
-                  <div className="relative h-8 w-8 shrink-0">
-                    <Image src={token.icon} layout="fill" alt={token.name} />
-                  </div>
-                  <div>
-                    <span className="block whitespace-nowrap text-xs text-blue-gray">
-                      Assets on {token.name}
-                    </span>
-                    <span className="block">${token.amount}</span>
-                  </div>
-                </Stack>
-              );
-            })}
-          </div>
-        </Box>
-      </div>
+      <TabGroup className="mt-14">
+        <Tabs>
+          <Tab>Tokens</Tab>
+          <Tab>Collectibles</Tab>
+          <Tab>Walle Activity</Tab>
+        </Tabs>
+        <TabPanels>
+          <TabPanel>
+            <div className="mt-12 grid grid-cols-2 gap-8">
+              <Box>
+                <TabGroup>
+                  <Stack direction="row" className="justify-between">
+                    <h4 className="block capitalize text-blue-gray">
+                      Performance
+                    </h4>
+                    <Tabs className="!gap-3 text-sm">
+                      <Tab>1D</Tab>
+                      <Tab>1W</Tab>
+                      <Tab>1M</Tab>
+                      <Tab>1Y</Tab>
+                    </Tabs>
+                  </Stack>
+                  <TabPanels>
+                    <TabPanel>
+                      <span className="mb-5 block text-3xl">$80.00</span>
+                      <div className="relative h-48 w-full">
+                        <Image
+                          src="/images/assets-chart.png"
+                          layout="fill"
+                          alt="chart"
+                          objectFit="contain"
+                        />
+                      </div>
+                    </TabPanel>
+                    <TabPanel>
+                      <></>
+                    </TabPanel>
+                    <TabPanel>
+                      <></>
+                    </TabPanel>
+                    <TabPanel>
+                      <></>
+                    </TabPanel>
+                  </TabPanels>
+                </TabGroup>
+              </Box>
+              <Box>
+                <h5 className="capitalize text-blue-gray">
+                  Network Allocation
+                </h5>
+                <div className="mt-6 grid grid-cols-2 gap-x-10 gap-y-12">
+                  {tokens.map((token) => {
+                    return (
+                      <Stack key={token.name} direction="row">
+                        <div className="relative h-8 w-8 shrink-0">
+                          <Image
+                            src={token.icon}
+                            layout="fill"
+                            alt={token.name}
+                          />
+                        </div>
+                        <div>
+                          <span className="block whitespace-nowrap text-xs text-blue-gray">
+                            Assets on {token.name}
+                          </span>
+                          <span className="block">${token.amount}</span>
+                        </div>
+                      </Stack>
+                    );
+                  })}
+                </div>
+              </Box>
+            </div>
+          </TabPanel>
+        </TabPanels>
+      </TabGroup>
     </div>
   );
 };
