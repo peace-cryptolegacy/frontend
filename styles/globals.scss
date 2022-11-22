@@ -40,6 +40,10 @@ a {
   @apply text-3xl font-medium capitalize text-blue-dark;
 }
 
+.subtitle {
+  @apply text-sm text-blue-gray;
+}
+
 .text-gradient {
   @apply bg-mainHorizontal bg-clip-text text-transparent;
 }
