@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
 import Stepper from 'components/Stepper/Stepper';
 import PlanCustomization from 'components/TestamentCreation/Steps/PlanCustomization';
@@ -12,6 +10,7 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import {
   getBeneficiaries,
+  getExpirationDays,
   setActiveStep,
   setBeneficiaries,
   setBeneficiariesAffected,
@@ -24,6 +23,7 @@ import { writeTestament } from 'utils/web3/heritage';
 const Steps = () => {
   const dispatch = useAppDispatch();
   const beneficiaries: [] = useAppSelector(getBeneficiaries);
+  const expirationDays: number = useAppSelector(getExpirationDays);
   const stepsLabel = ['Select Plan', 'Customize Plan', 'Review Plan'];
   const { item: testamentInfo, saveItem: setTestamentInfo } = useLocalStorage(
     'TESTAMENT_INFO',
@@ -31,7 +31,7 @@ const Steps = () => {
   );
 
   const getUpdatedTestamentInfo = () =>
-    JSON.parse(localStorage.getItem('TESTAMENT_INFO'));
+    JSON.parse(localStorage.getItem('TESTAMENT_INFO')!);
 
   useEffect(() => {
     dispatch(setSelectedPlan({ selectedPlan: testamentInfo.selectedPlan }));
@@ -133,6 +133,7 @@ const Steps = () => {
           stepperClassName=""
           renderStepper={() => renderStepper()}
           beneficiaries={testamentInfo.beneficiaries}
+          expirationDays={testamentInfo.expirationDays}
           onPrevStep={() => {
             const updatedTestamentInfo = getUpdatedTestamentInfo();
             setTestamentInfo({ ...updatedTestamentInfo, activeStep: 1 });
@@ -146,7 +147,7 @@ const Steps = () => {
   ];
 
   async function handleDeploy() {
-    await writeTestament(beneficiaries.beneficiaries, beneficiaries.expiration);
+    await writeTestament(beneficiaries, expirationDays);
 
     window.location.reload();
   }
@@ -167,7 +168,7 @@ const Steps = () => {
     <div className="mb-12">
       {renderTitle()}
       <div className="w-full rounded-xl bg-white px-32 py-9 drop-shadow-lg">
-        {renderStep(steps)}
+        {renderStep()}
       </div>
     </div>
   );

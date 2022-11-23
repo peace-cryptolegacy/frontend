@@ -13,7 +13,6 @@ import { testamentInfoInitialValue } from 'mock/index';
 import { useLocalStorage } from 'utils/hooks/useLocalStorage';
 
 interface Props {
-  selectedPlan: number;
   stepperClassName?: string;
   renderStepper: Function;
   onNextStep: Function;

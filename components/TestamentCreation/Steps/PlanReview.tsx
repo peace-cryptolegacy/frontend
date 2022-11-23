@@ -7,6 +7,7 @@ interface Props {
   stepperClassName?: string;
   renderStepper: Function;
   beneficiaries: any;
+  expirationDays: number;
   onNextStep: Function;
   onPrevStep: Function;
 }
@@ -15,6 +16,7 @@ const PlanReview = ({
   stepperClassName,
   renderStepper,
   beneficiaries,
+  expirationDays,
   onNextStep,
   onPrevStep,
 }: Props) => {
@@ -27,7 +29,7 @@ const PlanReview = ({
         key={`beneficiary-${index}`}
       >
         <Box flex={1}>{beneficiary.isClaimant ? 'Yes' : 'No'}</Box>
-        <Box flex={3}>{beneficiary.name}</Box>
+        <Box flex={3}>{beneficiary.expirationDays}</Box>
         <Box flex={1}>{beneficiary.distribution} %</Box>
         <Box flex={3}>{beneficiary.address}</Box>
       </Box>
@@ -74,7 +76,7 @@ const PlanReview = ({
             Claimer will be able to distribute the funds after:
           </Box>
           <Box color="#000000">
-            {beneficiaries.expiration} days of inactivity on wallet
+            {expirationDays} days of inactivity on wallet
           </Box>
         </Box>
         <Box maxWidth={220}>

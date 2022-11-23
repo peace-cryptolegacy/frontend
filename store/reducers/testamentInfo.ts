@@ -82,6 +82,8 @@ export const getSelectedPlan = (state: RootState) =>
 export const te = (state: RootState) => state.testamentInfo.activeStep;
 export const getBeneficiaries = (state: RootState) =>
   state.testamentInfo.beneficiaries;
+export const getExpirationDays = (state: RootState) =>
+  state.testamentInfo.expirationDays;
 export const getDay = (state: RootState) => state.testamentInfo.expirationDays;
 export const getBeneficiariesAffected = (state: RootState) =>
   state.testamentInfo.beneficiariesAffected;
