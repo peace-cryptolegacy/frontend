@@ -1,12 +1,13 @@
 import { Box, Button } from '@chakra-ui/react';
 import Caption from 'components/Caption/Caption';
 import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
+import { IBeneficiary } from 'mock';
 import styles from 'styles/BeneficiariesStep.module.scss';
 
 interface Props {
   stepperClassName?: string;
   renderStepper: Function;
-  beneficiaries: any;
+  beneficiaries: IBeneficiary[];
   expirationDays: number;
   onNextStep: Function;
   onPrevStep: Function;
@@ -29,7 +30,7 @@ const PlanReview = ({
         key={`beneficiary-${index}`}
       >
         <Box flex={1}>{beneficiary.isClaimant ? 'Yes' : 'No'}</Box>
-        <Box flex={3}>{beneficiary.expirationDays}</Box>
+        <Box flex={3}>{beneficiary.name}</Box>
         <Box flex={1}>{beneficiary.distribution} %</Box>
         <Box flex={3}>{beneficiary.address}</Box>
       </Box>

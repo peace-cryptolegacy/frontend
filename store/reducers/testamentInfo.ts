@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IBeneficiary } from 'mock';
 import { RootState } from 'store';
 
 interface TestamentInfo {
   selectedPlan: number;
   activeStep: number;
-  beneficiaries: [];
+  beneficiaries: IBeneficiary[];
   expirationDays: number;
   beneficiariesAffected: number;
 }
@@ -45,7 +46,7 @@ const testamentInfoSlice = createSlice({
     setBeneficiaries(state: TestamentInfo, action: PayloadAction<any>) {
       return {
         ...state,
-        beneficiaries: action.payload,
+        beneficiaries: action.payload.beneficiaries,
       };
     },
     setExpirationDays(

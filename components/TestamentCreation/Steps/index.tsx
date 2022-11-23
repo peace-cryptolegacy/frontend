@@ -22,7 +22,7 @@ import { writeTestament } from 'utils/web3/heritage';
 
 const Steps = () => {
   const dispatch = useAppDispatch();
-  const beneficiaries: [] = useAppSelector(getBeneficiaries);
+  const beneficiaries: IBeneficiary[] = useAppSelector(getBeneficiaries);
   const expirationDays: number = useAppSelector(getExpirationDays);
   const stepsLabel = ['Select Plan', 'Customize Plan', 'Review Plan'];
   const { item: testamentInfo, saveItem: setTestamentInfo } = useLocalStorage(
