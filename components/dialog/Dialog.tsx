@@ -5,14 +5,25 @@ import { Fragment } from 'react';
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
   children: React.ReactNode | React.ReactNode[];
 };
 
-const Dialog = ({ isOpen, onClose, className, children }: Props) => {
+const Dialog = ({
+  isOpen,
+  onClose,
+  size = 'md',
+  className,
+  children,
+}: Props) => {
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <HeadlessDialog as="div" className="relative z-10" onClose={onClose}>
+      <HeadlessDialog
+        as="div"
+        className={clsx('relative z-10', className)}
+        onClose={onClose}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -38,8 +49,12 @@ const Dialog = ({ isOpen, onClose, className, children }: Props) => {
             >
               <HeadlessDialog.Panel
                 className={clsx(
-                  'w-full max-w-md overflow-hidden rounded-2xl bg-white p-8 text-left align-middle shadow-xl transition-all',
-                  className
+                  size === 'sm' && 'max-w-md',
+                  size === 'md' && 'max-w-xl',
+                  size === 'lg' && 'max-w-2xl',
+                  size === 'xl' && 'max-w-4xl',
+                  'w-full  overflow-hidden rounded-2xl bg-white p-8 text-left align-middle shadow-xl',
+                  'transition-all'
                 )}
               >
                 {children}

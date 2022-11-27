@@ -11,12 +11,35 @@ import TabGroup from 'components/tabs/TabGroup';
 import TabPanel from 'components/tabs/TabPanel';
 import TabPanels from 'components/tabs/TabPanels';
 import Tabs from 'components/tabs/Tabs';
+import { BigNumber } from 'ethers';
 import Image from 'next/image';
+import { useState } from 'react';
+import networkMappings from 'utils/helpers/networkMappings';
+import timeSince from 'utils/helpers/timeSince';
+import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
+import { useNetwork } from 'wagmi';
+import percentageCalculator from '../../../utils/helpers/percentageCalculator';
 import tokenMappings from '../../../utils/helpers/tokenMappings';
+import { DynamicVault } from '../../../utils/Types';
+import ProtectionActiveDialog from './Dialog';
 
-const ActiveProtections = () => {
-  const network = 'moonbeam';
-  const tokenMapping = tokenMappings[network as keyof typeof tokenMappings];
+const ProtectionsActive = (dynamicVault: Partial<DynamicVault>) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState<
+    'edit assets' | 'edit heirs'
+  >();
+
+  const { chain } = useNetwork();
+
+  const network =
+    wagmiChainNameMappings[
+      chain?.name as keyof typeof wagmiChainNameMappings
+    ] ?? 'moonbeam';
+  const networkNativeToken =
+    networkMappings[network as keyof typeof networkMappings].token;
+  const networkTokenMapping =
+    tokenMappings[networkNativeToken as keyof typeof tokenMappings];
+  const testament = dynamicVault.testament;
 
   const testamentHistory = [
     {
@@ -35,6 +58,16 @@ const ActiveProtections = () => {
     },
   ];
 
+  const handleEditAssets = () => {
+    setDialogContent('edit assets');
+    setIsDialogOpen(true);
+  };
+
+  const handleEditHeirs = () => {
+    setDialogContent('edit heirs');
+    setIsDialogOpen(true);
+  };
+
   return (
     <>
       <Stack direction="row">
@@ -46,6 +79,7 @@ const ActiveProtections = () => {
             objectFit="contain"
           />
         </div>
+
         <h2 className="h2 text-gradient">Dashboard</h2>
       </Stack>
       <TabGroup>
@@ -74,7 +108,11 @@ const ActiveProtections = () => {
                     <Stack direction="row" className="mt-3 !gap-2">
                       <div className="relative  h-6 w-6 shrink-0">
                         <Image
-                          src={tokenMapping ? tokenMapping.route : ''}
+                          src={
+                            networkTokenMapping
+                              ? networkTokenMapping.route
+                              : '/'
+                          }
                           alt={network}
                           layout="fill"
                           objectFit="contain"
@@ -94,13 +132,13 @@ const ActiveProtections = () => {
                       </div>
                       <div>
                         <span>Collectibles</span>
-                        <span>0</span>
+                        <span>{testament?.tokens?.length}</span>
                       </div>
                       <div className="self-end">
                         <Button
                           variant="basic"
                           text="Edit Assets"
-                          onClick={() => {}}
+                          onClick={() => handleEditAssets()}
                           size="xs"
                           className="whitespace-nowrap py-1.5 text-sm"
                         />
@@ -109,12 +147,14 @@ const ActiveProtections = () => {
                     <div className="space-y-2">
                       <span className="text-sm text-blue-gray">Protectors</span>
                       <div className="flex justify-between">
-                        <span>2 Beneficiaries</span>
+                        <span>
+                          {testament?.beneficiaries?.length} Beneficiaries
+                        </span>
                         <div className="self-end">
                           <Button
                             variant="basic"
                             text="Edit Heirs"
-                            onClick={() => {}}
+                            onClick={() => handleEditHeirs()}
                             size="xs"
                             className="whitespace-nowrap py-1.5 text-sm"
                           />
@@ -136,7 +176,18 @@ const ActiveProtections = () => {
                           />
                         </div>
                         <span className="block">
-                          <span className="font-semibold">60</span> of 365 days
+                          <span className="font-semibold">
+                            {
+                              timeSince(
+                                ['0', undefined].includes(
+                                  testament?.proofOfLife?.toString()
+                                )
+                                  ? Date.now() / 1000
+                                  : (testament?.proofOfLife as BigNumber)
+                              ) as number
+                            }
+                          </span>{' '}
+                          of {testament?.inactivityMaximum?.toString()} days
                         </span>
                       </div>
                       <div>
@@ -150,7 +201,16 @@ const ActiveProtections = () => {
                       </div>
                     </div>
                     <PercentageBar
-                      percentage={30}
+                      percentage={
+                        percentageCalculator(
+                          testament?.inactivityMaximum ?? BigNumber.from(0),
+                          timeSince(
+                            testament?.proofOfLife ?? BigNumber.from(0),
+                            'seconds',
+                            'BigNumber'
+                          ) as BigNumber
+                        ) as number
+                      }
                       className="[&>div>div:nth-child(2)]:!bg-mainHorizontal"
                     />
                   </div>
@@ -205,8 +265,14 @@ const ActiveProtections = () => {
           </TabPanel>
         </TabPanels>
       </TabGroup>
+      <ProtectionActiveDialog
+        dynamicVault={dynamicVault}
+        dialogContent={dialogContent}
+        isDialogOpen={isDialogOpen}
+        setIsDialogOpen={setIsDialogOpen}
+      />
     </>
   );
 };
 
-export default ActiveProtections;
+export default ProtectionsActive;
