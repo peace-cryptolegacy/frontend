@@ -12,6 +12,9 @@ import Tabs from 'components/tabs/Tabs';
 import { NextPage } from 'next';
 import Image from 'next/image';
 
+import GeneralDefaultConnectWallet from 'components/general/defaultConnectWallet/DefaultConnectWallet';
+import GeneralDefaultConnectWalletDescription from 'components/general/defaultConnectWallet/Description';
+import GeneralDefaultConnectWalletTitle from 'components/general/defaultConnectWallet/Title';
 import History from 'components/myPlans/History';
 import InheritancePlan from 'components/myPlans/InheritancePlan';
 import Tab from 'components/tabs/Tab';
@@ -21,8 +24,11 @@ import TabPanels from 'components/tabs/TabPanels';
 import { useEffect, useState } from 'react';
 import menuItems from 'utils/menuItems';
 import { UserPlans } from 'utils/Types';
+import { useAccount } from 'wagmi';
+import recovery from '../public/images/recovery.png';
 
 const MyPlans: NextPage = () => {
+  const { address } = useAccount();
   const [userPlans, setUserPlans] = useState<UserPlans>();
   const [activeClaim, setActiveClaim] = useState<
     'Inheritance Plan' | 'Backup Wallet'
@@ -120,6 +126,21 @@ const MyPlans: NextPage = () => {
   };
 
   const renderPage = () => {
+    if (!address) {
+      return (
+        <GeneralDefaultConnectWallet>
+          <Image src={recovery} alt="Tokens Vault" objectFit="contain" />
+          <GeneralDefaultConnectWalletTitle>
+            Claim without problems
+          </GeneralDefaultConnectWalletTitle>
+          <GeneralDefaultConnectWalletDescription>
+            Recover your assets on web3 securely and easily through a{' '}
+            <strong>multisig process.</strong>
+          </GeneralDefaultConnectWalletDescription>
+        </GeneralDefaultConnectWallet>
+      );
+    }
+
     return (
       <TabPanels>
         <TabPanel>
@@ -178,46 +199,50 @@ const MyPlans: NextPage = () => {
 
   return (
     <>
-      <TabGroup>
-        <>
-          <Stack direction="row">
-            <Image
-              src="/icons/inheritance-plan.png"
-              alt="protection"
-              objectFit="contain"
-              height={96}
-              width={86}
-            />
-            <h2 className="h2 text-gradient">Welcome to Claim Process</h2>
-          </Stack>
-          <Tabs className="my-10">
-            <Tab>Pending Claims</Tab>
-            <Tab>History</Tab>
-          </Tabs>
-        </>
-        {renderPage()};
-        <Dialog isOpen={isDialogOpen} onClose={closeCompleteSignatureModal}>
-          <div className="mb-4 flex w-full justify-end">
-            <FontAwesomeIcon
-              icon={faXmark}
-              size="2xl"
-              style={{ cursor: 'pointer' }}
-              onClick={() => setIsDialogOpen(false)}
-            />
-          </div>
-          <HeadlessDialog.Title as="h3" className="h3 text-center">
-            {dialog?.title}
-          </HeadlessDialog.Title>
-          <Stack className="mt-4 mb-5 items-center !gap-10">
-            <HeadlessDialog.Description>
-              <p className="text-sm">{dialog?.description}</p>
-            </HeadlessDialog.Description>
-            {dialog?.body}
+      {address ? (
+        <TabGroup>
+          <>
+            <Stack direction="row">
+              <Image
+                src="/icons/inheritance-plan.png"
+                alt="protection"
+                objectFit="contain"
+                height={96}
+                width={86}
+              />
+              <h2 className="h2 text-gradient">Welcome to Claim Process</h2>
+            </Stack>
+            <Tabs className="my-10">
+              <Tab>Pending Claims</Tab>
+              <Tab>History</Tab>
+            </Tabs>
+          </>
+          {renderPage()};
+          <Dialog isOpen={isDialogOpen} onClose={closeCompleteSignatureModal}>
+            <div className="mb-4 flex w-full justify-end">
+              <FontAwesomeIcon
+                icon={faXmark}
+                size="2xl"
+                style={{ cursor: 'pointer' }}
+                onClick={() => setIsDialogOpen(false)}
+              />
+            </div>
+            <HeadlessDialog.Title as="h3" className="h3 text-center">
+              {dialog?.title}
+            </HeadlessDialog.Title>
+            <Stack className="mt-4 mb-5 items-center !gap-10">
+              <HeadlessDialog.Description>
+                <p className="text-sm">{dialog?.description}</p>
+              </HeadlessDialog.Description>
+              {dialog?.body}
 
-            {dialog?.action}
-          </Stack>
-        </Dialog>
-      </TabGroup>
+              {dialog?.action}
+            </Stack>
+          </Dialog>
+        </TabGroup>
+      ) : (
+        renderPage()
+      )}
     </>
   );
 };

@@ -4,17 +4,15 @@ import Carousel from 'components/Carousel/Carousel';
 import TextField from 'components/Input/TextField';
 import Stack from 'components/stack/Stack';
 import Image from 'next/image';
-import beneficiaryLoginCarousel1 from 'public/images/beneficiaryLoginCarousel1.png';
-import beneficiaryLoginCarousel2 from 'public/images/beneficiaryLoginCarousel2.png';
-import beneficiaryLoginCarousel3 from 'public/images/beneficiaryLoginCarousel3.png';
-import beneficiaryLoginCarousel4 from 'public/images/beneficiaryLoginCarousel4.png';
+import assets from 'public/images/assets.png';
+import invest from 'public/images/invest.png';
+import recovery from 'public/images/recovery.png';
+import tokensVault from 'public/images/tokensVault.png';
 
 const BeneficiaryLogin = () => {
   const slides = [
     {
-      image: (
-        <Image key={0} src={beneficiaryLoginCarousel1} alt="inheritance" />
-      ),
+      image: <Image key={0} src={recovery} alt="inheritance" />,
       top: 'top-36',
       title: 'Inheritance without problems',
       description: (
@@ -25,7 +23,7 @@ const BeneficiaryLogin = () => {
       ),
     },
     {
-      image: <Image key={0} src={beneficiaryLoginCarousel2} alt="Carousel 1" />,
+      image: <Image key={0} src={tokensVault} alt="Carousel 1" />,
       top: 'top-24',
       title: 'Protect your Wealth on Web3',
       description: (
@@ -40,7 +38,7 @@ const BeneficiaryLogin = () => {
       ),
     },
     {
-      image: <Image key={0} src={beneficiaryLoginCarousel3} alt="Carousel 1" />,
+      image: <Image key={0} src={assets} alt="Carousel 1" />,
       top: 'top-11',
       title: 'Manage your assets easy',
       description: (
@@ -51,7 +49,7 @@ const BeneficiaryLogin = () => {
       ),
     },
     {
-      image: <Image key={0} src={beneficiaryLoginCarousel4} alt="Carousel 1" />,
+      image: <Image key={0} src={invest} alt="Carousel 1" />,
       top: 'top-9',
       title: 'Grow your capital safe',
       description: (
