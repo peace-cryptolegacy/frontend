@@ -1,7 +1,9 @@
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 
 type Props = {
-  startAdornment?: React.ReactNode;
+  startAdornment?: React.ReactNode | string;
   placeHolder?: string;
   className?: string;
   inputClassName?: string;
@@ -21,7 +23,11 @@ const TextField = ({
           'pointer-events-none absolute inset-y-0 left-0 flex items-center'
         )}
       >
-        {startAdornment}
+        {startAdornment === 'search' ? (
+          <FontAwesomeIcon icon={'fa-solid fa-magnifying-glass' as IconProp} />
+        ) : (
+          startAdornment
+        )}
       </div>
       <input
         type="text"
@@ -29,7 +35,7 @@ const TextField = ({
         className={clsx(
           inputClassName,
           startAdornment && 'pl-12',
-          'rounded-lg border border-gray-300 bg-gray-50 p-3.5 text-sm text-gray-900',
+          'w-full rounded-lg border border-gray-300 bg-gray-50 p-3.5 text-sm text-gray-900',
           'focus:border-blue-500 focus:ring-blue-500'
         )}
         placeholder={placeHolder}

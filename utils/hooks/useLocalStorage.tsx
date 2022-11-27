@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
 import { ITestamentInfo } from 'mock/index';
+import { useEffect, useState } from 'react';
 
 function useLocalStorage(itemName: string, initialValue: ITestamentInfo) {
   const [error, setError] = useState(false);
@@ -22,6 +22,7 @@ function useLocalStorage(itemName: string, initialValue: ITestamentInfo) {
     } catch (error: any) {
       setError(error);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const saveItem = (newItem: any) => {

@@ -1,16 +1,18 @@
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
+import ProtectionsActive from 'components/protection/active/Active';
 import Stepper from 'components/Stepper/Stepper';
 import PlanCustomization from 'components/TestamentCreation/Steps/PlanCustomization';
 import PlanReview from 'components/TestamentCreation/Steps/PlanReview';
 import PlanSelection from 'components/TestamentCreation/Steps/PlanSelection';
 import Title from 'components/Title/Title';
+import { BigNumber, ethers } from 'ethers';
+import useCreateTestament from 'hooks/useCreateTestament';
 import { IBeneficiary } from 'mock';
 import { testamentInfoInitialValue } from 'mock/index';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import {
   getBeneficiaries,
-  getExpirationDays,
   setActiveStep,
   setBeneficiaries,
   setBeneficiariesAffected,
@@ -18,17 +20,21 @@ import {
   setSelectedPlan,
 } from 'store/reducers/testamentInfo';
 import { useLocalStorage } from 'utils/hooks/useLocalStorage';
-import { writeTestament } from 'utils/web3/heritage';
+import { useAccount, useWaitForTransaction } from 'wagmi';
+import useGetDynamicVault from '../../../hooks/useGetDynamicVault';
 
 const Steps = () => {
   const dispatch = useAppDispatch();
   const beneficiaries: IBeneficiary[] = useAppSelector(getBeneficiaries);
-  const expirationDays: number = useAppSelector(getExpirationDays);
   const stepsLabel = ['Select Plan', 'Customize Plan', 'Review Plan'];
   const { item: testamentInfo, saveItem: setTestamentInfo } = useLocalStorage(
     'TESTAMENT_INFO',
     testamentInfoInitialValue
   );
+
+  const [loading, setLoading] = useState(true);
+  const [dynamicVault, setDynamicVault] =
+    useState<Awaited<ReturnType<typeof getDynamicVault>>>();
 
   const getUpdatedTestamentInfo = () =>
     JSON.parse(localStorage.getItem('TESTAMENT_INFO')!);
@@ -47,7 +53,44 @@ const Steps = () => {
     );
   }, [dispatch, testamentInfo]);
 
-  const renderStepper = () => {
+  // smart-contracts
+
+  const { address } = useAccount();
+
+  const { transact: createTestament } = useCreateTestament(
+    beneficiaries?.filter((beneficiary) => beneficiary.isClaimant === true)[0]
+      ?.address,
+    BigNumber.from(testamentInfo.expirationDays),
+    // The create testament function does not take the IBeneficiary type. Check the deployments file
+    beneficiaries?.map(({ name, address, distribution }) => ({
+      name,
+      address_: address,
+      inheritancePercentage: BigNumber.from(distribution),
+    }))
+  );
+
+  const { isSuccess: isCreateTestamentSuccess } = useWaitForTransaction({
+    hash: createTestament.data?.hash,
+  });
+
+  const getDynamicVault = useGetDynamicVault();
+
+  const getDynamicVaultAsync = useCallback(async () => {
+    const dynamicVault = await getDynamicVault?.(address);
+    setDynamicVault(dynamicVault);
+    setLoading(false);
+  }, [address, getDynamicVault]);
+
+  useEffect(() => {
+    getDynamicVaultAsync();
+  }, [getDynamicVaultAsync]);
+
+  async function handleDeploy() {
+    createTestament.write?.();
+  }
+  // end smart-contracts
+
+  function renderStepper() {
     return (
       <>
         <Stepper
@@ -58,7 +101,7 @@ const Steps = () => {
         <HorizontalRule />
       </>
     );
-  };
+  }
   const steps = [
     {
       content: (
@@ -146,12 +189,6 @@ const Steps = () => {
     },
   ];
 
-  async function handleDeploy() {
-    await writeTestament(beneficiaries, expirationDays);
-
-    window.location.reload();
-  }
-
   function renderTitle() {
     return (
       <>
@@ -164,14 +201,28 @@ const Steps = () => {
     return steps[testamentInfo.activeStep].content;
   }
 
-  return (
-    <div className="mb-12">
-      {renderTitle()}
-      <div className="w-full rounded-xl bg-white px-32 py-9 drop-shadow-lg">
-        {renderStep()}
+  const renderPage = () => {
+    if (loading) {
+      return <div>Loading...</div>;
+    }
+    if (
+      (dynamicVault &&
+        dynamicVault?.testament.claimant !== ethers.constants.AddressZero) ||
+      isCreateTestamentSuccess
+    ) {
+      return <ProtectionsActive {...dynamicVault} />;
+    }
+    return (
+      <div className="mb-12">
+        {renderTitle()}
+        <div className="w-full rounded-xl bg-white px-32 py-9 drop-shadow-lg">
+          {renderStep()}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
+
+  return renderPage();
 };
 
 export default Steps;

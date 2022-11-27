@@ -21,7 +21,7 @@ interface Props {
 
 type Beneficiary = {
   stepperClassname?: string;
-  name?: string;
+  name: string;
   address: string;
   isClaimant?: boolean;
   distribution: number;
@@ -199,7 +199,7 @@ const BeneficiariesStep = ({
 
       <Box color="#64748B" display="flex" flexDirection="row" fontWeight="bold">
         <Box flex={5}>Name</Box>
-        <Box flex={5}>Address</Box>
+        <Box flex={5}>address</Box>
         <Box flex={1}>Claimant</Box>
         <Box flex={1} marginLeft={10}>
           % Distr

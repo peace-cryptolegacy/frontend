@@ -31,6 +31,7 @@ const Button = ({
           variant === 'gradientBorder' && 'p-0.5',
           !['fancy', 'gradientBorder'].includes(variant) && 'rounded-lg py-4',
           variant === 'basic' && 'border-[1px] border-gray-300 bg-white',
+          variant === 'primary' && 'bg-purple-900',
           size === 'xs' && 'w-[140px]',
           size === 'sm' && 'w-[200px]',
           size === 'base' && 'w-[260px]',
@@ -62,7 +63,14 @@ const Button = ({
         ) : (
           <>
             {icon && <span className="mr-2">{icon}</span>}
-            <span className="font-medium capitalize">{text}</span>
+            <span
+              className={clsx(
+                variant === 'primary' ? 'text-white' : 'text-black',
+                'font-medium capitalize'
+              )}
+            >
+              {text}
+            </span>
           </>
         )}
       </button>

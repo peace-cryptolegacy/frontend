@@ -6,6 +6,7 @@ import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
 import { isAddress } from 'ethers/lib/utils';
 import { IBeneficiary, ITestamentInfo } from 'mock';
 import { BaseSyntheticEvent, useState } from 'react';
+import { Address } from 'utils/Types';
 
 interface Props {
   stepperClassName?: string;
@@ -24,7 +25,7 @@ const PlanCustomization = ({
 }: Props) => {
   const defaultBeneficiary = {
     name: '',
-    address: '',
+    address: '0x' as Address,
     isClaimant: false,
     distribution: 0,
   };
@@ -89,6 +90,10 @@ const PlanCustomization = ({
     ]);
 
     setErrors([...errors.slice(0, index), ...errors.slice(index + 1)]);
+  }
+
+  function handleSubmit(e: BaseSyntheticEvent) {
+    e.preventDefault();
   }
 
   function renderRow(beneficiary: IBeneficiary, index: number) {
@@ -171,80 +176,82 @@ const PlanCustomization = ({
         ></Caption>
       </div>
 
-      <table className="my-6 w-full table-fixed text-left">
-        <thead>
-          <tr className="">
-            <th>Name</th>
-            <th>Address</th>
-            <th className="w-1/12">Claimant</th>
-            <th className="w-2/12">% Distr</th>
-            <th className="w-1/12"></th>
-          </tr>
-        </thead>
-        <tbody>{beneficiaries.map(renderRow)}</tbody>
-      </table>
+      <form onSubmit={(e) => handleSubmit(e)}>
+        <table className="my-6 w-full table-fixed text-left">
+          <thead>
+            <tr className="">
+              <th>Name</th>
+              <th>address</th>
+              <th className="w-1/12">Claimant</th>
+              <th className="w-2/12">% Distr</th>
+              <th className="w-1/12"></th>
+            </tr>
+          </thead>
+          <tbody>{beneficiaries.map(renderRow)}</tbody>
+        </table>
 
-      <div className="flex justify-center">
-        <Button
-          color="#5F4DFF"
-          fontSize="14px"
-          leftIcon={<AddIcon />}
-          onClick={handleAddBeneficiary}
-          variant="ghost"
-        >
-          Add another beneficiary
-        </Button>
-      </div>
-
-      <div className="my-6 flex flex-col ">
-        <Caption
-          text="Choose how many days and which beneficiaries need to sign for the funds
-          to be released:"
-          className="my-3 text-left text-black"
-        ></Caption>
-        <div className="flex justify-between">
-          <select
-            className="form-select w-2/6 rounded px-4 py-3"
-            onChange={handleExpirationChange}
-            value={expirationDays}
+        <div className="flex justify-center">
+          <Button
+            color="#5F4DFF"
+            fontSize="14px"
+            leftIcon={<AddIcon />}
+            onClick={handleAddBeneficiary}
+            variant="ghost"
           >
-            <option value={7}>7 days</option>
-            <option value={30}>30 days</option>
-            <option value={60}>60 days</option>
-            <option value={180}>180 days</option>
-            <option value={365}>365 days</option>
-          </select>
-
-          <select className="form-select   w-2/6 rounded px-4 py-3">
-            <option>Just peace</option>
-
-            {beneficiaries.map((beneficiary, index) => {
-              return (
-                <option key={`option-${index}`}>
-                  Just {index + 1} beneficiary
-                </option>
-              );
-            })}
-          </select>
+            Add another beneficiary
+          </Button>
         </div>
-      </div>
 
-      <div className="my-6 flex justify-center">
-        <Button
-          color="#5F4DFF"
-          fontSize="14px"
-          marginRight="80px"
-          onClick={() => onPrevStep()}
-          variant="ghost"
-        >
-          Back
-        </Button>
-        <PrimaryButton
-          text={'Continue'}
-          className={'!py-4 !px-14'}
-          onClick={handleContinueClick}
-        />
-      </div>
+        <div className="my-6 flex flex-col ">
+          <Caption
+            text="Choose how many days and which beneficiaries need to sign for the funds
+          to be released:"
+            className="my-3 text-left text-black"
+          ></Caption>
+          <div className="flex justify-between">
+            <select
+              className="form-select w-2/6 rounded px-4 py-3"
+              onChange={handleExpirationChange}
+              value={expirationDays}
+            >
+              <option value={7}>7 days</option>
+              <option value={30}>30 days</option>
+              <option value={60}>60 days</option>
+              <option value={180}>180 days</option>
+              <option value={365}>365 days</option>
+            </select>
+
+            <select className="form-select   w-2/6 rounded px-4 py-3">
+              <option>Just peace</option>
+
+              {beneficiaries.map((beneficiary, index) => {
+                return (
+                  <option key={`option-${index}`}>
+                    Just {index + 1} beneficiary
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+        </div>
+
+        <div className="my-6 flex justify-center">
+          <Button
+            color="#5F4DFF"
+            fontSize="14px"
+            marginRight="80px"
+            onClick={() => onPrevStep()}
+            variant="ghost"
+          >
+            Back
+          </Button>
+          <PrimaryButton
+            text={'Continue'}
+            className={'!py-4 !px-14'}
+            onClick={handleContinueClick}
+          />
+        </div>
+      </form>
     </div>
   );
 };
