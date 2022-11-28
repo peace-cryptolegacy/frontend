@@ -1,7 +1,5 @@
-// import ConnectBanner from 'components/connect-banner';
 import { GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-// import Head from 'next/head';
 
 function Home() {}
 

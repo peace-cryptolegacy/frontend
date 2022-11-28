@@ -44,7 +44,7 @@ module.exports = {
       mainVertical:
         'linear-gradient(172.89deg, #5DB5EA 4.39%, #5F4DFF 51.8%, #E31792 97.28%)',
       mainHorizontal:
-        'linear-gradient(90.54deg, #17C0F1 0.42%, #5F4DFF 51.76%, #E21692 100%);',
+        'linear-gradient(90.54deg, #17C0F1 0.42%, #5F4DFF 51.76%, #E21692 100%)',
     },
   },
   plugins: [

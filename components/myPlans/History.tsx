@@ -4,8 +4,8 @@ import {
   faUpRightFromSquare,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import clsx from 'clsx';
 
+import clsx from 'clsx';
 import Box from 'components/Box/Box';
 import Button from 'components/button/Button';
 import Chip from 'components/Chip/Chip';

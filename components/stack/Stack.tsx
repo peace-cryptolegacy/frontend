@@ -14,11 +14,12 @@ const Stack = ({ children, direction, justifyItems, className }: Props) => {
         'flex gap-4',
         direction === 'row'
           ? justifyItems
-            ? 'flex-row' + ' items-' + justifyItems
+            ? 'flex-row' + ''
             : 'flex-row items-center'
           : 'flex-col',
         className
       )}
+      style={{ justifyItems: `items-${justifyItems}` }}
     >
       {children}
     </div>
