@@ -211,7 +211,7 @@ const Steps = () => {
     return (
       <div className="my-16">
         {renderTitle()}
-        <div className="w-full rounded-xl bg-white px-8 py-4 drop-shadow-lg lg:px-32 lg:py-9">
+        <div className="w-full rounded-xl bg-white px-8 py-4 drop-shadow-lg lg:px-12 lg:py-9 xl:px-32">
           {renderStep()}
         </div>
       </div>

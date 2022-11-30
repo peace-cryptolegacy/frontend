@@ -25,7 +25,7 @@ const Stepper = ({ steps, className, activeStep }: Props) => {
           <React.Fragment key={step}>
             <ListItem className={`mx-auto !gap-4 ${hideStepper(i)}`}>
               <div
-                className={`flex h-10 w-10 shrink-0 items-center rounded-full ${
+                className={`flex h-8 w-8 shrink-0 items-center rounded-full xl:h-10 xl:w-10 ${
                   activeStep === i ? 'bg-purple-900' : 'bg-purple-100'
                 }`}
               >

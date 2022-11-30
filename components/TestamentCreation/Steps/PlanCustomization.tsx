@@ -98,11 +98,12 @@ const PlanCustomization = ({
 
   function renderRow(beneficiary: IBeneficiary, index: number) {
     return (
-      <tr className="">
-        <td className="text-left">
+      <div className="flex flex-col justify-between py-4 lg:flex-row">
+        <section className="my-3 flex flex-col lg:my-0  lg:flex-row xl:w-3/12">
+          <label className="pb-3 font-bold lg:hidden">Name</label>
           <input
             type="text"
-            className="w-11/12 rounded text-pink-500"
+            className=" rounded text-pink-500 lg:w-3/4 xl:w-full"
             placeholder="Beneficiary name"
             required
             onChange={(event: BaseSyntheticEvent) => {
@@ -110,11 +111,12 @@ const PlanCustomization = ({
             }}
             value={beneficiary.name}
           />
-        </td>
-        <td className="text-left">
+        </section>
+        <section className="my-3 flex flex-col lg:my-0  lg:flex-row xl:w-4/12">
+          <label className="pb-3 font-bold lg:hidden">Wallet</label>
           <input
             type="text"
-            className="w-11/12 rounded text-pink-500"
+            className="w-full rounded text-pink-500 lg:w-3/4 xl:w-full"
             placeholder="Beneficiary address*"
             required
             onChange={(event: BaseSyntheticEvent) => {
@@ -123,21 +125,12 @@ const PlanCustomization = ({
             onBlur={() => handleAddressBlur(index)}
             value={beneficiary.address}
           />
-        </td>
-        {/* <td className="text-left">
-          <input
-            type="checkbox"
-            className="rounded text-purple-600"
-            checked={beneficiary.isClaimant}
-            onChange={(event: BaseSyntheticEvent) =>
-              handleClaimantChange(event.target.checked, index)
-            }
-          />
-        </td> */}
-        <td className="text-left">
+        </section>
+        <section className="my-3 flex flex-col lg:my-0 lg:flex lg:flex-row xl:w-2/12">
+          <label className="pb-3 font-bold lg:hidden">% Distribution</label>
           <input
             type="number"
-            className="w-6/12 rounded text-pink-500"
+            className="rounded text-pink-500 lg:w-3/4 "
             placeholder="100%"
             required
             onChange={(event: BaseSyntheticEvent) =>
@@ -145,15 +138,15 @@ const PlanCustomization = ({
             }
             value={beneficiary.distribution}
           />
-        </td>
-        <td>
+        </section>
+        <section className="my-3 flex flex-col lg:my-0 lg:flex-row xl:w-1/12">
           <FontAwesomeIcon
-            className="cursor-pointer"
+            className="ml-auto cursor-pointer"
             icon="trash"
             onClick={() => handleCloseIconClick(1)}
           />
-        </td>
-      </tr>
+        </section>
+      </div>
     );
   }
 
@@ -185,18 +178,15 @@ const PlanCustomization = ({
       </div>
 
       <form onSubmit={(e) => handleSubmit(e)}>
-        <table className="my-6 w-full table-fixed text-left">
-          <thead>
-            <tr className="">
-              <th>Name</th>
-              <th>Wallet</th>
-              {/* <th className="w-1/12">Claimant</th> */}
-              <th className="w-2/12">% Distr</th>
-              <th className="w-1/12"></th>
-            </tr>
-          </thead>
-          <tbody>{beneficiaries.map(renderRow)}</tbody>
-        </table>
+        <div>
+          <div className=" hidden justify-between lg:flex">
+            <label className="pb-3 font-bold xl:w-3/12">Name</label>
+            <label className="pb-3 font-bold xl:w-4/12">Wallet</label>
+            <label className="pb-3 font-bold xl:w-2/12">% Distribution</label>
+            <label className="pb-3 font-bold xl:w-1/12"></label>
+          </div>
+          <>{beneficiaries.map(renderRow)}</>
+        </div>
 
         <div className="flex justify-center">
           <Button
