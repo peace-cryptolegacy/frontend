@@ -7,7 +7,11 @@ type Props = {
 };
 
 const ListItemIcon = ({ children, className }: Props) => {
-  return <div className={clsx(className, 'flex self-center')}>{children}</div>;
+  return (
+    <picture className={clsx(className, 'flex self-center')}>
+      {children}
+    </picture>
+  );
 };
 
 export default ListItemIcon;

@@ -8,7 +8,8 @@ export const web3auth = new Web3Auth({
   chainConfig: {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
     chainId: '0x1',
-    rpcTarget: 'https://rpc.ankr.com/eth', // This is the mainnet RPC we have added, please pass on your own endpoint while creating an app
+    rpcTarget: 'https://polygon-testnet.public.blastapi.io',
+    // rpcTarget: 'https://rpc.ankr.com/eth', // This is the mainnet RPC we have added, please pass on your own endpoint while creating an app
   },
   uiConfig: {
     theme: 'light',

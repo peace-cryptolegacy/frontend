@@ -7,7 +7,7 @@ const Title = ({ text, className }: Props) => {
   return (
     <div className="w-screen">
       <h1
-        className={`text-gradient inline-block  pb-7 text-3xl font-bold capitalize ${
+        className={`text-gradient inline-block  pb-7 text-2xl font-bold capitalize lg:text-3xl ${
           className || ''
         }`}
       >

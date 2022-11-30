@@ -30,6 +30,7 @@ module.exports = {
           900: '#5F4DFF',
         },
         transparent: 'transparent',
+        'gray-peace': '#FBFBFB',
         blue: {
           dark: '#0f172a',
           gray: '#475569',

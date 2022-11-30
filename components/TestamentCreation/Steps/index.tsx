@@ -190,11 +190,7 @@ const Steps = () => {
   ];
 
   function renderTitle() {
-    return (
-      <>
-        <Title text={steps && steps[testamentInfo.activeStep].title}></Title>
-      </>
-    );
+    return <Title text={steps && steps[testamentInfo.activeStep].title} />;
   }
 
   function renderStep() {
@@ -213,9 +209,9 @@ const Steps = () => {
       return <ProtectionsActive {...dynamicVault} />;
     }
     return (
-      <div className="mb-12">
+      <div className="my-16">
         {renderTitle()}
-        <div className="w-full rounded-xl bg-white px-32 py-9 drop-shadow-lg">
+        <div className="w-full rounded-xl bg-white px-8 py-4 drop-shadow-lg lg:px-32 lg:py-9">
           {renderStep()}
         </div>
       </div>

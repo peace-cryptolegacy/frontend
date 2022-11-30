@@ -10,6 +10,9 @@ type Props = {
 };
 
 const Stepper = ({ steps, className, activeStep }: Props) => {
+  const hideStepper = (index: number) =>
+    activeStep !== index ? 'hidden lg:contents' : '';
+
   return (
     <ol
       className={clsx(
@@ -20,7 +23,7 @@ const Stepper = ({ steps, className, activeStep }: Props) => {
       {steps.map((step, i) => {
         return (
           <React.Fragment key={step}>
-            <ListItem className="!gap-4">
+            <ListItem className={`mx-auto !gap-4 ${hideStepper(i)}`}>
               <div
                 className={`flex h-10 w-10 shrink-0 items-center rounded-full ${
                   activeStep === i ? 'bg-purple-900' : 'bg-purple-100'
@@ -37,7 +40,7 @@ const Stepper = ({ steps, className, activeStep }: Props) => {
               <h4 className="h4 capitalize xl:whitespace-nowrap">{step}</h4>
             </ListItem>
             {i !== steps.length - 1 && (
-              <ListItem className="w-full">
+              <ListItem className="hidden w-full lg:contents">
                 <HorizontalRule className="h-[2px] bg-mainHorizontal" />
               </ListItem>
             )}
