@@ -5,11 +5,12 @@ import PlanCustomization from 'components/TestamentCreation/Steps/PlanCustomizat
 import PlanReview from 'components/TestamentCreation/Steps/PlanReview';
 import PlanSelection from 'components/TestamentCreation/Steps/PlanSelection';
 import Title from 'components/Title/Title';
+import UILoading from 'components/UI/Loading';
 import { BigNumber, ethers } from 'ethers';
 import useCreateTestament from 'hooks/useCreateTestament';
 import { IBeneficiary } from 'mock';
 import { testamentInfoInitialValue } from 'mock/index';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import {
   getBeneficiaries,
@@ -20,7 +21,7 @@ import {
   setSelectedPlan,
 } from 'store/reducers/testamentInfo';
 import { useLocalStorage } from 'utils/hooks/useLocalStorage';
-import { useAccount, useWaitForTransaction } from 'wagmi';
+import { useAccount } from 'wagmi';
 import useGetDynamicVault from '../../../hooks/useGetDynamicVault';
 
 const Steps = () => {
@@ -31,10 +32,6 @@ const Steps = () => {
     'TESTAMENT_INFO',
     testamentInfoInitialValue
   );
-
-  const [loading, setLoading] = useState(true);
-  const [dynamicVault, setDynamicVault] =
-    useState<Awaited<ReturnType<typeof getDynamicVault>>>();
 
   const getUpdatedTestamentInfo = () =>
     JSON.parse(localStorage.getItem('TESTAMENT_INFO')!);
@@ -57,33 +54,20 @@ const Steps = () => {
 
   const { address } = useAccount();
 
-  const { transact: createTestament } = useCreateTestament(
-    beneficiaries?.filter((beneficiary) => beneficiary.isClaimant === true)[0]
-      ?.address,
-    BigNumber.from(testamentInfo.expirationDays),
-    // The create testament function does not take the IBeneficiary type. Check the deployments file
-    beneficiaries?.map(({ name, address, distribution }) => ({
-      name,
-      address_: address,
-      inheritancePercentage: BigNumber.from(distribution),
-    }))
-  );
+  const { transact: createTestament, transaction: createTestamentTransaction } =
+    useCreateTestament(
+      beneficiaries?.filter((beneficiary) => beneficiary.isClaimant === true)[0]
+        ?.address,
+      BigNumber.from(testamentInfo.expirationDays),
+      // The create testament function does not take the IBeneficiary type. Check the deployments file
+      beneficiaries?.map(({ name, address, distribution }) => ({
+        name,
+        address_: address,
+        inheritancePercentage: BigNumber.from(distribution),
+      }))
+    );
 
-  const { isSuccess: isCreateTestamentSuccess } = useWaitForTransaction({
-    hash: createTestament.data?.hash,
-  });
-
-  const getDynamicVault = useGetDynamicVault();
-
-  const getDynamicVaultAsync = useCallback(async () => {
-    const dynamicVault = await getDynamicVault?.(address);
-    setDynamicVault(dynamicVault);
-    setLoading(false);
-  }, [address, getDynamicVault]);
-
-  useEffect(() => {
-    getDynamicVaultAsync();
-  }, [getDynamicVaultAsync]);
+  const dynamicVault = useGetDynamicVault(address);
 
   async function handleDeploy() {
     createTestament.write?.();
@@ -202,15 +186,16 @@ const Steps = () => {
   }
 
   const renderPage = () => {
-    if (loading) {
-      return <div>Loading...</div>;
+    if (!dynamicVault) {
+      return <UILoading />;
     }
     if (
-      (dynamicVault &&
-        dynamicVault?.testament.claimant !== ethers.constants.AddressZero) ||
-      isCreateTestamentSuccess
+      (dynamicVault.data &&
+        dynamicVault.data.testament.claimant !==
+          ethers.constants.AddressZero) ||
+      createTestamentTransaction.isSuccess
     ) {
-      return <ProtectionsActive {...dynamicVault} />;
+      return <ProtectionsActive {...dynamicVault.data} />;
     }
     return (
       <div className="mb-12">

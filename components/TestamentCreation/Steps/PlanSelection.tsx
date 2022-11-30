@@ -6,11 +6,14 @@ import ListItemText from 'components/list/ListItemText';
 import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
 import Stack from 'components/stack/Stack';
 
+import { testamentInfoInitialValue } from 'mock/index';
 import Image from 'next/image';
 import React from 'react';
-import menuItems from 'utils/menuItems';
-import { testamentInfoInitialValue } from 'mock/index';
+import networkMappings from 'utils/helpers/networkMappings';
+import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
 import { useLocalStorage } from 'utils/hooks/useLocalStorage';
+import menuItems from 'utils/menuItems';
+import { useNetwork } from 'wagmi';
 
 interface Props {
   stepperClassName?: string;
@@ -23,10 +26,17 @@ const PlanSelection = ({
   renderStepper,
   onNextStep,
 }: Props) => {
+  const { chain } = useNetwork();
   const { item: testamentInfo, saveItem: setTestamentInfo } = useLocalStorage(
     'TESTAMENT_INFO',
     testamentInfoInitialValue
   );
+
+  const networkName =
+    wagmiChainNameMappings[chain?.name as keyof typeof wagmiChainNameMappings];
+
+  const networkMapping =
+    networkMappings[networkName as keyof typeof networkMappings];
 
   async function handleClick() {
     onNextStep();
@@ -40,12 +50,12 @@ const PlanSelection = ({
           <span className="inline">Select your Network</span>
           <Stack direction="row">
             <Image
-              src="/logos/moonbeam-black.png"
+              src={networkMapping.route}
               width={40}
               height={40}
-              alt="moonbeam"
+              alt={chain?.name}
             />
-            <span>Moonbase</span>
+            <span className="capitalize">{networkName}</span>
           </Stack>
         </Stack>
         <span className="mb-11 inline-block">

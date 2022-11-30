@@ -6,7 +6,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  fetchBalance,
   prepareWriteContract,
   PrepareWriteContractResult,
   writeContract,
@@ -35,7 +34,9 @@ import { formatAddress } from 'utils/formatters';
 import tokenMappings from 'utils/helpers/tokenMappings';
 import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
 import topTokens from 'utils/topTokens';
-import { useNetwork, useWaitForTransaction } from 'wagmi';
+import { useAccount, useNetwork, useWaitForTransaction } from 'wagmi';
+import useGetBalances from '../../../hooks/useGetBalances';
+import formatBigNumber from '../../../utils/helpers/formatBigNumber';
 import { Address, DynamicVault } from '../../../utils/Types';
 
 type Props = {
@@ -51,11 +52,7 @@ const ProtectionActiveDialog = ({
   isDialogOpen,
   setIsDialogOpen,
 }: Props) => {
-  const [tokenBalances, setTokenBalances] = useState<{
-    token: {
-      balance: number;
-    };
-  }>();
+  const { address } = useAccount();
   const [approvalAddress, setApprovalAddress] = useState<Address>();
 
   const { prepareTransact: prepareApproveToken, transact: approveToken } =
@@ -70,36 +67,22 @@ const ProtectionActiveDialog = ({
 
   const { chain } = useNetwork();
 
+  const networkName =
+    wagmiChainNameMappings[chain?.name as keyof typeof wagmiChainNameMappings];
+  const tokensAddresses = [
+    ...topTokens.map(
+      (token) =>
+        tokenMappings[token as keyof typeof tokenMappings].networks[
+          networkName as keyof typeof tokenMappings.bitcoin.networks
+        ].address
+    ),
+  ];
+  const tokenBalances = useGetBalances(address, tokensAddresses);
+
   const network =
     wagmiChainNameMappings[
       chain?.name as keyof typeof wagmiChainNameMappings
     ] ?? 'moonbeam';
-
-  const fetchBalancesAsync = useCallback(
-    async (tokens: string[]) => {
-      const balances: any = {};
-      tokens.map(async (token) => {
-        let balance: any;
-        if (
-          network in tokenMappings[token as keyof typeof tokenMappings].networks
-        ) {
-          balance = await fetchBalance({
-            address: (tokenMappings[token as keyof typeof tokenMappings] as any)
-              .networks[network],
-          });
-        }
-        balances[token as keyof typeof balances] = { balance: balance ?? '0' };
-      });
-      setTokenBalances(balances);
-    },
-    [network]
-  );
-
-  useEffect(() => {
-    if (isDialogOpen) {
-      fetchBalancesAsync(topTokens);
-    }
-  }, [fetchBalancesAsync, isDialogOpen]);
 
   useEffect(() => {
     if (prepareApproveToken.isSuccess && approveToken.isIdle) {
@@ -165,6 +148,14 @@ const ProtectionActiveDialog = ({
 
   const displayPriceTokens = [{ value: 'USD' }];
 
+  // hard-coded for now
+  const prices: { [key: string]: number } = {
+    ether: 1220,
+    tether: 1,
+    sushi: 1.41,
+    maker: 500,
+  };
+
   const renderDialogContent = () => {
     if (dialogContent === undefined || dynamicVault === undefined) {
       return <DialogTitle>Loading...</DialogTitle>;
@@ -215,7 +206,7 @@ const ProtectionActiveDialog = ({
           </div>
 
           <div className="mt-6 space-y-6">
-            {topTokens.map((token) => {
+            {topTokens.map((token, index) => {
               const tokenMapping =
                 tokenMappings[token as keyof typeof tokenMappings];
               const address = tokenMapping.networks[
@@ -243,22 +234,20 @@ const ProtectionActiveDialog = ({
                   </div>
                   <div className="col-span-3 text-sm">
                     <span>
-                      {(tokenBalances &&
-                        Object.keys(tokenBalances).length &&
-                        tokenBalances[token as keyof typeof tokenBalances]
-                          .balance) ??
+                      {(tokenBalances.data &&
+                        formatBigNumber(tokenBalances.data[index])) ??
                         'loading...'}
                     </span>
-                    <span className="subtitle block">$0.00</span>
+                    <span className="subtitle block">
+                      $
+                      {(tokenBalances.data &&
+                        +formatBigNumber(tokenBalances.data[index]) *
+                          prices[token]) ??
+                        '0.00'}
+                    </span>
                   </div>
                   <div className="col-span-3 text-sm">
-                    <span>
-                      {(tokenBalances &&
-                        Object.keys(tokenBalances).length &&
-                        tokenBalances[token as keyof typeof tokenBalances]
-                          .balance) ??
-                        'loading...'}
-                    </span>
+                    <span>0</span>
 
                     <span className="subtitle block">$0.00</span>
                   </div>

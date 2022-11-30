@@ -43,6 +43,7 @@
     "web3modal": "^1.9.7"
   },
   "devDependencies": {
+    "vercel": "^28.5.6",
     "@types/node": "^17.0.41",
     "autoprefixer": "^10.4.13",
     "eslint": "8.17.0",

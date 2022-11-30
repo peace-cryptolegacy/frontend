@@ -1,5 +1,9 @@
 import { TestamentCreationParams } from 'utils/Types';
-import { useContractWrite, usePrepareContractWrite } from 'wagmi';
+import {
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from 'wagmi';
 import useGetDynamicVaults from './utils/useGetDynamicVaults';
 
 const useCreateTestament = (
@@ -26,7 +30,9 @@ const useCreateTestament = (
 
   const transact = useContractWrite(prepareTransact.config);
 
-  return { prepareTransact, transact };
+  const transaction = useWaitForTransaction(transact.data?.hash);
+
+  return { prepareTransact, transact, transaction };
 };
 
 export default useCreateTestament;
