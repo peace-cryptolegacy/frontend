@@ -1,28 +1,18 @@
-import { readContract } from '@wagmi/core';
-import { useCallback } from 'react';
-import { Address } from 'utils/Types';
+import { Address, useContractRead } from 'wagmi';
 import useGetDynamicVaults from './utils/useGetDynamicVaults';
 
-function useGetDynamicVault() {
+function useGetDynamicVault(owner: Address | undefined) {
   const dynamicVaults = useGetDynamicVaults();
 
-  const getDynamicVault = useCallback(
-    async (owner: Address | undefined) => {
-      return (
-        owner &&
-        dynamicVaults &&
-        (await readContract({
-          address: dynamicVaults.address ?? '',
-          abi: dynamicVaults.abi,
-          functionName: 'dynamicVaults',
-          args: [owner],
-        }))
-      );
-    },
-    [dynamicVaults]
-  );
+  const dynamicVault = useContractRead({
+    address: dynamicVaults?.address,
+    abi: dynamicVaults?.abi,
+    functionName: 'dynamicVaults',
+    args: [owner as Address],
+    enabled: !!owner,
+  });
 
-  return getDynamicVault;
+  return dynamicVault;
 }
 
 export default useGetDynamicVault;

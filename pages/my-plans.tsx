@@ -21,10 +21,15 @@ import Tab from 'components/tabs/Tab';
 import TabGroup from 'components/tabs/TabGroup';
 import TabPanel from 'components/tabs/TabPanel';
 import TabPanels from 'components/tabs/TabPanels';
+import UILoading from 'components/UI/Loading';
+import { ethers } from 'ethers';
+import useSignSucceed from 'hooks/useSignSucceed';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import menuItems from 'utils/menuItems';
 import { UserPlans } from 'utils/Types';
 import { useAccount } from 'wagmi';
+import useGetDynamicVault from '../hooks/useGetDynamicVault';
 import recovery from '../public/images/recovery.png';
 
 const MyPlans: NextPage = () => {
@@ -34,94 +39,47 @@ const MyPlans: NextPage = () => {
     'Inheritance Plan' | 'Backup Wallet'
   >();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [dialog, setDialog] = useState<{
-    title: string | undefined;
-    description: string | undefined;
-    body: JSX.Element | undefined;
-    action: JSX.Element | undefined;
-  }>();
+  const [dialogContent, setDialogContent] = useState<
+    'Complete Multisig' | 'Inheritance Complete'
+  >();
+
+  const [overrideClaim, setOverrideClaim] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     setUserPlans(['Inheritance Plan', 'Backup Wallet']);
   }, []);
 
-  const claimersSignatures: [number, number] = [2, 3];
+  const dynamicVault = useGetDynamicVault(address);
+  const testament = dynamicVault?.data?.testament;
+
+  let beneficiariesAmount: number;
+  if (testament && testament.beneficiaries) {
+    beneficiariesAmount = testament.beneficiaries.length;
+  }
 
   const closeCompleteSignatureModal = () => {
     setIsDialogOpen(false);
   };
+  const signSucceed = useSignSucceed(address ?? '0x');
+
+  const handleSignSucceed = () => {
+    if (address) {
+      signSucceed.signMessage();
+    }
+  };
+
+  useEffect(() => {
+    if (signSucceed.isSuccess) {
+      setOverrideClaim(true);
+    }
+  }, [signSucceed.isSuccess]);
 
   const updateDialogContent = (
-    caller: 'Complete Multisig' | 'Inheritance Complete'
+    content: 'Complete Multisig' | 'Inheritance Complete'
   ) => {
-    if (caller === 'Complete Multisig') {
-      setDialog({
-        title: 'Complete Multisig',
-        description:
-          'Unlock this inheritance plan and transfer the funds to the heirs completing the multisig process sign.',
-        body: (
-          <CircleProgress
-            className="!w-80"
-            progress={(claimersSignatures[0] * 100) / claimersSignatures[1]}
-          >
-            <div className="text-center">
-              <div className="relative h-[120px] w-[120px] shrink-0">
-                <Image
-                  src="/icons/vault.png"
-                  alt="vault"
-                  layout="fill"
-                  objectFit="contain"
-                />
-              </div>
-              <span className="text-sm">Multisig Protection</span>
-              <span className="block text-sm text-purple-900">
-                3 Protectors
-              </span>
-            </div>
-          </CircleProgress>
-        ),
-        action: (
-          <Button
-            text="Sign Now"
-            variant="gradientBorder"
-            size="sm"
-            onClick={() => {}}
-          />
-        ),
-      });
-    }
-    if (caller === 'Inheritance Complete') {
-      setDialog({
-        title: 'The Inheritance is Complete',
-        description:
-          'The assets you were eligible has been successful transfer to your wallet, we will now remove all the protectors.',
-        body: (
-          <CircleProgress className="!w-80" progress={100}>
-            <div className="text-center">
-              <div className="relative mb-3 h-[115px] w-[196px] shrink-0">
-                <Image
-                  src="/icons/inheritanceComplete.png"
-                  alt="inheritance complete"
-                  layout="fill"
-                  objectFit="contain"
-                />
-              </div>
-              <span className="text-sm">Successful transfer </span>
-              <span className="block text-sm text-purple-900">of Wealth</span>
-            </div>
-          </CircleProgress>
-        ),
-
-        action: (
-          <Button
-            text="Manage your Wealth"
-            variant="gradientBorder"
-            size="sm"
-            onClick={() => {}}
-          />
-        ),
-      });
-    }
+    setDialogContent(content);
     setIsDialogOpen(true);
   };
 
@@ -141,12 +99,21 @@ const MyPlans: NextPage = () => {
       );
     }
 
+    if (!dynamicVault || !testament) {
+      return <UILoading width={120} height={120} />;
+    }
+
+    if (testament.claimant === ethers.constants.AddressZero) {
+      return <span className="h3 !font-normal ">No active plans</span>;
+    }
+
     return (
       <TabPanels>
         <TabPanel>
           {activeClaim === 'Inheritance Plan' ? (
             <InheritancePlan
-              claimersSignatures={claimersSignatures}
+              overrideClaim={overrideClaim}
+              testament={testament}
               updateDialogContent={updateDialogContent}
               setActiveClaim={setActiveClaim}
             />
@@ -197,6 +164,109 @@ const MyPlans: NextPage = () => {
     );
   };
 
+  const renderDialogContent = () => {
+    if (dialogContent === 'Complete Multisig') {
+      return (
+        <>
+          <div className="mb-4 flex w-full justify-end">
+            <FontAwesomeIcon
+              icon={faXmark}
+              size="2xl"
+              style={{ cursor: 'pointer' }}
+              onClick={() => setIsDialogOpen(false)}
+            />
+          </div>
+          <HeadlessDialog.Title as="h3" className="h3 text-center">
+            Complete Multisig
+          </HeadlessDialog.Title>
+          <Stack className="mt-4 mb-5 items-center !gap-10">
+            <HeadlessDialog.Description>
+              <p className="text-sm">
+                Unlock this inheritance plan and transfer the funds to the heirs
+                completing the multisig process sign.
+              </p>
+            </HeadlessDialog.Description>
+            <CircleProgress
+              className="!w-80"
+              progress={
+                overrideClaim
+                  ? 100
+                  : ((beneficiariesAmount - 1) * 100) / beneficiariesAmount
+              }
+            >
+              <div className="text-center">
+                <div className="relative h-[120px] w-[120px] shrink-0">
+                  <Image
+                    src="/icons/vault.png"
+                    alt="vault"
+                    layout="fill"
+                    objectFit="contain"
+                  />
+                </div>
+                <span className="text-sm">Multisig Protection</span>
+                <span className="block text-sm text-purple-900">
+                  {beneficiariesAmount} Protectors
+                </span>
+              </div>
+            </CircleProgress>
+            <Button
+              text="Sign Now"
+              variant="gradientBorder"
+              size="sm"
+              onClick={() => handleSignSucceed()}
+            />
+          </Stack>
+        </>
+      );
+    }
+
+    if (dialogContent === 'Inheritance Complete') {
+      return (
+        <>
+          <div className="mb-4 flex w-full justify-end">
+            <FontAwesomeIcon
+              icon={faXmark}
+              size="2xl"
+              style={{ cursor: 'pointer' }}
+              onClick={() => setIsDialogOpen(false)}
+            />
+          </div>
+          <HeadlessDialog.Title as="h3" className="h3 text-center">
+            The Inheritance is Complete
+          </HeadlessDialog.Title>
+          <Stack className="mt-4 mb-5 items-center !gap-10">
+            <HeadlessDialog.Description>
+              <p className="text-sm">
+                The assets you were eligible has been successful transfer to
+                your wallet, we will now remove all the protectors.
+              </p>
+            </HeadlessDialog.Description>
+            <CircleProgress className="!w-80" progress={100}>
+              <div className="text-center">
+                <div className="relative mb-3 h-[115px] w-[196px] shrink-0">
+                  <Image
+                    src="/icons/inheritanceComplete.png"
+                    alt="inheritance complete"
+                    layout="fill"
+                    objectFit="contain"
+                  />
+                </div>
+                <span className="text-sm">Successful transfer </span>
+                <span className="block text-sm text-purple-900">of Wealth</span>
+              </div>
+            </CircleProgress>
+            <Button
+              text="Manage your Wealth"
+              variant="gradientBorder"
+              size="sm"
+              onClick={() => router.push('/assets')}
+            />
+          </Stack>
+        </>
+      );
+    }
+  };
+
   return (
     <>
       {address ? (
@@ -219,25 +289,7 @@ const MyPlans: NextPage = () => {
           </>
           {renderPage()};
           <Dialog isOpen={isDialogOpen} onClose={closeCompleteSignatureModal}>
-            <div className="mb-4 flex w-full justify-end">
-              <FontAwesomeIcon
-                icon={faXmark}
-                size="2xl"
-                style={{ cursor: 'pointer' }}
-                onClick={() => setIsDialogOpen(false)}
-              />
-            </div>
-            <HeadlessDialog.Title as="h3" className="h3 text-center">
-              {dialog?.title}
-            </HeadlessDialog.Title>
-            <Stack className="mt-4 mb-5 items-center !gap-10">
-              <HeadlessDialog.Description>
-                <p className="text-sm">{dialog?.description}</p>
-              </HeadlessDialog.Description>
-              {dialog?.body}
-
-              {dialog?.action}
-            </Stack>
+            {renderDialogContent()}
           </Dialog>
         </TabGroup>
       ) : (
