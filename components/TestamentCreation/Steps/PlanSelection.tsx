@@ -71,7 +71,7 @@ const PlanSelection = ({
                       'relative cursor-pointer'
                     )}
                   >
-                    <ListItemIcon className="h-14 w-14 shrink-0 lg:h-24 lg:w-24">
+                    <ListItemIcon className="h-14 w-14 shrink-0 lg:h-16 lg:w-16 xl:h-24 xl:w-24">
                       <Image
                         src={icon}
                         width={96}
