@@ -29,7 +29,7 @@ const PlanReview = ({
         marginBottom="15px"
         key={`beneficiary-${index}`}
       >
-        <Box flex={1}>{beneficiary.isClaimant ? 'Yes' : 'No'}</Box>
+        {/* <Box flex={1}>{beneficiary.isClaimant ? 'Yes' : 'No'}</Box> */}
         <Box flex={3}>{beneficiary.name}</Box>
         <Box flex={1}>{beneficiary.distribution} %</Box>
         <Box flex={3}>{beneficiary.address}</Box>
@@ -93,7 +93,7 @@ const PlanReview = ({
       <Box marginBottom={5}>{beneficiaries.length} Beneficiaries</Box>
 
       <Box color="#64748B" display="flex" flexDirection="row" fontWeight="bold">
-        <Box flex={1}>Claimer</Box>
+        {/* <Box flex={1}>Claimer</Box> */}
         <Box flex={3}>Beneficiary</Box>
         <Box flex={1}>% Funds</Box>
         <Box flex={3}>Wallet</Box>

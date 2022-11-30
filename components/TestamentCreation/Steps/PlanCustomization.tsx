@@ -66,18 +66,18 @@ const PlanCustomization = ({
     ]);
   }
 
-  function handleClaimantChange(value: string, index: number) {
-    const nextBeneficiaries = beneficiaries.map(
-      (beneficiary, beneficiaryIndex) => {
-        return {
-          ...beneficiary,
-          isClaimant: index === beneficiaryIndex,
-        };
-      }
-    );
+  // function handleClaimantChange(value: string, index: number) {
+  //   const nextBeneficiaries = beneficiaries.map(
+  //     (beneficiary, beneficiaryIndex) => {
+  //       return {
+  //         ...beneficiary,
+  //         isClaimant: index === beneficiaryIndex,
+  //       };
+  //     }
+  //   );
 
-    setBeneficiaries(nextBeneficiaries);
-  }
+  //   setBeneficiaries(nextBeneficiaries);
+  // }
 
   async function handleContinueClick() {
     onNextStep(beneficiaries, expirationDays);
@@ -124,7 +124,7 @@ const PlanCustomization = ({
             value={beneficiary.address}
           />
         </td>
-        <td className="text-left">
+        {/* <td className="text-left">
           <input
             type="checkbox"
             className="rounded text-purple-600"
@@ -133,7 +133,7 @@ const PlanCustomization = ({
               handleClaimantChange(event.target.checked, index)
             }
           />
-        </td>
+        </td> */}
         <td className="text-left">
           <input
             type="number"
@@ -190,7 +190,7 @@ const PlanCustomization = ({
             <tr className="">
               <th>Name</th>
               <th>Wallet</th>
-              <th className="w-1/12">Claimant</th>
+              {/* <th className="w-1/12">Claimant</th> */}
               <th className="w-2/12">% Distr</th>
               <th className="w-1/12"></th>
             </tr>
