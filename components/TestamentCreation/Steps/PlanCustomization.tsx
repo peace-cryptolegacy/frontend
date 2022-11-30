@@ -160,7 +160,15 @@ const PlanCustomization = ({
   return (
     <div className={`${stepperClassName || ''}`}>
       {renderStepper()}
-      <div className="my-6 flex flex-col">
+
+      <div className="my-6 flex flex-col sm:block lg:hidden">
+        <Caption
+          text="Select which wallets could activate the protocol after inactivity time passed. This plan will ONLY be claimable on:                           "
+          className="my-3 text-left text-black"
+        ></Caption>
+      </div>
+
+      <div className="my-6  hidden flex-col lg:flex">
         <Caption
           text="Your inheritance plan will have one or more beneficiaries, you can
           select which of them could activate the protocol after inactivity time
@@ -181,7 +189,7 @@ const PlanCustomization = ({
           <thead>
             <tr className="">
               <th>Name</th>
-              <th>address</th>
+              <th>Wallet</th>
               <th className="w-1/12">Claimant</th>
               <th className="w-2/12">% Distr</th>
               <th className="w-1/12"></th>
@@ -208,7 +216,7 @@ const PlanCustomization = ({
           to be released:"
             className="my-3 text-left text-black"
           ></Caption>
-          <div className="flex justify-between">
+          <div className="flex flex-col items-center justify-center gap-4 lg:flex-row lg:justify-between">
             <select
               className="form-select w-2/6 rounded px-4 py-3"
               onChange={handleExpirationChange}
