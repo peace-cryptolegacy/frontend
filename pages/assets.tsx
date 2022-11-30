@@ -1,7 +1,9 @@
 import Box from 'components/Box/Box';
+import Button from 'components/button/Button';
 import GeneralDefaultConnectWallet from 'components/general/defaultConnectWallet/DefaultConnectWallet';
 import GeneralDefaultConnectWalletDescription from 'components/general/defaultConnectWallet/Description';
 import GeneralDefaultConnectWalletTitle from 'components/general/defaultConnectWallet/Title';
+import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
 import PercentageBar from 'components/percentageBar/PercentageBar';
 import Section from 'components/Section/Section';
 import SocialButtons from 'components/SocialButtons/SocialButtons';
@@ -11,13 +13,30 @@ import TabGroup from 'components/tabs/TabGroup';
 import TabPanel from 'components/tabs/TabPanel';
 import TabPanels from 'components/tabs/TabPanels';
 import Tabs from 'components/tabs/Tabs';
+import useGetBalances from 'hooks/useGetBalances';
 import { NextPage } from 'next';
 import Image from 'next/image';
-import { useAccount } from 'wagmi';
+import formatBigNumber from 'utils/helpers/formatBigNumber';
+import tokenMappings from 'utils/helpers/tokenMappings';
+import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
+import topTokens from 'utils/topTokens';
+import { useAccount, useNetwork } from 'wagmi';
 import assets from '../public/images/assets.png';
 
 const Assets: NextPage = () => {
   const { address } = useAccount();
+  const { chain } = useNetwork();
+
+  const networkName = chain && wagmiChainNameMappings[chain?.name];
+  const tokensAddresses = networkName
+    ? [
+        ...topTokens.map(
+          (token) => tokenMappings[token].networks[networkName].address
+        ),
+      ]
+    : [];
+  const tokenBalances = useGetBalances(address, tokensAddresses);
+
   const socialIcons = [
     {
       route: '/icons/twitter-white.png',
@@ -55,6 +74,13 @@ const Assets: NextPage = () => {
       amount: 20,
     },
   ];
+
+  const prices: { [key: string]: number } = {
+    ether: 1220,
+    tether: 1,
+    sushi: 1.41,
+    maker: 500,
+  };
 
   const renderPage = () => {
     if (!address) {
@@ -119,7 +145,6 @@ const Assets: NextPage = () => {
             </div>
           </Box>
         </Section>
-
         <TabGroup className="mt-14">
           <Tabs>
             <Tab>Tokens</Tab>
@@ -196,6 +221,80 @@ const Assets: NextPage = () => {
             </TabPanel>
           </TabPanels>
         </TabGroup>
+        <Box className="mt-12">
+          <TabGroup>
+            <Stack direction="row" className="justify-between">
+              <div>
+                <span className="subtitle block">Wallet</span>
+                <span className="text-3xl">$80.00</span>
+              </div>
+              <Tabs className="!gap-3 text-sm">
+                <Tab>By Platform</Tab>
+                <Tab>By Position</Tab>
+              </Tabs>
+            </Stack>
+            <div className="mt-8 grid grid-cols-5 text-sm text-blue-gray">
+              <span>Assets</span>
+              <span>Price</span>
+              <span>Balance</span>
+              <span>Value</span>
+              <span></span>
+            </div>
+            <HorizontalRule className="mt-3" />
+            <TabPanel>
+              <div className="mt-6 grid grid-cols-5 items-center gap-6">
+                {topTokens.map((token, index) => {
+                  const tokenMapping = tokenMappings[token];
+                  const address =
+                    networkName && tokenMapping.networks[networkName].address;
+                  address;
+                  const loading = false;
+                  return (
+                    <>
+                      <Stack direction="row">
+                        <div className="relative h-6 w-6 shrink-0">
+                          <Image
+                            src={tokenMapping ? tokenMapping.route : '/'}
+                            alt={token}
+                            layout="fill"
+                            objectFit="contain"
+                          />
+                        </div>
+                        <div>
+                          <span className="block capitalize">{token}</span>
+                          <span className="subtitle">
+                            {tokenMapping.symbol}
+                          </span>
+                        </div>
+                      </Stack>
+                      <span className="text-sm">${prices[token]}</span>
+                      <span className="text-sm">
+                        {tokenBalances.data
+                          ? formatBigNumber(tokenBalances.data[index], 0)
+                          : 'loading...'}
+                      </span>
+                      <span className="text-sm">
+                        $
+                        {tokenBalances.data
+                          ? prices[token] *
+                            +formatBigNumber(tokenBalances.data[index])
+                          : 'loading...'}
+                      </span>
+                      <Button
+                        variant="primary"
+                        text={loading ? 'loading...' : 'Protect Token'}
+                        disabled={loading}
+                        onClick={() => {
+                          loading ? null : {};
+                        }}
+                      />
+                    </>
+                  );
+                })}
+              </div>
+            </TabPanel>
+          </TabGroup>
+        </Box>
       </>
     );
   };
