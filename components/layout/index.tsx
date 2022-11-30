@@ -30,7 +30,7 @@ const Layout = ({ children }: Props) => {
       <Section className="justify-center overflow-x-hidden">
         <>
           <Menu />
-          <div className="flex h-screen w-full max-w-[1600px] flex-col pl-[calc(250px+64px)] pr-[64px]">
+          <div className="flex min-h-screen w-full max-w-[1600px] flex-col pl-[calc(250px+64px)] pr-[64px]">
             <>
               <Navbar />
               {children}
