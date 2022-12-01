@@ -25,12 +25,12 @@ const Stepper = ({ steps, className, activeStep }: Props) => {
           <React.Fragment key={step}>
             <ListItem className={`mx-auto !gap-4 ${hideStepper(i)}`}>
               <div
-                className={`flex h-8 w-8 shrink-0 items-center rounded-full xl:h-10 xl:w-10 ${
+                className={`flex h-6 w-6 shrink-0 items-center rounded-full lg:h-8 lg:w-8 xl:h-10 xl:w-10 ${
                   activeStep === i ? 'bg-purple-900' : 'bg-purple-100'
                 }`}
               >
                 <span
-                  className={`mx-auto text-xl ${
+                  className={`mx-auto text-sm lg:text-xl ${
                     activeStep === i ? 'text-white' : 'text-gradient'
                   }`}
                 >

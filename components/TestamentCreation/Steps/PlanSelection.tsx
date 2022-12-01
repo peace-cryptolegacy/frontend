@@ -104,7 +104,7 @@ const PlanSelection = ({
         <div className="mt-12 flex w-full justify-center">
           <PrimaryButton
             text={'Continue'}
-            className={'!py-4 !px-14'}
+            className={'!py-2 !px-10 lg:!py-4 lg:!px-14'}
             onClick={handleClick}
           />
         </div>

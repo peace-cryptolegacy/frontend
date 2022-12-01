@@ -2,6 +2,7 @@
 import Footer from 'components/footer';
 import Menu from 'components/menu/menu';
 import Navbar from 'components/navbar/Navbar';
+import PeaceLogo from 'components/PeaceLogo/PeaceLogo';
 import Section from 'components/Section/Section';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
@@ -21,8 +22,9 @@ const Layout = ({ children }: Props) => {
       <Section className="justify-center overflow-x-hidden">
         <>
           <Menu />
-          <div className="flex h-screen w-full max-w-[1600px] flex-col px-20 pb-36 lg:pb-0 lg:pr-[64px] lg:pl-[calc(250px+64px)] lg-max:overflow-y-auto">
+          <div className="flex h-screen w-full max-w-[1600px] flex-col px-5 pb-20 lg:pb-0 lg:pr-[64px] lg:pl-[calc(250px+64px)] lg-max:overflow-y-auto">
             <>
+              <PeaceLogo className="top-0 left-0 z-20 hidden flex-row pt-10 lg-max:flex" />
               <Navbar />
               {children}
               <Footer />

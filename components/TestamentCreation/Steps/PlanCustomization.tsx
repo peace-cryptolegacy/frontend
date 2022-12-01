@@ -2,6 +2,7 @@ import { AddIcon } from '@chakra-ui/icons';
 import { Button } from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Caption from 'components/Caption/Caption';
+import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
 import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
 import { isAddress } from 'ethers/lib/utils';
 import { IBeneficiary, ITestamentInfo } from 'mock';
@@ -99,7 +100,7 @@ const PlanCustomization = ({
   function renderRow(beneficiary: IBeneficiary, index: number) {
     return (
       <div className="flex flex-col justify-between py-4 lg:flex-row">
-        <section className="my-3 flex flex-col lg:my-0  lg:flex-row xl:w-3/12">
+        <section className="mb-2 flex flex-col lg:mb-0  lg:flex-row xl:w-3/12">
           <label className="pb-3 font-bold lg:hidden">Name</label>
           <input
             type="text"
@@ -112,7 +113,7 @@ const PlanCustomization = ({
             value={beneficiary.name}
           />
         </section>
-        <section className="my-3 flex flex-col lg:my-0  lg:flex-row xl:w-4/12">
+        <section className="mb-2 flex flex-col lg:mb-0  lg:flex-row xl:w-4/12">
           <label className="pb-3 font-bold lg:hidden">Wallet</label>
           <input
             type="text"
@@ -126,7 +127,7 @@ const PlanCustomization = ({
             value={beneficiary.address}
           />
         </section>
-        <section className="my-3 flex flex-col lg:my-0 lg:flex lg:flex-row xl:w-2/12">
+        <section className="mb-2 flex flex-col lg:mb-0 lg:flex lg:flex-row xl:w-2/12">
           <label className="pb-3 font-bold lg:hidden">% Distribution</label>
           <input
             type="number"
@@ -139,7 +140,7 @@ const PlanCustomization = ({
             value={beneficiary.distribution}
           />
         </section>
-        <section className="my-3 flex flex-col lg:my-0 lg:flex-row xl:w-1/12">
+        <section className="mb-2 flex flex-col lg:mb-0 lg:flex-row xl:w-1/12">
           <FontAwesomeIcon
             className="ml-auto cursor-pointer"
             icon="trash"
@@ -185,6 +186,7 @@ const PlanCustomization = ({
             <label className="pb-3 font-bold xl:w-2/12">% Distribution</label>
             <label className="pb-3 font-bold xl:w-1/12"></label>
           </div>
+          <HorizontalRule className="hidden w-full border-[1px] lg:block" />
           <>{beneficiaries.map(renderRow)}</>
         </div>
 
@@ -245,7 +247,7 @@ const PlanCustomization = ({
           </Button>
           <PrimaryButton
             text={'Continue'}
-            className={'!py-4 !px-14'}
+            className={'!py-2 !px-10 lg:!py-4 lg:!px-14'}
             onClick={handleContinueClick}
           />
         </div>
