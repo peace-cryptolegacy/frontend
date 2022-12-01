@@ -9,6 +9,7 @@ type Props = {
   disabled?: boolean;
   props?: any;
   className?: string;
+  onClick?: Function;
 } & ComponentPropsWithoutRef<'button'>;
 
 const Button = ({
@@ -18,12 +19,14 @@ const Button = ({
   text,
   disabled,
   className,
+  onClick,
   ...props
 }: Props) => {
   const renderButton = () => {
     return (
       <button
         {...props}
+        onClick={onClick}
         className={clsx(
           ['fancy', 'gradientBorder'].includes(variant) &&
             'rounded-2xl bg-mainVertical',

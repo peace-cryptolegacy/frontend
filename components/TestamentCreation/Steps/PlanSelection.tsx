@@ -46,7 +46,7 @@ const PlanSelection = ({
     <>
       <div className={`${stepperClassName || ''}`}>
         {renderStepper()}
-        <Stack direction="row" className="my-8 !gap-9">
+        <Stack direction="row" className="mt-8 hidden !gap-9 lg:flex">
           <span className="inline">Select your Network</span>
           <Stack direction="row">
             <Image
@@ -58,10 +58,10 @@ const PlanSelection = ({
             <span className="capitalize">{networkName}</span>
           </Stack>
         </Stack>
-        <span className="mb-11 inline-block">
+        <span className="my-7 inline-block text-sm lg:my-11 lg:text-base">
           Select the protection for your Assets
         </span>
-        <List className="grid grid-cols-1 gap-x-14 gap-y-12 2xl:grid-cols-2">
+        <List className="grid grid-cols-1 gap-x-14 gap-y-12 lg:grid-cols-2">
           {Object.entries(menuItems.Protection.subMenu)?.map(
             ([, { icon, title, description, alt, comingSoon, planId }]) => {
               return (
@@ -81,7 +81,7 @@ const PlanSelection = ({
                       'relative cursor-pointer'
                     )}
                   >
-                    <ListItemIcon className="h-24 w-24 shrink-0">
+                    <ListItemIcon className="h-14 w-14 shrink-0 lg:h-16 lg:w-16 xl:h-24 xl:w-24">
                       <Image
                         src={icon}
                         width={96}
@@ -114,7 +114,7 @@ const PlanSelection = ({
         <div className="mt-12 flex w-full justify-center">
           <PrimaryButton
             text={'Continue'}
-            className={'!py-4 !px-14'}
+            className={'!py-2 !px-10 lg:!py-4 lg:!px-14'}
             onClick={handleClick}
           />
         </div>
