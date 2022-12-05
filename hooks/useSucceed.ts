@@ -1,31 +1,20 @@
-import { TestamentCreationParams } from 'utils/Types';
 import {
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
 } from 'wagmi';
+import { Address } from '../utils/Types';
 import useGetDynamicVaults from './utils/useGetDynamicVaults';
 
-const useCreateTestament = (
-  ...[claimant, inactivityMaximum, beneficiaries]:
-    | TestamentCreationParams
-    | undefined[]
-) => {
+const useSucceed = (dynamicVaultOwner: Address) => {
   const dynamicVaults = useGetDynamicVaults();
 
   const prepareTransact = usePrepareContractWrite({
     address: dynamicVaults?.address ?? '',
     abi: dynamicVaults?.abi,
-    functionName: 'createTestament',
-    args: [
-      claimant,
-      inactivityMaximum,
-      beneficiaries,
-    ] as unknown as TestamentCreationParams,
-    enabled:
-      dynamicVaults && claimant && inactivityMaximum && beneficiaries
-        ? true
-        : false,
+    functionName: 'succeed',
+    args: [dynamicVaultOwner as Address],
+    enabled: dynamicVaultOwner && true,
   });
 
   const transact = useContractWrite(prepareTransact.config);
@@ -35,4 +24,4 @@ const useCreateTestament = (
   return { prepareTransact, transact, transaction };
 };
 
-export default useCreateTestament;
+export default useSucceed;

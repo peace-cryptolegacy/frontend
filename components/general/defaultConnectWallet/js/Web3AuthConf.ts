@@ -1,22 +1,25 @@
-import { OpenloginAdapter } from '@web3auth/openlogin-adapter';
-import { Web3Auth } from '@web3auth/modal';
 import { CHAIN_NAMESPACES } from '@web3auth/base';
+import { Web3Auth } from '@web3auth/modal';
+import { OpenloginAdapter } from '@web3auth/openlogin-adapter';
+import windowExists from '../../../../utils/helpers/windowExsists';
 
-export const web3auth = new Web3Auth({
-  clientId:
-    'BBoPmFxNLEMBVbWx7SCIHceMuvUh7nmvwGtc_8vD3MlYuvpOAkO2uy6jTrdCFfshWcKuZHQ5YU-S5o0Ykjv4nz4', // Get your Client ID from Web3Auth Dashboard
-  chainConfig: {
-    chainNamespace: CHAIN_NAMESPACES.EIP155,
-    chainId: '0x1',
-    rpcTarget: 'https://polygon-testnet.public.blastapi.io',
-    // rpcTarget: 'https://rpc.ankr.com/eth', // This is the mainnet RPC we have added, please pass on your own endpoint while creating an app
-  },
-  uiConfig: {
-    theme: 'light',
-    loginMethodsOrder: ['facebook', 'google'],
-    appLogo: 'https://yourpeace.io/images/Logo-New.svg', // Your App Logo Here
-  },
-});
+export const web3auth =
+  windowExists() &&
+  new Web3Auth({
+    clientId:
+      'BBoPmFxNLEMBVbWx7SCIHceMuvUh7nmvwGtc_8vD3MlYuvpOAkO2uy6jTrdCFfshWcKuZHQ5YU-S5o0Ykjv4nz4', // Get your Client ID from Web3Auth Dashboard
+    chainConfig: {
+      chainNamespace: CHAIN_NAMESPACES.EIP155,
+      chainId: '0x1',
+      rpcTarget: 'https://polygon-testnet.public.blastapi.io',
+      // rpcTarget: 'https://rpc.ankr.com/eth', // This is the mainnet RPC we have added, please pass on your own endpoint while creating an app
+    },
+    uiConfig: {
+      theme: 'light',
+      loginMethodsOrder: ['facebook', 'google'],
+      appLogo: 'https://yourpeace.io/images/Logo-New.svg', // Your App Logo Here
+    },
+  });
 
 const openloginAdapter = new OpenloginAdapter({
   adapterSettings: {
@@ -45,6 +48,6 @@ const openloginAdapter = new OpenloginAdapter({
     },
   },
 });
-web3auth.configureAdapter(openloginAdapter);
+web3auth && web3auth.configureAdapter(openloginAdapter);
 
-web3auth.initModal();
+web3auth && web3auth.initModal();

@@ -7,18 +7,21 @@ import Chip from 'components/Chip/Chip';
 import CircleProgress from 'components/circleProgress/CircleProgress';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
 import Stack from 'components/stack/Stack';
+import useSucceed from 'hooks/useSucceed';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import networkMappings from 'utils/helpers/networkMappings';
 import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
 import { useNetwork } from 'wagmi';
-import { Testament } from '../../utils/Types';
+import { Address, Testament } from '../../utils/Types';
 import UILoading from '../UI/Loading';
 
 type Props = {
-  overrideClaim?: boolean;
   testament: Testament;
+  dynamicVaultOwner: Address;
+  signersAmount: number;
+  fakeSignersAmount: number;
   updateDialogContent: (
     // eslint-disable-next-line no-unused-vars
     caller: 'Complete Multisig' | 'Inheritance Complete'
@@ -29,12 +32,27 @@ type Props = {
 };
 
 const InheritancePlan = ({
-  overrideClaim,
   testament,
+  dynamicVaultOwner,
+  signersAmount,
+  fakeSignersAmount,
   updateDialogContent,
   setActiveClaim,
 }: Props) => {
   const { chain } = useNetwork();
+  signersAmount;
+
+  const [succeeded, setSucceeded] = useState<boolean>(false);
+
+  const { transact: succeed, transaction: succeedTransaction } =
+    useSucceed(dynamicVaultOwner);
+
+  useEffect(() => {
+    if (succeedTransaction.isSuccess) {
+      updateDialogContent('Inheritance Complete');
+      setSucceeded(true);
+    }
+  }, [succeedTransaction.isSuccess, updateDialogContent]);
 
   const networkName =
     wagmiChainNameMappings[chain?.name as keyof typeof wagmiChainNameMappings];
@@ -43,7 +61,12 @@ const InheritancePlan = ({
     networkMappings[networkName as keyof typeof networkMappings];
 
   const beneficiariesAmount = testament?.beneficiaries.length;
+
   const tokens = testament?.tokens;
+
+  const handleSucceed = () => {
+    succeed.write?.();
+  };
 
   const renderComponent = () => {
     if (!beneficiariesAmount || !tokens) {
@@ -141,11 +164,7 @@ const InheritancePlan = ({
           <Stack direction="row" className="!items-start justify-between">
             <CircleProgress
               className="shrink-0"
-              progress={
-                overrideClaim
-                  ? 100
-                  : ((beneficiariesAmount - 1) * 100) / beneficiariesAmount
-              }
+              progress={(fakeSignersAmount * 100) / beneficiariesAmount}
             >
               <div className="relative h-[91px] w-[91px] shrink-0 ">
                 <Image
@@ -163,8 +182,10 @@ const InheritancePlan = ({
             <div>
               <div>
                 <span className="text-purple-900">
-                  {beneficiariesAmount - 1 ?? '---'}/
-                  {beneficiariesAmount ?? '---'} Protectors already sign!
+                  {fakeSignersAmount === 1
+                    ? `${fakeSignersAmount} protector`
+                    : `${fakeSignersAmount} protectors`}{' '}
+                  already sign!
                 </span>
                 <Stack direction="row" className="mt-4 flex-wrap">
                   {[...Array(beneficiariesAmount)].map((_, i) => {
@@ -172,7 +193,9 @@ const InheritancePlan = ({
                       <React.Fragment key={i}>
                         <div className="relative">
                           <Box
-                            gradient={i + 1 > beneficiariesAmount - 1}
+                            gradient={
+                              fakeSignersAmount < beneficiariesAmount - i
+                            }
                             className={clsx(
                               'flex h-[75px] w-[75px] items-center justify-center rounded-full drop-shadow-none',
                               '[&>div]:rounded-full [&>div]:p-0'
@@ -192,7 +215,7 @@ const InheritancePlan = ({
                               </div>
                             </div>
                           </Box>
-                          {!overrideClaim && i + 1 > beneficiariesAmount - 1 ? (
+                          {fakeSignersAmount < beneficiariesAmount - i ? (
                             <div className="absolute bottom-0 right-0 h-6 w-6 rounded-full bg-gray-400"></div>
                           ) : (
                             <span className="absolute bottom-0 right-0 h-6 w-6 rounded-full bg-white">
@@ -212,7 +235,7 @@ const InheritancePlan = ({
                 </Stack>
               </div>
             </div>
-            {beneficiariesAmount - 1 === beneficiariesAmount ? (
+            {fakeSignersAmount === beneficiariesAmount ? (
               <Chip variant="success" text="Approved" className="mt-12" />
             ) : (
               <Button
@@ -220,9 +243,9 @@ const InheritancePlan = ({
                 variant={'basic'}
                 size="sm"
                 className="mt-12"
-                disabled={beneficiariesAmount - 1 === beneficiariesAmount}
+                disabled={fakeSignersAmount === beneficiariesAmount}
                 onClick={() =>
-                  beneficiariesAmount - 1 === beneficiariesAmount
+                  fakeSignersAmount === beneficiariesAmount
                     ? null
                     : updateDialogContent('Complete Multisig')
                 }
@@ -239,20 +262,22 @@ const InheritancePlan = ({
             />
             <Button
               disabled={
-                overrideClaim
+                fakeSignersAmount === beneficiariesAmount &&
+                !testament.succeeded &&
+                !succeeded
                   ? false
-                  : beneficiariesAmount - 1 !== beneficiariesAmount
+                  : true
               }
               text="Claim Now"
               variant="fancy"
               size="sm"
               className="!p-1"
               onClick={() =>
-                overrideClaim
-                  ? updateDialogContent('Inheritance Complete')
-                  : beneficiariesAmount - 1 !== beneficiariesAmount
-                  ? null
-                  : updateDialogContent('Inheritance Complete')
+                fakeSignersAmount === beneficiariesAmount &&
+                !testament.succeeded &&
+                !succeeded
+                  ? handleSucceed()
+                  : null
               }
             />
           </Stack>

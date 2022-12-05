@@ -1,3 +1,4 @@
+import axios from 'axios';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
 import ProtectionsActive from 'components/protection/active/Active';
 import Stepper from 'components/Stepper/Stepper';
@@ -56,8 +57,7 @@ const Steps = () => {
 
   const { transact: createTestament, transaction: createTestamentTransaction } =
     useCreateTestament(
-      beneficiaries?.filter((beneficiary) => beneficiary.isClaimant === true)[0]
-        ?.address,
+      beneficiaries && beneficiaries[0]?.address,
       BigNumber.from(testamentInfo.expirationDays),
       // The create testament function does not take the IBeneficiary type. Check the deployments file
       beneficiaries?.map(({ name, address, distribution }) => ({
@@ -69,9 +69,43 @@ const Steps = () => {
 
   const dynamicVault = useGetDynamicVault(address);
 
+  useEffect(() => {
+    if (!createTestamentTransaction.isSuccess) {
+      return;
+    }
+
+    const addBeneficiariesToDB = async () => {
+      try {
+        await axios.post('/api/testament-signatures', {
+          dynamicVaultOwner: address,
+          beneficiaries: beneficiaries.map((beneficiary) => {
+            return {
+              address: beneficiary.address,
+            };
+          }),
+        });
+      } catch (error) {
+        return error;
+      }
+    };
+
+    addBeneficiariesToDB();
+  }, [
+    address,
+    beneficiaries,
+    createTestament,
+    createTestamentTransaction,
+    createTestamentTransaction.isSuccess,
+  ]);
+
   async function handleDeploy() {
-    createTestament.write?.();
+    if (createTestament.write) {
+      createTestament.write();
+    } else {
+      return;
+    }
   }
+
   // end smart-contracts
 
   function renderStepper() {

@@ -1,6 +1,7 @@
 import Button from 'components/button/Button';
 import Stack from 'components/stack/Stack';
 import Image from 'next/image';
+import windowExists from '../../../utils/helpers/windowExsists';
 import { web3auth } from './js/Web3AuthConf';
 
 type Props = {
@@ -8,12 +9,16 @@ type Props = {
 };
 
 const GeneralDefaultConnectWallet = ({ children }: Props) => {
+  const handleConnect = async () => {
+    if (windowExists() && web3auth) await web3auth.connect();
+  };
+
   return (
     <Stack className="min-h-screen items-center justify-center !gap-9 text-center">
       {children}
       <div className="space-y-3">
         <Button
-          onClick={async () => await web3auth.connect()}
+          onClick={() => handleConnect()}
           variant="fancy"
           text="Connect Wallet"
           size="base"
