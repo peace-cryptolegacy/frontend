@@ -12,6 +12,7 @@ import Tabs from 'components/tabs/Tabs';
 import { NextPage } from 'next';
 import Image from 'next/image';
 
+import axios from 'axios';
 import GeneralDefaultConnectWallet from 'components/general/defaultConnectWallet/DefaultConnectWallet';
 import GeneralDefaultConnectWalletDescription from 'components/general/defaultConnectWallet/Description';
 import GeneralDefaultConnectWalletTitle from 'components/general/defaultConnectWallet/Title';
@@ -28,7 +29,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import menuItems from 'utils/menuItems';
 import { UserPlans } from 'utils/Types';
-import { useAccount } from 'wagmi';
+import { Address, useAccount } from 'wagmi';
 import useGetDynamicVault from '../hooks/useGetDynamicVault';
 import recovery from '../public/images/recovery.png';
 
@@ -43,38 +44,129 @@ const MyPlans: NextPage = () => {
     'Complete Multisig' | 'Inheritance Complete'
   >();
 
-  const [overrideClaim, setOverrideClaim] = useState(false);
+  const [beneficiary, setBeneficiary] = useState<{
+    address: Address;
+    dynamicVaults: {
+      _id: string;
+      dynamicVaultOwner: Address;
+      testament: {
+        _id: string;
+        signatures: {
+          address: Address;
+          signature: string | undefined;
+          _id: string;
+        }[];
+      };
+    }[];
+  }>();
+
+  // for demo purposes
+  const [fakeSignersAmount, setFakeSignersAmount] = useState<number>(1);
 
   const router = useRouter();
 
   useEffect(() => {
-    setUserPlans(['Inheritance Plan', 'Backup Wallet']);
+    setUserPlans(['Inheritance Plan']);
   }, []);
 
-  const dynamicVault = useGetDynamicVault(address);
+  // prepare testament data
+  // Todo: what happens if a beneficiary is part of multiple testaments
+
+  useEffect(() => {
+    console.log('1. address', address);
+    if (!address) {
+      return;
+    }
+    const fetchTestamentSignatures = async () => {
+      try {
+        const beneficiary = await axios
+          .get('api/beneficiary/' + address)
+          .then((res) => res.data.beneficiary);
+        console.log('🚀 ~ beneficiary', beneficiary);
+        setBeneficiary(beneficiary);
+      } catch (error) {
+        return error;
+      }
+    };
+    fetchTestamentSignatures();
+  }, [address]);
+
+  const dynamicVault = useGetDynamicVault(
+    beneficiary?.dynamicVaults[0].dynamicVaultOwner
+  );
   const testament = dynamicVault?.data?.testament;
 
-  let beneficiariesAmount: number;
+  let beneficiariesAmount: number = 1;
   if (testament && testament.beneficiaries) {
     beneficiariesAmount = testament.beneficiaries.length;
   }
 
+  let signersAmount = 0;
+  signersAmount;
+
+  const testamentSignatures:
+    | {
+        address: Address;
+        signature: string | undefined;
+        _id: string;
+      }[]
+    | undefined = beneficiary?.dynamicVaults[0]?.testament?.signatures;
+
+  useEffect(() => {
+    let signersAmount = 0;
+    signersAmount;
+
+    testamentSignatures?.every((signature) => {
+      if (signature.signature) {
+        signersAmount += 1;
+      }
+      if (signature.address === address && signature.signature) {
+        setFakeSignersAmount(beneficiariesAmount);
+        return;
+      } else {
+        setFakeSignersAmount(beneficiariesAmount - 1);
+      }
+    });
+  }, [address, beneficiariesAmount, testamentSignatures]);
+
+  // end prepare testament data
+
   const closeCompleteSignatureModal = () => {
     setIsDialogOpen(false);
   };
-  const signSucceed = useSignSucceed(address ?? '0x');
+  const { message: signatureMessage, transact: signSucceed } = useSignSucceed(
+    address ?? '0x'
+  );
+
+  useEffect(() => {
+    console.log('singSucceed', signSucceed.status);
+    if (signSucceed.isSuccess) {
+      setDialogContent('Inheritance Complete');
+      setIsDialogOpen(true);
+      setFakeSignersAmount((prev) => (prev ? prev + 1 : 1));
+      setFakeSignersAmount(beneficiariesAmount);
+      axios.put('api/testament-signatures', {
+        testamentId: beneficiary?.dynamicVaults[0]?.testament._id,
+        beneficiaryAddress: address,
+        signature: signSucceed.data,
+        message: signatureMessage,
+      });
+    }
+  }, [
+    address,
+    beneficiary?.dynamicVaults,
+    signatureMessage,
+    signSucceed.data,
+    signSucceed.isSuccess,
+    signSucceed.status,
+    beneficiariesAmount,
+  ]);
 
   const handleSignSucceed = () => {
     if (address) {
       signSucceed.signMessage();
     }
   };
-
-  useEffect(() => {
-    if (signSucceed.isSuccess) {
-      setOverrideClaim(true);
-    }
-  }, [signSucceed.isSuccess]);
 
   const updateDialogContent = (
     content: 'Complete Multisig' | 'Inheritance Complete'
@@ -99,11 +191,15 @@ const MyPlans: NextPage = () => {
       );
     }
 
-    if (!dynamicVault || !testament) {
+    if (!beneficiary) {
+      return <span className="h3 !font-normal ">No active plans</span>;
+    }
+
+    if (!dynamicVault) {
       return <UILoading width={120} height={120} />;
     }
 
-    if (testament.claimant === ethers.constants.AddressZero) {
+    if (!testament || testament.claimant === ethers.constants.AddressZero) {
       return <span className="h3 !font-normal ">No active plans</span>;
     }
 
@@ -112,7 +208,9 @@ const MyPlans: NextPage = () => {
         <TabPanel>
           {activeClaim === 'Inheritance Plan' ? (
             <InheritancePlan
-              overrideClaim={overrideClaim}
+              dynamicVaultOwner={beneficiary.dynamicVaults[0].dynamicVaultOwner}
+              signersAmount={signersAmount}
+              fakeSignersAmount={fakeSignersAmount}
               testament={testament}
               updateDialogContent={updateDialogContent}
               setActiveClaim={setActiveClaim}
@@ -188,11 +286,7 @@ const MyPlans: NextPage = () => {
             </HeadlessDialog.Description>
             <CircleProgress
               className="!w-80"
-              progress={
-                overrideClaim
-                  ? 100
-                  : ((beneficiariesAmount - 1) * 100) / beneficiariesAmount
-              }
+              progress={(fakeSignersAmount * 100) / beneficiariesAmount}
             >
               <div className="text-center">
                 <div className="relative h-[120px] w-[120px] shrink-0">
