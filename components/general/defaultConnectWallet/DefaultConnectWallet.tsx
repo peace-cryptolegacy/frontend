@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { CHAIN_NAMESPACES } from '@web3auth/base';
 import { OpenloginAdapter } from '@web3auth/openlogin-adapter';
 import { MetamaskAdapter } from '@web3auth/metamask-adapter';
-// import RPC from '../../../pages/api/web3RPC'; // for using web3.js
+import RPC from '../../../pages/api/web3RPC'; // for using web3.js
 type Props = {
   children: React.ReactNode | React.ReactNode[];
 };
@@ -108,93 +108,93 @@ const GeneralDefaultConnectWallet = ({ children }: Props) => {
     console.log('Logged in Successfully!');
   };
 
-  // const authenticateUser = async () => {
-  //   if (!web3auth) {
-  //     console.log('web3auth not initialized yet');
-  //     return;
-  //   }
-  //   const idToken = await web3auth.authenticateUser();
-  //   console.log(idToken);
-  // };
+  const authenticateUser = async () => {
+    if (!web3auth) {
+      console.log('web3auth not initialized yet');
+      return;
+    }
+    const idToken = await web3auth.authenticateUser();
+    console.log(idToken);
+  };
 
-  // const getUserInfo = async () => {
-  //   if (!web3auth) {
-  //     console.log('web3auth not initialized yet');
-  //     return;
-  //   }
-  //   const user = await web3auth.getUserInfo();
-  //   console.log(user);
-  //   console.log('web3auth');
-  //   console.log(web3auth);
-  // };
+  const getUserInfo = async () => {
+    if (!web3auth) {
+      console.log('web3auth not initialized yet');
+      return;
+    }
+    const user = await web3auth.getUserInfo();
+    console.log(user);
+    console.log('web3auth');
+    console.log(web3auth);
+  };
 
-  // const logout = async () => {
-  //   if (!web3auth) {
-  //     console.log('web3auth not initialized yet');
-  //     return;
-  //   }
-  //   await web3auth.logout();
-  //   setProvider(null);
-  // };
+  const logout = async () => {
+    if (!web3auth) {
+      console.log('web3auth not initialized yet');
+      return;
+    }
+    await web3auth.logout();
+    setProvider(null);
+  };
 
-  // const getChainId = async () => {
-  //   if (!provider) {
-  //     console.log('provider not initialized yet');
-  //     return;
-  //   }
-  //   const rpc = new RPC(provider);
-  //   const chainId = await rpc.getChainId();
-  //   console.log(chainId);
-  // };
-  // const getAccounts = async () => {
-  //   if (!provider) {
-  //     console.log('provider not initialized yet');
-  //     return;
-  //   }
-  //   const rpc = new RPC(provider);
-  //   const address = await rpc.getAccounts();
-  //   console.log(address);
-  // };
+  const getChainId = async () => {
+    if (!provider) {
+      console.log('provider not initialized yet');
+      return;
+    }
+    const rpc = new RPC(provider);
+    const chainId = await rpc.getChainId();
+    console.log(chainId);
+  };
+  const getAccounts = async () => {
+    if (!provider) {
+      console.log('provider not initialized yet');
+      return;
+    }
+    const rpc = new RPC(provider);
+    const address = await rpc.getAccounts();
+    console.log(address);
+  };
 
-  // const getBalance = async () => {
-  //   if (!provider) {
-  //     console.log('provider not initialized yet');
-  //     return;
-  //   }
-  //   const rpc = new RPC(provider);
-  //   const balance = await rpc.getBalance();
-  //   console.log(balance);
-  // };
+  const getBalance = async () => {
+    if (!provider) {
+      console.log('provider not initialized yet');
+      return;
+    }
+    const rpc = new RPC(provider);
+    const balance = await rpc.getBalance();
+    console.log(balance);
+  };
 
-  // const sendTransaction = async () => {
-  //   if (!provider) {
-  //     console.log('provider not initialized yet');
-  //     return;
-  //   }
-  //   const rpc = new RPC(provider);
-  //   const receipt = await rpc.sendTransaction();
-  //   console.log(receipt);
-  // };
+  const sendTransaction = async () => {
+    if (!provider) {
+      console.log('provider not initialized yet');
+      return;
+    }
+    const rpc = new RPC(provider);
+    const receipt = await rpc.sendTransaction();
+    console.log(receipt);
+  };
 
-  // const signMessage = async () => {
-  //   if (!provider) {
-  //     console.log('provider not initialized yet');
-  //     return;
-  //   }
-  //   const rpc = new RPC(provider);
-  //   const signedMessage = await rpc.signMessage();
-  //   console.log(signedMessage);
-  // };
+  const signMessage = async () => {
+    if (!provider) {
+      console.log('provider not initialized yet');
+      return;
+    }
+    const rpc = new RPC(provider);
+    const signedMessage = await rpc.signMessage();
+    console.log(signedMessage);
+  };
 
-  // const getPrivateKey = async () => {
-  //   if (!provider) {
-  //     console.log('provider not initialized yet');
-  //     return;
-  //   }
-  //   const rpc = new RPC(provider);
-  //   const privateKey = await rpc.getPrivateKey();
-  //   console.log(privateKey);
-  // };
+  const getPrivateKey = async () => {
+    if (!provider) {
+      console.log('provider not initialized yet');
+      return;
+    }
+    const rpc = new RPC(provider);
+    const privateKey = await rpc.getPrivateKey();
+    console.log(privateKey);
+  };
 
   return (
     <Stack className="min-h-screen items-center justify-center !gap-9 text-center">
@@ -204,6 +204,60 @@ const GeneralDefaultConnectWallet = ({ children }: Props) => {
           onClick={async () => await login()}
           variant="fancy"
           text="Connect Wallet"
+          size="base"
+        />
+        <Button
+          onClick={async () => await authenticateUser()}
+          variant="fancy"
+          text="authenticateUser"
+          size="base"
+        />
+        <Button
+          onClick={async () => await getUserInfo()}
+          variant="fancy"
+          text="getUserInfo"
+          size="base"
+        />
+        <Button
+          onClick={async () => await getChainId()}
+          variant="fancy"
+          text="getChainId"
+          size="base"
+        />
+        <Button
+          onClick={async () => await getAccounts()}
+          variant="fancy"
+          text="getAccounts"
+          size="base"
+        />
+        <Button
+          onClick={async () => await getBalance()}
+          variant="fancy"
+          text="getBalance"
+          size="base"
+        />
+        <Button
+          onClick={async () => await sendTransaction()}
+          variant="fancy"
+          text="sendTransaction"
+          size="base"
+        />
+        <Button
+          onClick={async () => await signMessage()}
+          variant="fancy"
+          text="signMessage"
+          size="base"
+        />
+        <Button
+          onClick={async () => await getPrivateKey()}
+          variant="fancy"
+          text="getPrivateKey"
+          size="base"
+        />
+        <Button
+          onClick={async () => await logout()}
+          variant="fancy"
+          text="logout"
           size="base"
         />
         <Stack direction="row" className="justify-center">
