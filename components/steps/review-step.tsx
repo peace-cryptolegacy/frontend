@@ -1,13 +1,21 @@
 import { Box, Button } from '@chakra-ui/react';
 import styles from 'styles/BeneficiariesStep.module.scss';
 
-type props = {
+interface Props {
+  stepperClassName?: string;
+  renderStepper: Function;
   beneficiaries: any;
   onNextStep: Function;
   onPrevStep: Function;
-};
+}
 
-const ReviewStep = ({ beneficiaries, onNextStep, onPrevStep }: props) => {
+const ReviewStep = ({
+  stepperClassName,
+  renderStepper,
+  beneficiaries,
+  onNextStep,
+  onPrevStep,
+}: Props) => {
   function renderRow(beneficiary: any, index: any) {
     return (
       <Box
@@ -25,8 +33,9 @@ const ReviewStep = ({ beneficiaries, onNextStep, onPrevStep }: props) => {
   }
 
   return (
-    <div className={styles['beneficiariesstep']}>
-      <Box className={styles['beneficiariesstep__disclaimer']}>
+    <div className={`${stepperClassName || ''}`}>
+      {renderStepper()}
+      <Box className="py-6">
         <div>
           You’re about to create a new Testament on Moonbase and will have to
           confirm a transaction with your currently connected wallet.

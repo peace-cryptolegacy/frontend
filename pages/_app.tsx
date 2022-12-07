@@ -1,23 +1,24 @@
-import '../styles/globals.scss';
-import { AppProps } from 'next/app';
-import { appWithTranslation } from 'next-i18next';
-import { ChakraProvider } from '@chakra-ui/react';
-import { extendTheme } from '@chakra-ui/react';
-import { Provider } from 'react-redux';
-import { providers } from 'ethers';
-import { setChainId } from 'store/reducers/web3';
-import { store } from 'store';
-import { useEffect } from 'react';
-import Layout from 'components/layout';
-// why import with require? https://github.com/FortAwesome/Font-Awesome/issues/19348
-// import { library } from "@fortawesome/fontawesome-svg-core";
-const { library } = require('@fortawesome/fontawesome-svg-core');
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import {
   faEnvelope,
   faMagnifyingGlass,
   faSliders,
+  faTrash,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
+import Layout from 'components/layout';
+import { appWithTranslation } from 'next-i18next';
+import { AppProps } from 'next/app';
+import { Provider } from 'react-redux';
+import { store } from 'store';
+import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { publicProvider } from 'wagmi/providers/public';
+import '../styles/globals.scss';
+// why import with require? https://github.com/FortAwesome/Font-Awesome/issues/19348
+// import { library } from "@fortawesome/fontawesome-svg-core";
+const { library } = require('@fortawesome/fontawesome-svg-core');
 
 const theme = extendTheme({
   components: {
@@ -33,45 +34,33 @@ const theme = extendTheme({
   },
 });
 
-library.add(fab, faEnvelope, faMagnifyingGlass, faSliders);
+const { provider, webSocketProvider } = configureChains(
+  [chain.polygonMumbai],
+  [
+    publicProvider(),
+    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY ?? '' }),
+  ]
+);
+
+const client = createClient({
+  autoConnect: true,
+  provider,
+  webSocketProvider,
+});
+
+library.add(fab, faEnvelope, faMagnifyingGlass, faSliders, faXmark, faTrash);
 
 function App({ Component, pageProps }: AppProps) {
-  useEffect(() => {
-    if (!window.ethereum) return;
-
-    const provider: providers.Web3Provider = new providers.Web3Provider(
-      window.ethereum
-    );
-
-    provider.on('network', ({ chainId }) => {
-      store.dispatch(setChainId({ chainId }));
-    });
-
-    window.ethereum.on('accountsChanged', handleAccountChanged);
-    window.ethereum.on('chainChanged', handleChainChanged);
-
-    return () => {
-      window.ethereum.removeListener('accountsChanged', handleAccountChanged);
-      window.ethereum.removeListener('chainChanged', handleChainChanged);
-    };
-  }, []);
-
-  async function handleAccountChanged() {
-    window.location.reload();
-  }
-
-  function handleChainChanged() {
-    window.location.reload();
-  }
-
   return (
-    <Provider store={store}>
-      <ChakraProvider theme={theme}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </ChakraProvider>
-    </Provider>
+    <WagmiConfig client={client}>
+      <Provider store={store}>
+        <ChakraProvider theme={theme}>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </ChakraProvider>
+      </Provider>
+    </WagmiConfig>
   );
 }
 
