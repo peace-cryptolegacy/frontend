@@ -73,7 +73,6 @@ const MyPlans: NextPage = () => {
   // Todo: what happens if a beneficiary is part of multiple testaments
 
   useEffect(() => {
-    console.log('1. address', address);
     if (!address) {
       return;
     }
@@ -82,7 +81,6 @@ const MyPlans: NextPage = () => {
         const beneficiary = await axios
           .get('api/beneficiary/' + address)
           .then((res) => res.data.beneficiary);
-        console.log('🚀 ~ beneficiary', beneficiary);
         setBeneficiary(beneficiary);
       } catch (error) {
         return error;
@@ -139,7 +137,6 @@ const MyPlans: NextPage = () => {
   );
 
   useEffect(() => {
-    console.log('singSucceed', signSucceed.status);
     if (signSucceed.isSuccess) {
       setDialogContent('Inheritance Complete');
       setIsDialogOpen(true);

@@ -1,15 +1,24 @@
 import clsx from 'clsx';
+import Loading from 'components/UI/Loading';
 import { ComponentPropsWithoutRef } from 'react';
 
 type Props = {
-  variant?: 'primary' | 'secondary' | 'basic' | 'fancy' | 'gradientBorder';
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'basic'
+    | 'fancy'
+    | 'gradientBorder'
+    | 'text';
   size?: 'xs' | 'sm' | 'base' | 'lg';
   icon?: JSX.Element;
-  text: string;
+  text?: string;
   disabled?: boolean;
+  loading?: boolean;
   props?: any;
   className?: string;
   onClick?: Function;
+  children?: React.ReactNode | React.ReactNode[];
 } & ComponentPropsWithoutRef<'button'>;
 
 const Button = ({
@@ -18,8 +27,10 @@ const Button = ({
   icon,
   text,
   disabled,
+  loading,
   className,
   onClick,
+  children,
   ...props
 }: Props) => {
   const renderButton = () => {
@@ -40,6 +51,7 @@ const Button = ({
           size === 'base' && 'w-[260px]',
           size === 'lg' && 'w-[369px]',
           disabled && 'cursor-not-allowed opacity-50',
+          loading && variant !== 'fancy' && 'py-0.5',
           className
         )}
       >
@@ -50,30 +62,49 @@ const Button = ({
               ['fancy', 'gradientBorder'].includes(variant)
                 ? 'rounded-2xl'
                 : 'rounded-lg',
-              'py-4'
+              loading ? 'py-1' : 'py-4'
             )}
           >
-            <span className="mr-2">{icon}</span>
-            <span
-              className={clsx(
-                variant === 'fancy' ? 'text-white' : 'text-black',
-                'capitalize'
-              )}
-            >
-              {text}
-            </span>
+            {loading ? (
+              <Loading width={48} height={48} fill="#fff" />
+            ) : (
+              <>
+                <span className="mr-2">{icon}</span>
+                <span
+                  className={clsx(
+                    variant === 'fancy' ? 'text-white' : 'text-black',
+                    'capitalize'
+                  )}
+                >
+                  {text}
+                </span>
+              </>
+            )}
           </div>
         ) : (
           <>
             {icon && <span className="mr-2">{icon}</span>}
-            <span
-              className={clsx(
-                variant === 'primary' ? 'text-white' : 'text-black',
-                'font-medium capitalize'
-              )}
-            >
-              {text}
-            </span>
+            {loading ? (
+              <Loading
+                width={48}
+                height={48}
+                fill={variant === 'basic' ? '#5f4dff' : '#fff'}
+              />
+            ) : (
+              <div
+                className={clsx(
+                  variant === 'primary'
+                    ? 'text-white'
+                    : variant === 'text'
+                    ? 'text-purple-900'
+                    : 'text-black',
+                  'font-medium capitalize'
+                )}
+              >
+                <span>{text}</span>
+                {children}
+              </div>
+            )}
           </>
         )}
       </button>

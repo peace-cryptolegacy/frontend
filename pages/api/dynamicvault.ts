@@ -15,7 +15,6 @@ export default async function handler(
 
   if (req.method === 'GET') {
     const { dynamicvaultowner: dynamicVaultOwner } = req.query;
-    console.log('🚀 ~ dynamicVaultOwner', dynamicVaultOwner);
 
     try {
       const dynamicVault = await ModelDynamicVault.findOne({
@@ -23,7 +22,6 @@ export default async function handler(
       })
         .populate({ path: 'testament', model: ModelTestament })
         .exec();
-      console.log('🚀 ~ dynamicVault', dynamicVault);
 
       return res.status(200).json({ dynamicVault });
     } catch (error) {

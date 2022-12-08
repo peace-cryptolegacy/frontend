@@ -142,9 +142,6 @@ export default async function handler(
       signature: string;
     };
     const { testamentId, beneficiaryAddress, signature }: Props = req.body;
-    console.log('🚀 ~ signature', signature);
-    console.log('🚀 ~ beneficiaryAddress', beneficiaryAddress);
-    console.log('🚀 ~ testamentId', testamentId);
 
     try {
       await ModelTestament.findOneAndUpdate(
