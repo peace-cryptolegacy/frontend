@@ -167,9 +167,132 @@ export const deployments = {
         },
       ],
     },
-    DynamicVaults_Implementation: {
-      address: '0x8Dc3fC227f0b3d6c0c39A72341a423fC6d75AbF9',
+    DynamicVaults: {
+      address: '0x42339c4243bbe91F9dd7088D2Ed4f49Ab20168D5',
       abi: [
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'previousAdmin',
+              type: 'address',
+            },
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'newAdmin',
+              type: 'address',
+            },
+          ],
+          name: 'AdminChanged',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: 'address',
+              name: 'beacon',
+              type: 'address',
+            },
+          ],
+          name: 'BeaconUpgraded',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: 'address',
+              name: 'implementation',
+              type: 'address',
+            },
+          ],
+          name: 'Upgraded',
+          type: 'event',
+        },
+        {
+          stateMutability: 'payable',
+          type: 'fallback',
+        },
+        {
+          inputs: [],
+          name: 'admin',
+          outputs: [
+            {
+              internalType: 'address',
+              name: 'admin_',
+              type: 'address',
+            },
+          ],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'newAdmin',
+              type: 'address',
+            },
+          ],
+          name: 'changeAdmin',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [],
+          name: 'implementation',
+          outputs: [
+            {
+              internalType: 'address',
+              name: 'implementation_',
+              type: 'address',
+            },
+          ],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'newImplementation',
+              type: 'address',
+            },
+          ],
+          name: 'upgradeTo',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'newImplementation',
+              type: 'address',
+            },
+            {
+              internalType: 'bytes',
+              name: 'data',
+              type: 'bytes',
+            },
+          ],
+          name: 'upgradeToAndCall',
+          outputs: [],
+          stateMutability: 'payable',
+          type: 'function',
+        },
+        {
+          stateMutability: 'payable',
+          type: 'receive',
+        },
         {
           inputs: [],
           name: 'MATH_DIVISION_BY_ZERO',
@@ -193,6 +316,11 @@ export const deployments = {
         {
           inputs: [],
           name: 'T_BACKUP_ADDRESS_IS_OWNER',
+          type: 'error',
+        },
+        {
+          inputs: [],
+          name: 'T_CANCELED',
           type: 'error',
         },
         {
@@ -237,6 +365,42 @@ export const deployments = {
             },
           ],
           name: 'BackupAdded',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+            {
+              components: [
+                {
+                  internalType: 'string',
+                  name: 'name',
+                  type: 'string',
+                },
+                {
+                  internalType: 'address payable',
+                  name: 'address_',
+                  type: 'address',
+                },
+                {
+                  internalType: 'uint128',
+                  name: 'inheritancePercentage',
+                  type: 'uint128',
+                },
+              ],
+              indexed: false,
+              internalType: 'struct Types.Beneficiary[]',
+              name: 'beneficiaries',
+              type: 'tuple[]',
+            },
+          ],
+          name: 'BeneficiariesUpdated',
           type: 'event',
         },
         {
@@ -389,6 +553,19 @@ export const deployments = {
               type: 'address',
             },
           ],
+          name: 'TestamentCanceled',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+          ],
           name: 'TestamentSucceeded',
           type: 'event',
         },
@@ -500,6 +677,13 @@ export const deployments = {
           type: 'function',
         },
         {
+          inputs: [],
+          name: 'cancelTestament',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
           inputs: [
             {
               internalType: 'address',
@@ -597,6 +781,11 @@ export const deployments = {
                   internalType: 'address[]',
                   name: 'tokens',
                   type: 'address[]',
+                },
+                {
+                  internalType: 'bool',
+                  name: 'canceled',
+                  type: 'bool',
                 },
               ],
               internalType: 'struct Types.Testament',
@@ -820,17 +1009,820 @@ export const deployments = {
         {
           inputs: [
             {
+              internalType: 'string[]',
+              name: 'names',
+              type: 'string[]',
+            },
+            {
+              internalType: 'address[]',
+              name: 'addresses',
+              type: 'address[]',
+            },
+            {
+              internalType: 'uint128[]',
+              name: 'newInheritancePercentages',
+              type: 'uint128[]',
+            },
+            {
+              internalType: 'uint128[]',
+              name: 'indexes',
+              type: 'uint128[]',
+            },
+          ],
+          name: 'updateBeneficiaries',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'uint128',
+              name: 'newEstablishmentFeeRate',
+              type: 'uint128',
+            },
+          ],
+          name: 'updateEstablishmentFeeRate',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'uint128',
+              name: 'newInactivityMaximum',
+              type: 'uint128',
+            },
+          ],
+          name: 'updateInactivityMaximum',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
               internalType: 'address',
-              name: 'address_',
+              name: '_logic',
               type: 'address',
             },
             {
+              internalType: 'address',
+              name: 'admin_',
+              type: 'address',
+            },
+            {
+              internalType: 'bytes',
+              name: '_data',
+              type: 'bytes',
+            },
+          ],
+          stateMutability: 'payable',
+          type: 'constructor',
+        },
+      ],
+    },
+    DynamicVaults_Implementation: {
+      address: '0x7b7f0Aa5149dE4e6B0b1460fB13888f01dfff931',
+      abi: [
+        {
+          inputs: [],
+          name: 'MATH_DIVISION_BY_ZERO',
+          type: 'error',
+        },
+        {
+          inputs: [],
+          name: 'MATH_MULTIPLICATION_OVERFLOW',
+          type: 'error',
+        },
+        {
+          inputs: [],
+          name: 'T_ADDRESS_ZERO',
+          type: 'error',
+        },
+        {
+          inputs: [],
+          name: 'T_BACKUP_ADDRESS_ALREADY_EXISTS',
+          type: 'error',
+        },
+        {
+          inputs: [],
+          name: 'T_BACKUP_ADDRESS_IS_OWNER',
+          type: 'error',
+        },
+        {
+          inputs: [],
+          name: 'T_CANCELED',
+          type: 'error',
+        },
+        {
+          inputs: [],
+          name: 'T_INHERITANCE_PERCENTAGE_EXCEEDED',
+          type: 'error',
+        },
+        {
+          inputs: [],
+          name: 'T_NO_TRANSCENDENCE',
+          type: 'error',
+        },
+        {
+          inputs: [],
+          name: 'T_SUCCEEDED',
+          type: 'error',
+        },
+        {
+          inputs: [],
+          name: 'T_TESTAMENT_ALREADY_EXISTS',
+          type: 'error',
+        },
+        {
+          inputs: [],
+          name: 'T_UNAUTHORIZED',
+          type: 'error',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'backupAddress',
+              type: 'address',
+            },
+          ],
+          name: 'BackupAdded',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+            {
+              components: [
+                {
+                  internalType: 'string',
+                  name: 'name',
+                  type: 'string',
+                },
+                {
+                  internalType: 'address payable',
+                  name: 'address_',
+                  type: 'address',
+                },
+                {
+                  internalType: 'uint128',
+                  name: 'inheritancePercentage',
+                  type: 'uint128',
+                },
+              ],
+              indexed: false,
+              internalType: 'struct Types.Beneficiary[]',
+              name: 'beneficiaries',
+              type: 'tuple[]',
+            },
+          ],
+          name: 'BeneficiariesUpdated',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'beneficiary',
+              type: 'address',
+            },
+          ],
+          name: 'BeneficiaryAdded',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'beneficiaryAddress',
+              type: 'address',
+            },
+            {
+              indexed: false,
               internalType: 'uint128',
               name: 'newInheritancePercentage',
               type: 'uint128',
             },
           ],
-          name: 'updateBeneficiaryPercentage',
+          name: 'BeneficiaryPercentageUpdated',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'beneficiary',
+              type: 'address',
+            },
+          ],
+          name: 'BeneficiaryRemoved',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'uint128',
+              name: 'newEstablishmentFeeRate',
+              type: 'uint128',
+            },
+          ],
+          name: 'EstablishmentFeeRateUpdated',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'uint8',
+              name: 'version',
+              type: 'uint8',
+            },
+          ],
+          name: 'Initialized',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: 'address',
+              name: 'previousOwner',
+              type: 'address',
+            },
+            {
+              indexed: true,
+              internalType: 'address',
+              name: 'newOwner',
+              type: 'address',
+            },
+          ],
+          name: 'OwnershipTransferred',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'account',
+              type: 'address',
+            },
+          ],
+          name: 'Paused',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+            {
+              indexed: false,
+              internalType: 'uint128',
+              name: 'timestamp',
+              type: 'uint128',
+            },
+          ],
+          name: 'ProofOfLifeUpdated',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+          ],
+          name: 'TestamentCanceled',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+          ],
+          name: 'TestamentSucceeded',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'token',
+              type: 'address',
+            },
+          ],
+          name: 'TokenAdded',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'account',
+              type: 'address',
+            },
+          ],
+          name: 'Unpaused',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'backupAddress',
+              type: 'address',
+            },
+          ],
+          name: 'accountRepossessed',
+          type: 'event',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'backupAddress',
+              type: 'address',
+            },
+          ],
+          name: 'addBackup',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              components: [
+                {
+                  internalType: 'string',
+                  name: 'name',
+                  type: 'string',
+                },
+                {
+                  internalType: 'address payable',
+                  name: 'address_',
+                  type: 'address',
+                },
+                {
+                  internalType: 'uint128',
+                  name: 'inheritancePercentage',
+                  type: 'uint128',
+                },
+              ],
+              internalType: 'struct Types.Beneficiary',
+              name: 'beneficiary',
+              type: 'tuple',
+            },
+          ],
+          name: 'addBeneficiary',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'token',
+              type: 'address',
+            },
+          ],
+          name: 'addToken',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [],
+          name: 'cancelTestament',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'claimant',
+              type: 'address',
+            },
+            {
+              internalType: 'uint128',
+              name: 'inactivityMaximum',
+              type: 'uint128',
+            },
+            {
+              components: [
+                {
+                  internalType: 'string',
+                  name: 'name',
+                  type: 'string',
+                },
+                {
+                  internalType: 'address payable',
+                  name: 'address_',
+                  type: 'address',
+                },
+                {
+                  internalType: 'uint128',
+                  name: 'inheritancePercentage',
+                  type: 'uint128',
+                },
+              ],
+              internalType: 'struct Types.Beneficiary[]',
+              name: 'beneficiaries',
+              type: 'tuple[]',
+            },
+          ],
+          name: 'createTestament',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: '',
+              type: 'address',
+            },
+          ],
+          name: 'dynamicVaults',
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: 'address',
+                  name: 'claimant',
+                  type: 'address',
+                },
+                {
+                  internalType: 'uint128',
+                  name: 'inactivityMaximum',
+                  type: 'uint128',
+                },
+                {
+                  internalType: 'uint128',
+                  name: 'proofOfLife',
+                  type: 'uint128',
+                },
+                {
+                  internalType: 'bool',
+                  name: 'succeeded',
+                  type: 'bool',
+                },
+                {
+                  components: [
+                    {
+                      internalType: 'string',
+                      name: 'name',
+                      type: 'string',
+                    },
+                    {
+                      internalType: 'address payable',
+                      name: 'address_',
+                      type: 'address',
+                    },
+                    {
+                      internalType: 'uint128',
+                      name: 'inheritancePercentage',
+                      type: 'uint128',
+                    },
+                  ],
+                  internalType: 'struct Types.Beneficiary[]',
+                  name: 'beneficiaries',
+                  type: 'tuple[]',
+                },
+                {
+                  internalType: 'address[]',
+                  name: 'tokens',
+                  type: 'address[]',
+                },
+                {
+                  internalType: 'bool',
+                  name: 'canceled',
+                  type: 'bool',
+                },
+              ],
+              internalType: 'struct Types.Testament',
+              name: 'testament',
+              type: 'tuple',
+            },
+            {
+              internalType: 'uint128',
+              name: 'ESTABLISHMENT_FEE_RATE',
+              type: 'uint128',
+            },
+          ],
+          stateMutability: 'view',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+          ],
+          name: 'getBackupAddresses',
+          outputs: [
+            {
+              internalType: 'address[]',
+              name: '',
+              type: 'address[]',
+            },
+          ],
+          stateMutability: 'view',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+          ],
+          name: 'getTestamentParameters',
+          outputs: [
+            {
+              internalType: 'address',
+              name: 'claimant',
+              type: 'address',
+            },
+            {
+              internalType: 'address[]',
+              name: 'tokens',
+              type: 'address[]',
+            },
+            {
+              internalType: 'uint128',
+              name: 'inactivityMaximum',
+              type: 'uint128',
+            },
+            {
+              internalType: 'uint128',
+              name: 'proofOfLife',
+              type: 'uint128',
+            },
+            {
+              internalType: 'bool',
+              name: 'succeeded',
+              type: 'bool',
+            },
+            {
+              internalType: 'string[]',
+              name: 'beneficiariesNames',
+              type: 'string[]',
+            },
+            {
+              internalType: 'address[]',
+              name: 'beneficiariesAddresses',
+              type: 'address[]',
+            },
+            {
+              internalType: 'uint256[]',
+              name: 'beneficiariesInheritancePercentages',
+              type: 'uint256[]',
+            },
+          ],
+          stateMutability: 'view',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'uint128',
+              name: 'establishmentFeeRate_',
+              type: 'uint128',
+            },
+          ],
+          name: 'initialize',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [],
+          name: 'owner',
+          outputs: [
+            {
+              internalType: 'address',
+              name: '',
+              type: 'address',
+            },
+          ],
+          stateMutability: 'view',
+          type: 'function',
+        },
+        {
+          inputs: [],
+          name: 'pause',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [],
+          name: 'paused',
+          outputs: [
+            {
+              internalType: 'bool',
+              name: '',
+              type: 'bool',
+            },
+          ],
+          stateMutability: 'view',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'backupAddress',
+              type: 'address',
+            },
+          ],
+          name: 'removeBackup',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'address_',
+              type: 'address',
+            },
+          ],
+          name: 'removeBeneficiary',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [],
+          name: 'renounceOwnership',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+          ],
+          name: 'repossessAccount',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [],
+          name: 'signalLife',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+          ],
+          name: 'succeed',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'newOwner',
+              type: 'address',
+            },
+          ],
+          name: 'transferOwnership',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [],
+          name: 'unpause',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'string[]',
+              name: 'names',
+              type: 'string[]',
+            },
+            {
+              internalType: 'address[]',
+              name: 'addresses',
+              type: 'address[]',
+            },
+            {
+              internalType: 'uint128[]',
+              name: 'newInheritancePercentages',
+              type: 'uint128[]',
+            },
+            {
+              internalType: 'uint128[]',
+              name: 'indexes',
+              type: 'uint128[]',
+            },
+          ],
+          name: 'updateBeneficiaries',
           outputs: [],
           stateMutability: 'nonpayable',
           type: 'function',
@@ -1009,846 +2001,6 @@ export const deployments = {
         {
           stateMutability: 'payable',
           type: 'receive',
-        },
-      ],
-    },
-    DynamicVaults: {
-      address: '0x42339c4243bbe91F9dd7088D2Ed4f49Ab20168D5',
-      abi: [
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'previousAdmin',
-              type: 'address',
-            },
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'newAdmin',
-              type: 'address',
-            },
-          ],
-          name: 'AdminChanged',
-          type: 'event',
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: 'address',
-              name: 'beacon',
-              type: 'address',
-            },
-          ],
-          name: 'BeaconUpgraded',
-          type: 'event',
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: 'address',
-              name: 'implementation',
-              type: 'address',
-            },
-          ],
-          name: 'Upgraded',
-          type: 'event',
-        },
-        {
-          stateMutability: 'payable',
-          type: 'fallback',
-        },
-        {
-          inputs: [],
-          name: 'admin',
-          outputs: [
-            {
-              internalType: 'address',
-              name: 'admin_',
-              type: 'address',
-            },
-          ],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'newAdmin',
-              type: 'address',
-            },
-          ],
-          name: 'changeAdmin',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [],
-          name: 'implementation',
-          outputs: [
-            {
-              internalType: 'address',
-              name: 'implementation_',
-              type: 'address',
-            },
-          ],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'newImplementation',
-              type: 'address',
-            },
-          ],
-          name: 'upgradeTo',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'newImplementation',
-              type: 'address',
-            },
-            {
-              internalType: 'bytes',
-              name: 'data',
-              type: 'bytes',
-            },
-          ],
-          name: 'upgradeToAndCall',
-          outputs: [],
-          stateMutability: 'payable',
-          type: 'function',
-        },
-        {
-          stateMutability: 'payable',
-          type: 'receive',
-        },
-        {
-          inputs: [],
-          name: 'MATH_DIVISION_BY_ZERO',
-          type: 'error',
-        },
-        {
-          inputs: [],
-          name: 'MATH_MULTIPLICATION_OVERFLOW',
-          type: 'error',
-        },
-        {
-          inputs: [],
-          name: 'T_ADDRESS_ZERO',
-          type: 'error',
-        },
-        {
-          inputs: [],
-          name: 'T_BACKUP_ADDRESS_ALREADY_EXISTS',
-          type: 'error',
-        },
-        {
-          inputs: [],
-          name: 'T_BACKUP_ADDRESS_IS_OWNER',
-          type: 'error',
-        },
-        {
-          inputs: [],
-          name: 'T_INHERITANCE_PERCENTAGE_EXCEEDED',
-          type: 'error',
-        },
-        {
-          inputs: [],
-          name: 'T_NO_TRANSCENDENCE',
-          type: 'error',
-        },
-        {
-          inputs: [],
-          name: 'T_SUCCEEDED',
-          type: 'error',
-        },
-        {
-          inputs: [],
-          name: 'T_TESTAMENT_ALREADY_EXISTS',
-          type: 'error',
-        },
-        {
-          inputs: [],
-          name: 'T_UNAUTHORIZED',
-          type: 'error',
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'owner',
-              type: 'address',
-            },
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'backupAddress',
-              type: 'address',
-            },
-          ],
-          name: 'BackupAdded',
-          type: 'event',
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'owner',
-              type: 'address',
-            },
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'beneficiary',
-              type: 'address',
-            },
-          ],
-          name: 'BeneficiaryAdded',
-          type: 'event',
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'owner',
-              type: 'address',
-            },
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'beneficiaryAddress',
-              type: 'address',
-            },
-            {
-              indexed: false,
-              internalType: 'uint128',
-              name: 'newInheritancePercentage',
-              type: 'uint128',
-            },
-          ],
-          name: 'BeneficiaryPercentageUpdated',
-          type: 'event',
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'owner',
-              type: 'address',
-            },
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'beneficiary',
-              type: 'address',
-            },
-          ],
-          name: 'BeneficiaryRemoved',
-          type: 'event',
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: false,
-              internalType: 'uint128',
-              name: 'newEstablishmentFeeRate',
-              type: 'uint128',
-            },
-          ],
-          name: 'EstablishmentFeeRateUpdated',
-          type: 'event',
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: false,
-              internalType: 'uint8',
-              name: 'version',
-              type: 'uint8',
-            },
-          ],
-          name: 'Initialized',
-          type: 'event',
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: 'address',
-              name: 'previousOwner',
-              type: 'address',
-            },
-            {
-              indexed: true,
-              internalType: 'address',
-              name: 'newOwner',
-              type: 'address',
-            },
-          ],
-          name: 'OwnershipTransferred',
-          type: 'event',
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'account',
-              type: 'address',
-            },
-          ],
-          name: 'Paused',
-          type: 'event',
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'owner',
-              type: 'address',
-            },
-            {
-              indexed: false,
-              internalType: 'uint128',
-              name: 'timestamp',
-              type: 'uint128',
-            },
-          ],
-          name: 'ProofOfLifeUpdated',
-          type: 'event',
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'owner',
-              type: 'address',
-            },
-          ],
-          name: 'TestamentSucceeded',
-          type: 'event',
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'owner',
-              type: 'address',
-            },
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'token',
-              type: 'address',
-            },
-          ],
-          name: 'TokenAdded',
-          type: 'event',
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'account',
-              type: 'address',
-            },
-          ],
-          name: 'Unpaused',
-          type: 'event',
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'owner',
-              type: 'address',
-            },
-            {
-              indexed: false,
-              internalType: 'address',
-              name: 'backupAddress',
-              type: 'address',
-            },
-          ],
-          name: 'accountRepossessed',
-          type: 'event',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'backupAddress',
-              type: 'address',
-            },
-          ],
-          name: 'addBackup',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              components: [
-                {
-                  internalType: 'string',
-                  name: 'name',
-                  type: 'string',
-                },
-                {
-                  internalType: 'address payable',
-                  name: 'address_',
-                  type: 'address',
-                },
-                {
-                  internalType: 'uint128',
-                  name: 'inheritancePercentage',
-                  type: 'uint128',
-                },
-              ],
-              internalType: 'struct Types.Beneficiary',
-              name: 'beneficiary',
-              type: 'tuple',
-            },
-          ],
-          name: 'addBeneficiary',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'token',
-              type: 'address',
-            },
-          ],
-          name: 'addToken',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'claimant',
-              type: 'address',
-            },
-            {
-              internalType: 'uint128',
-              name: 'inactivityMaximum',
-              type: 'uint128',
-            },
-            {
-              components: [
-                {
-                  internalType: 'string',
-                  name: 'name',
-                  type: 'string',
-                },
-                {
-                  internalType: 'address payable',
-                  name: 'address_',
-                  type: 'address',
-                },
-                {
-                  internalType: 'uint128',
-                  name: 'inheritancePercentage',
-                  type: 'uint128',
-                },
-              ],
-              internalType: 'struct Types.Beneficiary[]',
-              name: 'beneficiaries',
-              type: 'tuple[]',
-            },
-          ],
-          name: 'createTestament',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: '',
-              type: 'address',
-            },
-          ],
-          name: 'dynamicVaults',
-          outputs: [
-            {
-              components: [
-                {
-                  internalType: 'address',
-                  name: 'claimant',
-                  type: 'address',
-                },
-                {
-                  internalType: 'uint128',
-                  name: 'inactivityMaximum',
-                  type: 'uint128',
-                },
-                {
-                  internalType: 'uint128',
-                  name: 'proofOfLife',
-                  type: 'uint128',
-                },
-                {
-                  internalType: 'bool',
-                  name: 'succeeded',
-                  type: 'bool',
-                },
-                {
-                  components: [
-                    {
-                      internalType: 'string',
-                      name: 'name',
-                      type: 'string',
-                    },
-                    {
-                      internalType: 'address payable',
-                      name: 'address_',
-                      type: 'address',
-                    },
-                    {
-                      internalType: 'uint128',
-                      name: 'inheritancePercentage',
-                      type: 'uint128',
-                    },
-                  ],
-                  internalType: 'struct Types.Beneficiary[]',
-                  name: 'beneficiaries',
-                  type: 'tuple[]',
-                },
-                {
-                  internalType: 'address[]',
-                  name: 'tokens',
-                  type: 'address[]',
-                },
-              ],
-              internalType: 'struct Types.Testament',
-              name: 'testament',
-              type: 'tuple',
-            },
-            {
-              internalType: 'uint128',
-              name: 'ESTABLISHMENT_FEE_RATE',
-              type: 'uint128',
-            },
-          ],
-          stateMutability: 'view',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'owner',
-              type: 'address',
-            },
-          ],
-          name: 'getBackupAddresses',
-          outputs: [
-            {
-              internalType: 'address[]',
-              name: '',
-              type: 'address[]',
-            },
-          ],
-          stateMutability: 'view',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'owner',
-              type: 'address',
-            },
-          ],
-          name: 'getTestamentParameters',
-          outputs: [
-            {
-              internalType: 'address',
-              name: 'claimant',
-              type: 'address',
-            },
-            {
-              internalType: 'address[]',
-              name: 'tokens',
-              type: 'address[]',
-            },
-            {
-              internalType: 'uint128',
-              name: 'inactivityMaximum',
-              type: 'uint128',
-            },
-            {
-              internalType: 'uint128',
-              name: 'proofOfLife',
-              type: 'uint128',
-            },
-            {
-              internalType: 'bool',
-              name: 'succeeded',
-              type: 'bool',
-            },
-            {
-              internalType: 'string[]',
-              name: 'beneficiariesNames',
-              type: 'string[]',
-            },
-            {
-              internalType: 'address[]',
-              name: 'beneficiariesAddresses',
-              type: 'address[]',
-            },
-            {
-              internalType: 'uint256[]',
-              name: 'beneficiariesInheritancePercentages',
-              type: 'uint256[]',
-            },
-          ],
-          stateMutability: 'view',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'uint128',
-              name: 'establishmentFeeRate_',
-              type: 'uint128',
-            },
-          ],
-          name: 'initialize',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [],
-          name: 'owner',
-          outputs: [
-            {
-              internalType: 'address',
-              name: '',
-              type: 'address',
-            },
-          ],
-          stateMutability: 'view',
-          type: 'function',
-        },
-        {
-          inputs: [],
-          name: 'pause',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [],
-          name: 'paused',
-          outputs: [
-            {
-              internalType: 'bool',
-              name: '',
-              type: 'bool',
-            },
-          ],
-          stateMutability: 'view',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'backupAddress',
-              type: 'address',
-            },
-          ],
-          name: 'removeBackup',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'address_',
-              type: 'address',
-            },
-          ],
-          name: 'removeBeneficiary',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [],
-          name: 'renounceOwnership',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'owner',
-              type: 'address',
-            },
-          ],
-          name: 'repossessAccount',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [],
-          name: 'signalLife',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'owner',
-              type: 'address',
-            },
-          ],
-          name: 'succeed',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'newOwner',
-              type: 'address',
-            },
-          ],
-          name: 'transferOwnership',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [],
-          name: 'unpause',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'address_',
-              type: 'address',
-            },
-            {
-              internalType: 'uint128',
-              name: 'newInheritancePercentage',
-              type: 'uint128',
-            },
-          ],
-          name: 'updateBeneficiaryPercentage',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'uint128',
-              name: 'newEstablishmentFeeRate',
-              type: 'uint128',
-            },
-          ],
-          name: 'updateEstablishmentFeeRate',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'uint128',
-              name: 'newInactivityMaximum',
-              type: 'uint128',
-            },
-          ],
-          name: 'updateInactivityMaximum',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: '_logic',
-              type: 'address',
-            },
-            {
-              internalType: 'address',
-              name: 'admin_',
-              type: 'address',
-            },
-            {
-              internalType: 'bytes',
-              name: '_data',
-              type: 'bytes',
-            },
-          ],
-          stateMutability: 'payable',
-          type: 'constructor',
         },
       ],
     },

@@ -7,13 +7,14 @@ type Props = {
   placeHolder?: string;
   className?: string;
   inputClassName?: string;
-};
+} & JSX.IntrinsicElements['input'];
 
 const TextField = ({
   startAdornment,
   className,
   inputClassName,
   placeHolder,
+  ...props
 }: Props) => {
   return (
     <div className={clsx(className, 'relative w-full')}>
@@ -40,6 +41,7 @@ const TextField = ({
         )}
         placeholder={placeHolder}
         required
+        {...props}
       />
     </div>
   );

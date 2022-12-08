@@ -10,6 +10,7 @@ export type UserPlans = (
 export type Address = `0x${string}`;
 
 export type Beneficiary = {
+  new?: boolean;
   name: string;
   address_: Address;
   inheritancePercentage: BigNumber;

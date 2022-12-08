@@ -11,7 +11,6 @@ import {
   writeContract,
 } from '@wagmi/core';
 import Button from 'components/button/Button';
-import CircleProgress from 'components/circleProgress/CircleProgress';
 import Dialog from 'components/dialog/Dialog';
 import DialogTitle from 'components/dialog/DialogTitle';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
@@ -19,7 +18,12 @@ import TextField from 'components/Input/TextField';
 import Listbox from 'components/listbox/Listbox';
 import ListboxOption from 'components/listbox/ListboxOption';
 import Stack from 'components/stack/Stack';
+import Loading from 'components/UI/Loading';
+import RadioGroup from 'components/UI/radio/RadioGroup';
+import RadioOption from 'components/UI/radio/RadioOption';
+import { BigNumber, ethers } from 'ethers';
 import useApproveToken from 'hooks/useApproveToken';
+import useCancelTestament from 'hooks/useCancelTestament';
 import useGetDynamicVaults from 'hooks/utils/useGetDynamicVaults';
 import Image from 'next/image';
 import {
@@ -36,12 +40,14 @@ import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
 import topTokens from 'utils/topTokens';
 import { useAccount, useNetwork, useWaitForTransaction } from 'wagmi';
 import useGetBalances from '../../../hooks/useGetBalances';
+import useUpdateBeneficiaries from '../../../hooks/useUpdateBeneficiaries';
+import useUpdateInactivityMaximum from '../../../hooks/useUpdateInactivityMaximum';
 import formatBigNumber from '../../../utils/helpers/formatBigNumber';
-import { Address, DynamicVault } from '../../../utils/Types';
+import { Address, Beneficiary, DynamicVault } from '../../../utils/Types';
 
 type Props = {
   dynamicVault: Partial<DynamicVault> | undefined;
-  dialogContent: 'edit assets' | 'edit heirs' | undefined;
+  dialogContent: 'edit assets' | 'edit heirs' | 'edit time' | undefined;
   isDialogOpen: boolean;
   setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
 };
@@ -54,6 +60,20 @@ const ProtectionActiveDialog = ({
 }: Props) => {
   const { address } = useAccount();
   const [approvalAddress, setApprovalAddress] = useState<Address>();
+  const [edit, setEdit] = useState({
+    status: [false],
+  });
+
+  const [beneficiaries, setBeneficiaries] = useState<
+    (Beneficiary[] & { new?: boolean }) | []
+  >([]);
+  const [editedBeneficiaries, setEditedBeneficiaries] = useState<
+    [string[], Address[], BigNumber[], BigNumber[]]
+  >([[], [], [], []]);
+  const [newInactivityTime, setNewInactivityTime] = useState<BigNumber>();
+
+  const { transact: cancelTestament, transaction: cancelTestamentTransaction } =
+    useCancelTestament();
 
   const { prepareTransact: prepareApproveToken, transact: approveToken } =
     useApproveToken(approvalAddress);
@@ -66,6 +86,32 @@ const ProtectionActiveDialog = ({
   }>();
 
   const { chain } = useNetwork();
+
+  const {
+    prepareTransact: prepareUpdateBeneficiaries,
+    transact: updateBeneficiaries,
+    transaction: updateBeneficiariesTransaction,
+  } = useUpdateBeneficiaries(...editedBeneficiaries);
+
+  const {
+    prepareTransact: prepareUpdateInactivityMaximum,
+    transact: updateInactivityMaximum,
+  } = useUpdateInactivityMaximum(newInactivityTime);
+
+  useEffect(() => {
+    if (
+      prepareUpdateInactivityMaximum.isSuccess &&
+      updateInactivityMaximum.isIdle
+    ) {
+      updateInactivityMaximum.write?.();
+    }
+  }, [prepareUpdateInactivityMaximum.isSuccess, updateInactivityMaximum]);
+
+  useEffect(() => {
+    if ((prepareUpdateBeneficiaries.isSuccess, updateBeneficiaries.isIdle)) {
+      updateBeneficiaries.write?.();
+    }
+  }, [editedBeneficiaries, updateBeneficiaries, prepareUpdateBeneficiaries]);
 
   const networkName =
     wagmiChainNameMappings[chain?.name as keyof typeof wagmiChainNameMappings];
@@ -98,18 +144,43 @@ const ProtectionActiveDialog = ({
   };
 
   const handleRemoveBeneficiary = async (address: Address) => {
-    if (removeBeneficiariesConfigs.current) {
-      await writeContract(
-        removeBeneficiariesConfigs.current[
-          address as keyof typeof removeBeneficiariesConfigs.current
-        ].config
-      );
-    }
+    beneficiaries.map(async (beneficiary) => {
+      if (beneficiary.address_ === address) {
+        if (beneficiary.new) {
+          setBeneficiaries(
+            beneficiaries.filter(
+              (beneficiary) => beneficiary.address_ !== address
+            )
+          );
+        } else {
+          if (removeBeneficiariesConfigs.current) {
+            await writeContract(
+              removeBeneficiariesConfigs.current[
+                address as keyof typeof removeBeneficiariesConfigs.current
+              ].config
+            );
+          }
+        }
+      }
+    });
+  };
+
+  const handleCancelTestament = () => {
+    cancelTestament.write?.();
   };
 
   const dynamicVaults = useGetDynamicVaults();
 
   const testament = dynamicVault?.testament;
+
+  useEffect(() => {
+    if (dynamicVault?.testament && !beneficiaries.length) {
+      setBeneficiaries(dynamicVault.testament.beneficiaries as Beneficiary[]);
+      setEdit({
+        status: beneficiaries.map(() => false),
+      });
+    }
+  }, [beneficiaries, dynamicVault]);
 
   const fetchRemoveBeneficiariesConfig = useCallback(async () => {
     let configs: {
@@ -154,6 +225,107 @@ const ProtectionActiveDialog = ({
     tether: 1,
     sushi: 1.41,
     maker: 500,
+  };
+
+  const handleAddAnotherWallet = () => {
+    setBeneficiaries([
+      ...beneficiaries,
+      {
+        name: '',
+        address_: '0x',
+        inheritancePercentage: BigNumber.from(0),
+        new: true,
+      },
+    ]);
+    setEdit({
+      status: [...edit.status, false],
+    });
+  };
+
+  const handleEditBeneficiaries = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    let { names, addresses, inheritancePercentages } =
+      e.target as typeof e.target & {
+        names: { value: string } | { value: string[] };
+        addresses: { value: string } | { value: string[] };
+        inheritancePercentages: { value: string } | { value: string[] };
+      };
+
+    let processedNames: string[] = [];
+    let processedAddresses: Address[] = [];
+    let processedInheritancePercentages: BigNumber[] = [];
+
+    processedNames = (
+      names
+        ? names.value !== ''
+          ? [names.value]
+          : Object.values(names).map((name, index) => {
+              if (name !== beneficiaries[index]?.name) {
+                return name.value;
+              }
+            })
+        : []
+    ) as string[];
+
+    processedAddresses = (
+      addresses
+        ? addresses.value !== ''
+          ? [addresses.value]
+          : Object.values(addresses).map((address, index) => {
+              if (address !== beneficiaries[index]?.address_) {
+                return address.value;
+              }
+            })
+        : []
+    ) as Address[];
+
+    processedInheritancePercentages = (
+      inheritancePercentages
+        ? inheritancePercentages.value !== ''
+          ? [inheritancePercentages.value]
+          : Object.values(inheritancePercentages).map(
+              (inheritancePercentage, index) => {
+                if (
+                  BigNumber.from(inheritancePercentage.value) !==
+                  beneficiaries[index].inheritancePercentage
+                ) {
+                  return BigNumber.from(inheritancePercentage.value);
+                }
+              }
+            )
+        : []
+    ) as BigNumber[];
+
+    const indexes =
+      names?.value !== ''
+        ? [BigNumber.from(0)]
+        : Object.values(names).map((_, index) => BigNumber.from(index));
+
+    setEditedBeneficiaries([
+      processedNames,
+      processedAddresses,
+      processedInheritancePercentages,
+      indexes,
+    ]);
+  };
+
+  const handleCloseDialog = () => {
+    setBeneficiaries(testament?.beneficiaries as Beneficiary[]);
+    setEdit({
+      status: [],
+    });
+    setIsDialogOpen(false);
+  };
+
+  const handleInactivityTimeSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const { newInactivityTime } = e.target as typeof e.target & {
+      newInactivityTime: { value: string };
+    };
+    console.log('🚀 ~ newInactivityTime', newInactivityTime.value);
+
+    setNewInactivityTime(BigNumber.from(newInactivityTime.value));
   };
 
   const renderDialogContent = () => {
@@ -299,84 +471,229 @@ const ProtectionActiveDialog = ({
           </div>
           <HorizontalRule className="mt-3" />
 
-          <div className="mt-6 space-y-6">
-            {testament?.beneficiaries.map((beneficiary, index) => {
-              const claimant = testament.claimant;
-              return (
-                <div
-                  key={index}
-                  className="grid items-center gap-5 [grid-template-columns:repeat(14,minmax(0,1fr))]"
-                >
-                  <div className="relative col-span-1 h-6 w-6 shrink-0">
-                    <Image
-                      src="/images/astronaut.png"
-                      alt="astronaut"
-                      layout="fill"
-                      objectFit="contain"
+          <form
+            onSubmit={(e) => handleEditBeneficiaries(e)}
+            className="mt-6 space-y-6"
+          >
+            {beneficiaries &&
+              beneficiaries.map((beneficiary, index) => {
+                const claimant = testament?.claimant;
+                return (
+                  <div
+                    key={index}
+                    className="grid items-center gap-5 [grid-template-columns:repeat(14,minmax(0,1fr))]"
+                  >
+                    <div className="relative col-span-1 h-6 w-6 shrink-0">
+                      <Image
+                        src="/images/astronaut.png"
+                        alt="astronaut"
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </div>
+                    <div className="relative col-span-3 text-sm  ">
+                      {edit.status[index] ? (
+                        <TextField
+                          placeHolder={'Name'}
+                          className="[&>input]:py-1 [&>input]:px-2"
+                          name="names"
+                          defaultValue={beneficiary.name && beneficiary.name}
+                        />
+                      ) : (
+                        <span className="block capitalize">
+                          {beneficiary.name === '' ? 'Name' : beneficiary.name}
+                        </span>
+                      )}
+                      <span className="subtitle">
+                        {beneficiary?.address_ === claimant
+                          ? 'Protector'
+                          : 'Beneficiary'}
+                      </span>
+                    </div>
+
+                    <div className="col-span-3 text-sm">
+                      {edit.status[index] ? (
+                        <TextField
+                          placeHolder={'Address'}
+                          className="[&>input]:py-1 [&>input]:px-2"
+                          name="addresses"
+                          defaultValue={
+                            beneficiary.address_ !==
+                            ethers.constants.AddressZero
+                              ? beneficiary?.address_
+                              : undefined
+                          }
+                        />
+                      ) : (
+                        <span>
+                          {formatAddress(
+                            beneficiary?.address_ ??
+                              ethers.constants.AddressZero
+                          )}
+                        </span>
+                      )}
+                      <span className="subtitle block">{network}</span>
+                    </div>
+                    <div className="col-span-3 text-sm">
+                      {edit.status[index] ? (
+                        <TextField
+                          placeHolder={'Percentage'}
+                          className="[&>input]:py-1 [&>input]:px-2"
+                          type="number"
+                          name="inheritancePercentages"
+                          defaultValue={
+                            beneficiary?.inheritancePercentage.toString() ??
+                            undefined
+                          }
+                        />
+                      ) : (
+                        <span>
+                          <>
+                            {parseInt(
+                              beneficiary?.inheritancePercentage.toString() ??
+                                '0'
+                            )}{' '}
+                            %
+                          </>
+                        </span>
+                      )}
+
+                      <span className="subtitle block">$0.00</span>
+                    </div>
+                    <FontAwesomeIcon
+                      icon={faEdit}
+                      className="col-span-2"
+                      style={{ cursor: 'pointer' }}
+                      onClick={() =>
+                        setEdit((prev) => {
+                          let newEditStatus = [...prev.status];
+                          newEditStatus[index] = !newEditStatus[index];
+
+                          return {
+                            status: newEditStatus,
+                          };
+                        })
+                      }
+                    />
+                    <FontAwesomeIcon
+                      icon={faTrashAlt}
+                      className="col-span-2"
+                      style={{ color: 'red', cursor: 'pointer' }}
+                      onClick={() =>
+                        handleRemoveBeneficiary(beneficiary?.address_)
+                      }
                     />
                   </div>
-                  <div className="relative col-span-3 text-sm">
-                    <span className="block capitalize">
-                      {beneficiary.name ?? ''}
-                    </span>
-                    <span className="subtitle">
-                      {beneficiary?.address_ === claimant
-                        ? 'Protector'
-                        : 'Beneficiary'}
-                    </span>
-                  </div>
-                  <div className="col-span-3 text-sm">
-                    <span>{formatAddress(beneficiary?.address_)}</span>
-                    <span className="subtitle block">{network}</span>
-                  </div>
-                  <div className="col-span-3 text-sm">
-                    <span>
-                      <>
-                        {parseInt(
-                          beneficiary?.inheritancePercentage.toString() ?? '0'
-                        )}{' '}
-                        %
-                      </>
-                    </span>
-
-                    <span className="subtitle block">$0.00</span>
-                  </div>
-                  <FontAwesomeIcon
-                    icon={faEdit}
-                    className="col-span-2"
-                    style={{ cursor: 'pointer' }}
-                  />
-                  <FontAwesomeIcon
-                    icon={faTrashAlt}
-                    className="col-span-2"
-                    style={{ color: 'red', cursor: 'pointer' }}
-                    onClick={() =>
-                      handleRemoveBeneficiary(beneficiary.address_)
-                    }
-                  />
-                </div>
-              );
-            })}
-            <Stack direction="row" className="mt-4 justify-between">
-              <CircleProgress className="text-sm">
-                <div className="relative h-[83px] w-[83px]">
-                  <Image
-                    src="/icons/vault.png"
-                    alt="inheritance complete"
-                    layout="fill"
-                    objectFit="contain"
-                  />
-                </div>
-                <span>Multisig Protection</span>
-                <span className="block text-purple-900">1 Protector</span>
-              </CircleProgress>
-              <div className="flex grow flex-col items-center space-y-4">
-                <Button variant="primary" text="Edit Multisig" size="sm" />
-                <Button variant="basic" text="Cancel Protection" size="sm" />
-              </div>
+                );
+              })}
+            <div className="!mt-7 flex w-full justify-center">
+              <Button
+                variant="text"
+                text="+ Add another wallet"
+                onClick={() => handleAddAnotherWallet()}
+              />
+            </div>
+            <Stack direction="row" className="!mt-20 justify-center ">
+              <Button
+                variant="primary"
+                size="sm"
+                type="submit"
+                disabled={
+                  edit.status.every((status) => !status) ||
+                  updateBeneficiariesTransaction.isLoading ||
+                  updateBeneficiaries.isLoading
+                }
+                loading={
+                  updateBeneficiariesTransaction.isLoading ||
+                  updateBeneficiaries.isLoading
+                }
+              >
+                <span>Save Changes</span>
+              </Button>
+              <Button
+                variant="basic"
+                size="sm"
+                onClick={() => handleCancelTestament()}
+                loading={
+                  cancelTestament.isLoading ||
+                  cancelTestamentTransaction.isLoading
+                }
+              >
+                {cancelTestament.isLoading ||
+                cancelTestamentTransaction.isLoading ? (
+                  <Loading width={48} height={48} />
+                ) : (
+                  <span>Cancel Protection</span>
+                )}
+              </Button>
             </Stack>
-          </div>
+          </form>
         </>
+      );
+    }
+    if (dialogContent === 'edit time') {
+      return (
+        <form onSubmit={(e) => handleInactivityTimeSubmit(e)}>
+          <DialogTitle onClose={() => setIsDialogOpen(false)}></DialogTitle>
+          <Stack direction="row" className="justify-between">
+            <div>
+              <span className="subtitle block">Inactivity Time</span>
+              <span className="text-lg">365 Days</span>
+            </div>
+          </Stack>
+          <p className="mt-8 text-sm">
+            Select how many days need to pass before any beneficiary could
+            authorize the multisig to distribute the funds.
+          </p>
+          <div className="mt-8 flex justify-between gap-16">
+            <RadioGroup
+              className="[&>div>div]:flex [&>div>div]:gap-10 [&>div>div]:space-y-0"
+              name="newInactivityTime"
+            >
+              <RadioOption value={3}>3 Days</RadioOption>
+              <RadioOption value={6}>6 Days</RadioOption>
+              <RadioOption value={7}>9 Days</RadioOption>
+            </RadioGroup>
+          </div>
+
+          <p className="mt-10">
+            Add an email if you want to receive notifications that warn you days
+            before the proof of life expires. (This mail will not direct you to
+            Peace site)
+          </p>
+
+          <Stack direction="row" className="mt-10 flex justify-between !gap-20">
+            <TextField placeHolder="youremail@example.com" required={false} />
+            <Listbox>
+              <ListboxOption>1 day before</ListboxOption>
+            </Listbox>
+          </Stack>
+          <div className="mt-32 flex justify-center gap-10">
+            <Button
+              size="sm"
+              variant="primary"
+              type="submit"
+              loading={
+                updateInactivityMaximum.isLoading ||
+                updateBeneficiariesTransaction.isLoading
+              }
+            >
+              Edit Protection
+            </Button>
+            <Button
+              size="sm"
+              variant="basic"
+              loading={
+                cancelTestament.isLoading ||
+                cancelTestamentTransaction.isLoading
+              }
+              onClick={() => handleCancelTestament()}
+              type="button"
+            >
+              Cancel Protection
+            </Button>
+          </div>
+        </form>
       );
     }
   };
@@ -384,7 +701,7 @@ const ProtectionActiveDialog = ({
   return (
     <Dialog
       isOpen={isDialogOpen}
-      onClose={() => setIsDialogOpen(false)}
+      onClose={() => handleCloseDialog()}
       className="[&>div:nth-child(2)>div>div>h3]:text-left"
       size="lg"
     >
