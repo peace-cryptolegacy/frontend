@@ -323,7 +323,6 @@ const ProtectionActiveDialog = ({
     const { newInactivityTime } = e.target as typeof e.target & {
       newInactivityTime: { value: string };
     };
-    console.log('🚀 ~ newInactivityTime', newInactivityTime.value);
 
     setNewInactivityTime(BigNumber.from(newInactivityTime.value));
   };
@@ -477,7 +476,6 @@ const ProtectionActiveDialog = ({
           >
             {beneficiaries &&
               beneficiaries.map((beneficiary, index) => {
-                const claimant = testament?.claimant;
                 return (
                   <div
                     key={index}
@@ -504,11 +502,7 @@ const ProtectionActiveDialog = ({
                           {beneficiary.name === '' ? 'Name' : beneficiary.name}
                         </span>
                       )}
-                      <span className="subtitle">
-                        {beneficiary?.address_ === claimant
-                          ? 'Protector'
-                          : 'Beneficiary'}
-                      </span>
+                      <span className="subtitle">Beneficiary</span>
                     </div>
 
                     <div className="col-span-3 text-sm">

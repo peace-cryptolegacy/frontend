@@ -66,7 +66,11 @@ const Button = ({
             )}
           >
             {loading ? (
-              <Loading width={48} height={48} fill="#fff" />
+              <Loading
+                width={48}
+                height={48}
+                fill={variant === 'gradientBorder' ? '#5f4dff' : '#fff'}
+              />
             ) : (
               <>
                 <span className="mr-2">{icon}</span>
@@ -77,6 +81,7 @@ const Button = ({
                   )}
                 >
                   {text}
+                  {children}
                 </span>
               </>
             )}

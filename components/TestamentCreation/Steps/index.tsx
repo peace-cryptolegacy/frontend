@@ -7,7 +7,7 @@ import PlanReview from 'components/TestamentCreation/Steps/PlanReview';
 import PlanSelection from 'components/TestamentCreation/Steps/PlanSelection';
 import Title from 'components/Title/Title';
 import UILoading from 'components/UI/Loading';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import useCreateTestament from 'hooks/useCreateTestament';
 import { IBeneficiary } from 'mock';
 import { testamentInfoInitialValue } from 'mock/index';
@@ -57,7 +57,6 @@ const Steps = () => {
 
   const { transact: createTestament, transaction: createTestamentTransaction } =
     useCreateTestament(
-      beneficiaries && beneficiaries[0]?.address,
       BigNumber.from(testamentInfo.expirationDays),
       // The create testament function does not take the IBeneficiary type. Check the deployments file
       beneficiaries?.map(({ name, address, distribution }) => ({
@@ -90,13 +89,7 @@ const Steps = () => {
     };
 
     addBeneficiariesToDB();
-  }, [
-    address,
-    beneficiaries,
-    createTestament,
-    createTestamentTransaction,
-    createTestamentTransaction.isSuccess,
-  ]);
+  }, [address, beneficiaries, createTestamentTransaction]);
 
   async function handleDeploy() {
     if (createTestament.write) {
@@ -199,7 +192,12 @@ const Steps = () => {
             const updatedTestamentInfo = getUpdatedTestamentInfo();
             setTestamentInfo({ ...updatedTestamentInfo, activeStep: 1 });
           }}
-          onNextStep={() => handleDeploy()}
+          onNextStep={{
+            handleDeploy: handleDeploy,
+            isCreateTestamentLoading: createTestament.isLoading,
+            isCreateTestamentTransactionLoading:
+              createTestamentTransaction.isLoading,
+          }}
         />
       ),
       key: 'step-distribution',
@@ -220,9 +218,7 @@ const Steps = () => {
       return <UILoading />;
     }
     if (
-      (dynamicVault.data &&
-        dynamicVault.data.testament.claimant !==
-          ethers.constants.AddressZero) ||
+      (dynamicVault.data && dynamicVault.data.testament.status == 1) ||
       createTestamentTransaction?.isSuccess
     ) {
       return <ProtectionsActive {...dynamicVault.data} />;

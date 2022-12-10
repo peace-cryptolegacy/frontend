@@ -1,7 +1,7 @@
-import { Box, Button } from '@chakra-ui/react';
+import { Box, Button as ChakraButton, Stack } from '@chakra-ui/react';
+import Button from 'components/button/Button';
 import Caption from 'components/Caption/Caption';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
-import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
 import { IBeneficiary } from 'mock';
 
 interface Props {
@@ -9,7 +9,11 @@ interface Props {
   renderStepper: Function;
   beneficiaries: IBeneficiary[];
   expirationDays: number;
-  onNextStep: Function;
+  onNextStep: {
+    handleDeploy: Function;
+    isCreateTestamentLoading: boolean;
+    isCreateTestamentTransactionLoading: boolean;
+  };
   onPrevStep: Function;
 }
 
@@ -29,7 +33,6 @@ const PlanReview = ({
         marginBottom="15px"
         key={`beneficiary-${index}`}
       >
-        {/* <Box flex={1}>{beneficiary.isClaimant ? 'Yes' : 'No'}</Box> */}
         <Box flex={3}>{beneficiary.name}</Box>
         <Box flex={1}>{beneficiary.distribution} %</Box>
         <Box className="hidden lg:block" flex={3}>
@@ -115,8 +118,8 @@ const PlanReview = ({
 
       {beneficiaries.map(renderRow)}
 
-      <div className="flex justify-center">
-        <Button
+      <Stack direction="row" className="mt-20 items-center justify-center">
+        <ChakraButton
           color="#5F4DFF"
           fontSize="14px"
           marginRight="80px"
@@ -124,14 +127,20 @@ const PlanReview = ({
           variant="ghost"
         >
           Back
-        </Button>
+        </ChakraButton>
 
-        <PrimaryButton
-          text={'Create'}
-          className={'!py-2 !px-10 lg:!py-4 lg:!px-14'}
-          onClick={() => onNextStep()}
-        />
-      </div>
+        <Button
+          variant="primary"
+          loading={
+            onNextStep.isCreateTestamentTransactionLoading ||
+            onNextStep.isCreateTestamentLoading
+          }
+          size="sm"
+          onClick={() => onNextStep.handleDeploy()}
+        >
+          Create
+        </Button>
+      </Stack>
     </div>
   );
 };

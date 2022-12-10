@@ -7,9 +7,7 @@ import {
 import useGetDynamicVaults from './utils/useGetDynamicVaults';
 
 const useCreateTestament = (
-  ...[claimant, inactivityMaximum, beneficiaries]:
-    | TestamentCreationParams
-    | undefined[]
+  ...[inactivityMaximum, beneficiaries]: TestamentCreationParams | undefined[]
 ) => {
   const dynamicVaults = useGetDynamicVaults();
 
@@ -18,14 +16,10 @@ const useCreateTestament = (
     abi: dynamicVaults?.abi,
     functionName: 'createTestament',
     args: [
-      claimant,
       inactivityMaximum,
       beneficiaries,
     ] as unknown as TestamentCreationParams,
-    enabled:
-      dynamicVaults && claimant && inactivityMaximum && beneficiaries
-        ? true
-        : false,
+    enabled: dynamicVaults && inactivityMaximum && beneficiaries ? true : false,
   });
 
   const transact = useContractWrite(prepareTransact.config);

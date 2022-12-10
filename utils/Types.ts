@@ -17,18 +17,17 @@ export type Beneficiary = {
 };
 
 export type TestamentCreationParams = [
-  claimant: Address,
   inactivityMaximum: BigNumber,
   beneficiaries: Beneficiary[]
 ];
 
 export type Testament = {
-  claimant: `0x${string}`;
   inactivityMaximum: BigNumber;
   proofOfLife: BigNumber;
   succeeded: boolean;
   beneficiaries: readonly Beneficiary[];
   tokens: readonly `0x${string}`[];
+  status: number;
 };
 
 export type DynamicVault = {
