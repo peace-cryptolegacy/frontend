@@ -3,7 +3,7 @@ export const deployments = {
   chainId: '80001',
   contracts: {
     DefaultProxyAdmin: {
-      address: '0xfC6AB6AcDcb48c4fe652C5C3aEcf4F7f00327D0b',
+      address: '0x6bE7a87B4909a7a9e75FEe6CB10e6E3055F16A6D',
       abi: [
         {
           inputs: [
@@ -168,7 +168,7 @@ export const deployments = {
       ],
     },
     DynamicVaults_Implementation: {
-      address: '0x8Dc3fC227f0b3d6c0c39A72341a423fC6d75AbF9',
+      address: '0x35494014E1304b8c4AB2E12625fea8D4cABD719E',
       abi: [
         {
           inputs: [],
@@ -193,6 +193,11 @@ export const deployments = {
         {
           inputs: [],
           name: 'T_BACKUP_ADDRESS_IS_OWNER',
+          type: 'error',
+        },
+        {
+          inputs: [],
+          name: 'T_CANCELED',
           type: 'error',
         },
         {
@@ -237,6 +242,42 @@ export const deployments = {
             },
           ],
           name: 'BackupAdded',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+            {
+              components: [
+                {
+                  internalType: 'string',
+                  name: 'name',
+                  type: 'string',
+                },
+                {
+                  internalType: 'address payable',
+                  name: 'address_',
+                  type: 'address',
+                },
+                {
+                  internalType: 'uint128',
+                  name: 'inheritancePercentage',
+                  type: 'uint128',
+                },
+              ],
+              indexed: false,
+              internalType: 'struct Types.Beneficiary[]',
+              name: 'beneficiaries',
+              type: 'tuple[]',
+            },
+          ],
+          name: 'BeneficiariesUpdated',
           type: 'event',
         },
         {
@@ -389,6 +430,19 @@ export const deployments = {
               type: 'address',
             },
           ],
+          name: 'TestamentCanceled',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+          ],
           name: 'TestamentSucceeded',
           type: 'event',
         },
@@ -500,12 +554,14 @@ export const deployments = {
           type: 'function',
         },
         {
+          inputs: [],
+          name: 'cancelTestament',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
           inputs: [
-            {
-              internalType: 'address',
-              name: 'claimant',
-              type: 'address',
-            },
             {
               internalType: 'uint128',
               name: 'inactivityMaximum',
@@ -552,11 +608,6 @@ export const deployments = {
             {
               components: [
                 {
-                  internalType: 'address',
-                  name: 'claimant',
-                  type: 'address',
-                },
-                {
                   internalType: 'uint128',
                   name: 'inactivityMaximum',
                   type: 'uint128',
@@ -597,6 +648,11 @@ export const deployments = {
                   internalType: 'address[]',
                   name: 'tokens',
                   type: 'address[]',
+                },
+                {
+                  internalType: 'enum Types.TestamentStatus',
+                  name: 'status',
+                  type: 'uint8',
                 },
               ],
               internalType: 'struct Types.Testament',
@@ -641,11 +697,6 @@ export const deployments = {
           ],
           name: 'getTestamentParameters',
           outputs: [
-            {
-              internalType: 'address',
-              name: 'claimant',
-              type: 'address',
-            },
             {
               internalType: 'address[]',
               name: 'tokens',
@@ -820,17 +871,27 @@ export const deployments = {
         {
           inputs: [
             {
-              internalType: 'address',
-              name: 'address_',
-              type: 'address',
+              internalType: 'string[]',
+              name: 'names',
+              type: 'string[]',
             },
             {
-              internalType: 'uint128',
-              name: 'newInheritancePercentage',
-              type: 'uint128',
+              internalType: 'address[]',
+              name: 'addresses',
+              type: 'address[]',
+            },
+            {
+              internalType: 'uint128[]',
+              name: 'newInheritancePercentages',
+              type: 'uint128[]',
+            },
+            {
+              internalType: 'uint128[]',
+              name: 'indexes',
+              type: 'uint128[]',
             },
           ],
-          name: 'updateBeneficiaryPercentage',
+          name: 'updateBeneficiaries',
           outputs: [],
           stateMutability: 'nonpayable',
           type: 'function',
@@ -864,7 +925,7 @@ export const deployments = {
       ],
     },
     DynamicVaults_Proxy: {
-      address: '0x42339c4243bbe91F9dd7088D2Ed4f49Ab20168D5',
+      address: '0xD47dFAeb0C7B505640804D67226B5c13Dcb379f5',
       abi: [
         {
           inputs: [
@@ -1013,7 +1074,7 @@ export const deployments = {
       ],
     },
     DynamicVaults: {
-      address: '0x42339c4243bbe91F9dd7088D2Ed4f49Ab20168D5',
+      address: '0xD47dFAeb0C7B505640804D67226B5c13Dcb379f5',
       abi: [
         {
           anonymous: false,
@@ -1165,6 +1226,11 @@ export const deployments = {
         },
         {
           inputs: [],
+          name: 'T_CANCELED',
+          type: 'error',
+        },
+        {
+          inputs: [],
           name: 'T_INHERITANCE_PERCENTAGE_EXCEEDED',
           type: 'error',
         },
@@ -1205,6 +1271,42 @@ export const deployments = {
             },
           ],
           name: 'BackupAdded',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+            {
+              components: [
+                {
+                  internalType: 'string',
+                  name: 'name',
+                  type: 'string',
+                },
+                {
+                  internalType: 'address payable',
+                  name: 'address_',
+                  type: 'address',
+                },
+                {
+                  internalType: 'uint128',
+                  name: 'inheritancePercentage',
+                  type: 'uint128',
+                },
+              ],
+              indexed: false,
+              internalType: 'struct Types.Beneficiary[]',
+              name: 'beneficiaries',
+              type: 'tuple[]',
+            },
+          ],
+          name: 'BeneficiariesUpdated',
           type: 'event',
         },
         {
@@ -1357,6 +1459,19 @@ export const deployments = {
               type: 'address',
             },
           ],
+          name: 'TestamentCanceled',
+          type: 'event',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+          ],
           name: 'TestamentSucceeded',
           type: 'event',
         },
@@ -1468,12 +1583,14 @@ export const deployments = {
           type: 'function',
         },
         {
+          inputs: [],
+          name: 'cancelTestament',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
           inputs: [
-            {
-              internalType: 'address',
-              name: 'claimant',
-              type: 'address',
-            },
             {
               internalType: 'uint128',
               name: 'inactivityMaximum',
@@ -1520,11 +1637,6 @@ export const deployments = {
             {
               components: [
                 {
-                  internalType: 'address',
-                  name: 'claimant',
-                  type: 'address',
-                },
-                {
                   internalType: 'uint128',
                   name: 'inactivityMaximum',
                   type: 'uint128',
@@ -1565,6 +1677,11 @@ export const deployments = {
                   internalType: 'address[]',
                   name: 'tokens',
                   type: 'address[]',
+                },
+                {
+                  internalType: 'enum Types.TestamentStatus',
+                  name: 'status',
+                  type: 'uint8',
                 },
               ],
               internalType: 'struct Types.Testament',
@@ -1609,11 +1726,6 @@ export const deployments = {
           ],
           name: 'getTestamentParameters',
           outputs: [
-            {
-              internalType: 'address',
-              name: 'claimant',
-              type: 'address',
-            },
             {
               internalType: 'address[]',
               name: 'tokens',
@@ -1788,17 +1900,27 @@ export const deployments = {
         {
           inputs: [
             {
-              internalType: 'address',
-              name: 'address_',
-              type: 'address',
+              internalType: 'string[]',
+              name: 'names',
+              type: 'string[]',
             },
             {
-              internalType: 'uint128',
-              name: 'newInheritancePercentage',
-              type: 'uint128',
+              internalType: 'address[]',
+              name: 'addresses',
+              type: 'address[]',
+            },
+            {
+              internalType: 'uint128[]',
+              name: 'newInheritancePercentages',
+              type: 'uint128[]',
+            },
+            {
+              internalType: 'uint128[]',
+              name: 'indexes',
+              type: 'uint128[]',
             },
           ],
-          name: 'updateBeneficiaryPercentage',
+          name: 'updateBeneficiaries',
           outputs: [],
           stateMutability: 'nonpayable',
           type: 'function',

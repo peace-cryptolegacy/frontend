@@ -1,4 +1,3 @@
-import { TestamentCreationParams } from 'utils/Types';
 import {
   useContractWrite,
   usePrepareContractWrite,
@@ -6,20 +5,13 @@ import {
 } from 'wagmi';
 import useGetDynamicVaults from './utils/useGetDynamicVaults';
 
-const useCreateTestament = (
-  ...[inactivityMaximum, beneficiaries]: TestamentCreationParams | undefined[]
-) => {
+const useCancelTestament = () => {
   const dynamicVaults = useGetDynamicVaults();
 
   const prepareTransact = usePrepareContractWrite({
     address: dynamicVaults?.address ?? '',
     abi: dynamicVaults?.abi,
-    functionName: 'createTestament',
-    args: [
-      inactivityMaximum,
-      beneficiaries,
-    ] as unknown as TestamentCreationParams,
-    enabled: dynamicVaults && inactivityMaximum && beneficiaries ? true : false,
+    functionName: 'cancelTestament',
   });
 
   const transact = useContractWrite(prepareTransact.config);
@@ -29,4 +21,4 @@ const useCreateTestament = (
   return { prepareTransact, transact, transaction };
 };
 
-export default useCreateTestament;
+export default useCancelTestament;

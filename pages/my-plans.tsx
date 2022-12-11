@@ -23,7 +23,7 @@ import TabGroup from 'components/tabs/TabGroup';
 import TabPanel from 'components/tabs/TabPanel';
 import TabPanels from 'components/tabs/TabPanels';
 import UILoading from 'components/UI/Loading';
-import { ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import useSignSucceed from 'hooks/useSignSucceed';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -43,6 +43,7 @@ const MyPlans: NextPage = () => {
   const [dialogContent, setDialogContent] = useState<
     'Complete Multisig' | 'Inheritance Complete'
   >();
+  const [succeeded, setSucceeded] = useState<boolean>(false);
 
   const [beneficiary, setBeneficiary] = useState<{
     address: Address;
@@ -73,7 +74,6 @@ const MyPlans: NextPage = () => {
   // Todo: what happens if a beneficiary is part of multiple testaments
 
   useEffect(() => {
-    console.log('1. address', address);
     if (!address) {
       return;
     }
@@ -82,7 +82,6 @@ const MyPlans: NextPage = () => {
         const beneficiary = await axios
           .get('api/beneficiary/' + address)
           .then((res) => res.data.beneficiary);
-        console.log('🚀 ~ beneficiary', beneficiary);
         setBeneficiary(beneficiary);
       } catch (error) {
         return error;
@@ -95,6 +94,12 @@ const MyPlans: NextPage = () => {
     beneficiary?.dynamicVaults[0].dynamicVaultOwner
   );
   const testament = dynamicVault?.data?.testament;
+
+  useEffect(() => {
+    if (dynamicVault.data) {
+      setSucceeded(dynamicVault.data.testament.succeeded);
+    }
+  }, [dynamicVault.data]);
 
   let beneficiariesAmount: number = 1;
   if (testament && testament.beneficiaries) {
@@ -116,7 +121,7 @@ const MyPlans: NextPage = () => {
     let signersAmount = 0;
     signersAmount;
 
-    testamentSignatures?.every((signature) => {
+    testamentSignatures?.map((signature) => {
       if (signature.signature) {
         signersAmount += 1;
       }
@@ -139,10 +144,7 @@ const MyPlans: NextPage = () => {
   );
 
   useEffect(() => {
-    console.log('singSucceed', signSucceed.status);
     if (signSucceed.isSuccess) {
-      setDialogContent('Inheritance Complete');
-      setIsDialogOpen(true);
       setFakeSignersAmount((prev) => (prev ? prev + 1 : 1));
       setFakeSignersAmount(beneficiariesAmount);
       axios.put('api/testament-signatures', {
@@ -199,7 +201,7 @@ const MyPlans: NextPage = () => {
       return <UILoading width={120} height={120} />;
     }
 
-    if (!testament || testament.claimant === ethers.constants.AddressZero) {
+    if (!testament || testament.proofOfLife === BigNumber.from(0)) {
       return <span className="h3 !font-normal ">No active plans</span>;
     }
 
@@ -208,6 +210,8 @@ const MyPlans: NextPage = () => {
         <TabPanel>
           {activeClaim === 'Inheritance Plan' ? (
             <InheritancePlan
+              setSucceeded={setSucceeded}
+              succeeded={succeeded}
               dynamicVaultOwner={beneficiary.dynamicVaults[0].dynamicVaultOwner}
               signersAmount={signersAmount}
               fakeSignersAmount={fakeSignersAmount}
@@ -307,7 +311,13 @@ const MyPlans: NextPage = () => {
               text="Sign Now"
               variant="gradientBorder"
               size="sm"
-              onClick={() => handleSignSucceed()}
+              loading={signSucceed.isLoading}
+              disabled={signSucceed.isLoading || signSucceed.isSuccess}
+              onClick={() => {
+                signSucceed.isLoading || signSucceed.isSuccess
+                  ? null
+                  : handleSignSucceed();
+              }}
             />
           </Stack>
         </>

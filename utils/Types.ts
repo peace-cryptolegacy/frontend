@@ -10,24 +10,24 @@ export type UserPlans = (
 export type Address = `0x${string}`;
 
 export type Beneficiary = {
+  new?: boolean;
   name: string;
   address_: Address;
   inheritancePercentage: BigNumber;
 };
 
 export type TestamentCreationParams = [
-  claimant: Address,
   inactivityMaximum: BigNumber,
   beneficiaries: Beneficiary[]
 ];
 
 export type Testament = {
-  claimant: `0x${string}`;
   inactivityMaximum: BigNumber;
   proofOfLife: BigNumber;
   succeeded: boolean;
   beneficiaries: readonly Beneficiary[];
   tokens: readonly `0x${string}`[];
+  status: number;
 };
 
 export type DynamicVault = {

@@ -10,7 +10,7 @@ import Stack from 'components/stack/Stack';
 import useSucceed from 'hooks/useSucceed';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import networkMappings from 'utils/helpers/networkMappings';
 import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
 import { useNetwork } from 'wagmi';
@@ -29,6 +29,8 @@ type Props = {
   setActiveClaim: Dispatch<
     SetStateAction<'Inheritance Plan' | 'Backup Wallet' | undefined>
   >;
+  succeeded: boolean;
+  setSucceeded: Dispatch<SetStateAction<boolean>>;
 };
 
 const InheritancePlan = ({
@@ -38,11 +40,11 @@ const InheritancePlan = ({
   fakeSignersAmount,
   updateDialogContent,
   setActiveClaim,
+  succeeded,
+  setSucceeded,
 }: Props) => {
   const { chain } = useNetwork();
   signersAmount;
-
-  const [succeeded, setSucceeded] = useState<boolean>(false);
 
   const { transact: succeed, transaction: succeedTransaction } =
     useSucceed(dynamicVaultOwner);
@@ -51,8 +53,14 @@ const InheritancePlan = ({
     if (succeedTransaction.isSuccess) {
       updateDialogContent('Inheritance Complete');
       setSucceeded(true);
+      succeed.reset();
     }
-  }, [succeedTransaction.isSuccess, updateDialogContent]);
+  }, [
+    setSucceeded,
+    succeed,
+    succeedTransaction.isSuccess,
+    updateDialogContent,
+  ]);
 
   const networkName =
     wagmiChainNameMappings[chain?.name as keyof typeof wagmiChainNameMappings];
@@ -253,33 +261,41 @@ const InheritancePlan = ({
             )}
           </Stack>
           <Stack direction="row" className="justify-center">
-            <Button
-              text="Back"
-              variant="gradientBorder"
-              size="sm"
-              className="!p-0.5"
-              onClick={() => setActiveClaim(undefined)}
-            />
-            <Button
-              disabled={
-                fakeSignersAmount === beneficiariesAmount &&
-                !testament.succeeded &&
-                !succeeded
-                  ? false
-                  : true
-              }
-              text="Claim Now"
-              variant="fancy"
-              size="sm"
-              className="!p-1"
-              onClick={() =>
-                fakeSignersAmount === beneficiariesAmount &&
-                !testament.succeeded &&
-                !succeeded
-                  ? handleSucceed()
-                  : null
-              }
-            />
+            <>
+              <Button
+                text="Back"
+                variant="gradientBorder"
+                size="sm"
+                className="!p-0.5"
+                onClick={() => setActiveClaim(undefined)}
+              />
+              <Button
+                disabled={
+                  !(
+                    fakeSignersAmount === beneficiariesAmount &&
+                    !testament.succeeded &&
+                    !succeeded &&
+                    !succeed.isLoading &&
+                    !succeedTransaction.isLoading
+                  )
+                }
+                loading={succeed.isLoading || succeedTransaction.isLoading}
+                variant="fancy"
+                size="sm"
+                className="!p-1"
+                onClick={() =>
+                  fakeSignersAmount === beneficiariesAmount &&
+                  !testament.succeeded &&
+                  !succeeded &&
+                  !succeed.isLoading &&
+                  !succeedTransaction.isLoading
+                    ? handleSucceed()
+                    : null
+                }
+              >
+                Claim Now
+              </Button>
+            </>
           </Stack>
         </Stack>
       </Box>

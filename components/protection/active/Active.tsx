@@ -12,8 +12,9 @@ import TabPanel from 'components/tabs/TabPanel';
 import TabPanels from 'components/tabs/TabPanels';
 import Tabs from 'components/tabs/Tabs';
 import { BigNumber } from 'ethers';
+import useSignalLife from 'hooks/useSignalLife';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import networkMappings from 'utils/helpers/networkMappings';
 import timeSince from 'utils/helpers/timeSince';
 import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
@@ -26,8 +27,11 @@ import ProtectionActiveDialog from './Dialog';
 const ProtectionsActive = (dynamicVault: Partial<DynamicVault>) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState<
-    'edit assets' | 'edit heirs'
+    'edit assets' | 'edit heirs' | 'edit time'
   >();
+  const [inactivityTime, setInactivityTime] = useState(
+    BigNumber.from(Date.now())
+  );
 
   const { chain } = useNetwork();
 
@@ -40,6 +44,24 @@ const ProtectionsActive = (dynamicVault: Partial<DynamicVault>) => {
   const networkTokenMapping =
     tokenMappings[networkNativeToken as keyof typeof tokenMappings];
   const testament = dynamicVault.testament;
+
+  useEffect(() => {
+    if (testament?.proofOfLife !== undefined) {
+      setInactivityTime(testament?.proofOfLife);
+    }
+  }, [testament?.proofOfLife]);
+
+  const {
+    prepareTransact: prepareVerifyLife,
+    transact: verifyLife,
+    transaction: verifyLifeTransaction,
+  } = useSignalLife();
+
+  useEffect(() => {
+    if (verifyLifeTransaction.isSuccess) {
+      setInactivityTime(BigNumber.from(Date.now()));
+    }
+  }, [verifyLifeTransaction]);
 
   const testamentHistory = [
     {
@@ -66,6 +88,15 @@ const ProtectionsActive = (dynamicVault: Partial<DynamicVault>) => {
   const handleEditHeirs = () => {
     setDialogContent('edit heirs');
     setIsDialogOpen(true);
+  };
+
+  const handleEditTime = () => {
+    setDialogContent('edit time');
+    setIsDialogOpen(true);
+  };
+
+  const handleVerifyLife = () => {
+    verifyLife.write?.();
   };
 
   return (
@@ -194,7 +225,7 @@ const ProtectionsActive = (dynamicVault: Partial<DynamicVault>) => {
                         <Button
                           variant="basic"
                           text="Edit Time"
-                          onClick={() => {}}
+                          onClick={() => handleEditTime()}
                           size="xs"
                           className="whitespace-nowrap py-1.5 text-sm"
                         />
@@ -205,9 +236,9 @@ const ProtectionsActive = (dynamicVault: Partial<DynamicVault>) => {
                         percentageCalculator(
                           testament?.inactivityMaximum ?? BigNumber.from(0),
                           timeSince(
-                            testament?.proofOfLife ?? BigNumber.from(0),
+                            inactivityTime,
                             'seconds',
-                            'BigNumber'
+                            'number'
                           ) as BigNumber
                         ) as number
                       }
@@ -218,7 +249,16 @@ const ProtectionsActive = (dynamicVault: Partial<DynamicVault>) => {
                     variant="fancy"
                     text="Verify Life"
                     className="mt-10 w-full"
-                    onClick={() => {}}
+                    onClick={() =>
+                      prepareVerifyLife.isLoading ||
+                      verifyLife.isLoading ||
+                      verifyLifeTransaction.isLoading
+                        ? null
+                        : handleVerifyLife()
+                    }
+                    loading={
+                      prepareVerifyLife.isLoading || verifyLife.isLoading
+                    }
                   />
                 </Box>
               </div>
