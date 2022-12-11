@@ -136,7 +136,12 @@ const PlanReview = ({
             onNextStep.isCreateTestamentLoading
           }
           size="sm"
-          onClick={() => onNextStep.handleDeploy()}
+          onClick={() =>
+            onNextStep.isCreateTestamentLoading ||
+            onNextStep.isCreateTestamentTransactionLoading
+              ? null
+              : onNextStep.handleDeploy()
+          }
         >
           Create
         </Button>

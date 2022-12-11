@@ -72,6 +72,7 @@ const Steps = () => {
     if (!createTestamentTransaction.isSuccess) {
       return;
     }
+    createTestament.reset();
 
     const addBeneficiariesToDB = async () => {
       try {
@@ -89,7 +90,7 @@ const Steps = () => {
     };
 
     addBeneficiariesToDB();
-  }, [address, beneficiaries, createTestamentTransaction]);
+  }, [address, beneficiaries, createTestament, createTestamentTransaction]);
 
   async function handleDeploy() {
     if (createTestament.write) {
