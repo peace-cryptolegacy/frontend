@@ -2,7 +2,6 @@ import clsx from 'clsx';
 import Button from 'components/button/Button';
 import Carousel from 'components/Carousel/Carousel';
 import TextField from 'components/Input/TextField';
-import Stack from 'components/stack/Stack';
 import Image from 'next/image';
 import assets from 'public/images/assets.png';
 import invest from 'public/images/invest.png';
@@ -98,16 +97,6 @@ const BeneficiaryLogin = () => {
             onClick={() => {}}
             className="mt-8"
           />
-          <Stack direction="row" className="mt-8 justify-center">
-            <span>Secured by </span>
-            <Image
-              src="/logos/web3auth.png"
-              alt="web3auth"
-              width={156}
-              height={58}
-              objectFit="contain"
-            />
-          </Stack>
         </div>
       </div>
       <Carousel slideInterval={5000} className="relative col-span-3">

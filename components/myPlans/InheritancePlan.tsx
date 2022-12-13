@@ -102,7 +102,7 @@ const InheritancePlan = ({
             <span className="text-xs text-blue-gray-light">Network</span>
             <Stack direction="row" className="gap-1">
               <Image
-                src={networkMapping.route}
+                src={networkMapping?.route}
                 alt={chain?.name}
                 width={20}
                 height={20}
