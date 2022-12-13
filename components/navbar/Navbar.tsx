@@ -3,14 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from 'components/button/Button';
 import TextField from 'components/Input/TextField';
 import Stack from 'components/stack/Stack';
+import Loading from 'components/UI/Loading';
+import { ConnectKitButton } from 'connectkit';
 import { FC } from 'react';
-import { useAccount, useConnect } from 'wagmi';
+import { useAccount } from 'wagmi';
 
 const Navbar: FC = () => {
   const { address } = useAccount();
-  const { connect, connectors } = useConnect();
-
-  const connector = connectors.at(0);
 
   const renderComponent = () => {
     if (address) {
@@ -26,15 +25,21 @@ const Navbar: FC = () => {
               placeHolder="Search by asset, address, domain or protocol"
             />
           </div>
-          {address ? (
-            <span>Connected</span>
-          ) : (
-            <Button
-              variant="basic"
-              text="Connect"
-              onClick={() => connect({ connector })}
-            />
-          )}
+          <ConnectKitButton.Custom>
+            {({ isConnecting, show, isConnected, truncatedAddress }) => {
+              return (
+                <Button onClick={show} variant="gradientBorder" size="sm">
+                  {isConnected ? (
+                    truncatedAddress
+                  ) : isConnecting ? (
+                    <Loading />
+                  ) : (
+                    'Connect Wallet'
+                  )}
+                </Button>
+              );
+            }}
+          </ConnectKitButton.Custom>
         </Stack>
       );
     }

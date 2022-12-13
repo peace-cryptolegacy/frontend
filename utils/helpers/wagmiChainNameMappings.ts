@@ -1,6 +1,6 @@
 const chains: { [key: string]: string } = {
   'Polygon Mumbai': 'mumbai',
-  mumbai: 'Polygon Mumbai',
+  Mumbai: 'mumbai',
 };
 
 export default chains;

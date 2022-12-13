@@ -128,12 +128,14 @@ const History = () => {
             >
               <Stack direction="row" className="col-span-3">
                 <div className="relative h-8 w-8">
-                  <Image
-                    src={assetMapping.route ? assetMapping.route : ''}
-                    alt={assetName}
-                    layout="fill"
-                    objectFit="contain"
-                  />
+                  {assetMapping.route && (
+                    <Image
+                      src={assetMapping.route}
+                      alt={assetName}
+                      layout="fill"
+                      objectFit="contain"
+                    />
+                  )}
                 </div>
                 <span className="capitalize">{assetName}</span>
               </Stack>
