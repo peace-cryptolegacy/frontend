@@ -50,7 +50,7 @@ const PlanSelection = ({
           <span className="inline">Select your Network</span>
           <Stack direction="row">
             <Image
-              src={networkMapping.route}
+              src={networkMapping?.route ?? '/'}
               width={40}
               height={40}
               alt={chain?.name}

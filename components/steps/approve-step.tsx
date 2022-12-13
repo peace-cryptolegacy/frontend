@@ -26,7 +26,7 @@ const ApproveStep = ({ onNextStep, onPrevStep }: props) => {
           maxWidth="70%"
         >
           <Box flex={1}>
-            <Image height="32px" src={icon} width="32px" alt="token"></Image>
+            <Image height="32px" src={icon} width="32px" alt="token" />
           </Box>
 
           <Box flex={2}>
