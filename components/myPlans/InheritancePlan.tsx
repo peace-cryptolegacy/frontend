@@ -1,5 +1,6 @@
 import { faCircleCheck, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
 import clsx from 'clsx';
 import Box from 'components/Box/Box';
 import Button from 'components/button/Button';
@@ -10,7 +11,7 @@ import Stack from 'components/stack/Stack';
 import useSucceed from 'hooks/useSucceed';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import networkMappings from 'utils/helpers/networkMappings';
 import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
 import { useNetwork } from 'wagmi';
@@ -46,8 +47,12 @@ const InheritancePlan = ({
   const { chain } = useNetwork();
   signersAmount;
 
-  const { transact: succeed, transaction: succeedTransaction } =
-    useSucceed(dynamicVaultOwner);
+  const [tokens, setTokens] = useState<Address[]>();
+
+  const { transact: succeed, transaction: succeedTransaction } = useSucceed(
+    dynamicVaultOwner,
+    tokens
+  );
 
   useEffect(() => {
     if (succeedTransaction.isSuccess) {
@@ -62,6 +67,22 @@ const InheritancePlan = ({
     updateDialogContent,
   ]);
 
+  useEffect(() => {
+    const fetchTokens = async () => {
+      try {
+        const res = await axios.get(
+          'http://localhost:3000/api/dynamicvault?dynamicvaultowner=' +
+            dynamicVaultOwner
+        );
+
+        setTokens(res.data.dynamicVault.testament.protectedTokens);
+      } catch (error) {
+        return error;
+      }
+    };
+    fetchTokens();
+  }, [dynamicVaultOwner]);
+
   const networkName =
     wagmiChainNameMappings[chain?.name as keyof typeof wagmiChainNameMappings];
 
@@ -69,8 +90,6 @@ const InheritancePlan = ({
     networkMappings[networkName as keyof typeof networkMappings];
 
   const beneficiariesAmount = testament?.beneficiaries.length;
-
-  const tokens = testament?.tokens;
 
   const handleSucceed = () => {
     succeed.write?.();

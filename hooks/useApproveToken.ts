@@ -1,6 +1,11 @@
 import { ethers } from 'ethers';
 import { Address } from 'utils/Types';
-import { erc20ABI, useContractWrite, usePrepareContractWrite } from 'wagmi';
+import {
+  erc20ABI,
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from 'wagmi';
 import useGetDynamicVaults from './utils/useGetDynamicVaults';
 
 const useApproveToken = (address: Address | undefined) => {
@@ -16,7 +21,9 @@ const useApproveToken = (address: Address | undefined) => {
 
   const transact = useContractWrite(prepareTransact.config);
 
-  return { prepareTransact, transact };
+  const transaction = useWaitForTransaction({ hash: transact.data?.hash });
+
+  return { prepareTransact, transact, transaction };
 };
 
 export default useApproveToken;

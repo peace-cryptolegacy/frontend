@@ -10,7 +10,9 @@ import {
   PrepareWriteContractResult,
   writeContract,
 } from '@wagmi/core';
+import axios from 'axios';
 import Button from 'components/button/Button';
+import Chip from 'components/Chip/Chip';
 import Dialog from 'components/dialog/Dialog';
 import DialogTitle from 'components/dialog/DialogTitle';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
@@ -38,31 +40,44 @@ import { formatAddress } from 'utils/formatters';
 import tokenMappings from 'utils/helpers/tokenMappings';
 import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
 import topTokens from 'utils/topTokens';
-import { useAccount, useNetwork, useWaitForTransaction } from 'wagmi';
+import { useAccount, useNetwork } from 'wagmi';
 import useGetBalances from '../../../hooks/useGetBalances';
 import useUpdateBeneficiaries from '../../../hooks/useUpdateBeneficiaries';
 import useUpdateInactivityMaximum from '../../../hooks/useUpdateInactivityMaximum';
 import formatBigNumber from '../../../utils/helpers/formatBigNumber';
-import { Address, Beneficiary, DynamicVault } from '../../../utils/Types';
+import {
+  Address,
+  Beneficiary,
+  DynamicVault,
+  Testament,
+} from '../../../utils/Types';
 
 type Props = {
+  protectedTokens: Address[] | undefined;
+  setProtectedTokens: Dispatch<SetStateAction<Address[] | undefined>>;
   dynamicVault: Partial<DynamicVault> | undefined;
   dialogContent: 'edit assets' | 'edit heirs' | 'edit time' | undefined;
   isDialogOpen: boolean;
   setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
+  testament: Testament | undefined;
 };
 
 const ProtectionActiveDialog = ({
+  protectedTokens,
+  setProtectedTokens,
   dynamicVault,
   dialogContent,
   isDialogOpen,
   setIsDialogOpen,
+  testament,
 }: Props) => {
   const { address } = useAccount();
   const [approvalAddress, setApprovalAddress] = useState<Address>();
   const [edit, setEdit] = useState({
     status: [false],
   });
+
+  console.log('a');
 
   const [beneficiaries, setBeneficiaries] = useState<
     (Beneficiary[] & { new?: boolean }) | []
@@ -75,11 +90,40 @@ const ProtectionActiveDialog = ({
   const { transact: cancelTestament, transaction: cancelTestamentTransaction } =
     useCancelTestament();
 
-  const { prepareTransact: prepareApproveToken, transact: approveToken } =
-    useApproveToken(approvalAddress);
-  const waitApproveToken = useWaitForTransaction({
-    hash: approveToken?.data?.hash,
-  });
+  const {
+    prepareTransact: prepareApproveToken,
+    transact: approveToken,
+    transaction: approveTokenTransaction,
+  } = useApproveToken(approvalAddress);
+
+  useEffect(() => {
+    if (approveTokenTransaction.isSuccess) {
+      if (approvalAddress) {
+        setProtectedTokens((prev) => [...(prev ?? []), approvalAddress]);
+        axios
+          .post('http://localhost:3000/api/testament/protected-tokens', {
+            dynamicVaultOwner: address,
+            newProtectedTokens: [approvalAddress],
+          })
+          .catch((error) => {
+            return error;
+          });
+        setApprovalAddress(undefined);
+      }
+    }
+
+    if (['error', 'success'].includes(approveTokenTransaction.status)) {
+      approveToken.reset();
+      setApprovalAddress(undefined);
+    }
+  }, [
+    address,
+    approvalAddress,
+    approveToken,
+    approveTokenTransaction.isSuccess,
+    approveTokenTransaction.status,
+    setProtectedTokens,
+  ]);
 
   const removeBeneficiariesConfigs = useRef<{
     address: { config: PrepareWriteContractResult<any, 'removeBeneficiary'> };
@@ -131,15 +175,20 @@ const ProtectionActiveDialog = ({
     ] ?? 'moonbeam';
 
   useEffect(() => {
-    if (prepareApproveToken.isSuccess && approveToken.isIdle) {
+    if (
+      prepareApproveToken.isSuccess &&
+      approveToken.isIdle &&
+      approveTokenTransaction.isIdle
+    ) {
       approveToken.write?.();
     }
-  }, [approveToken, prepareApproveToken.isSuccess]);
+  }, [
+    approveToken,
+    approveTokenTransaction.isIdle,
+    prepareApproveToken.isSuccess,
+  ]);
 
   const handleApproveToken = (address: Address) => {
-    if (approvalAddress === address) {
-      approveToken.write?.();
-    }
     setApprovalAddress(address);
   };
 
@@ -170,8 +219,6 @@ const ProtectionActiveDialog = ({
   };
 
   const dynamicVaults = useGetDynamicVaults();
-
-  const testament = dynamicVault?.testament;
 
   useEffect(() => {
     if (dynamicVault?.testament && !beneficiaries.length) {
@@ -384,8 +431,9 @@ const ProtectionActiveDialog = ({
                 network as keyof typeof tokenMapping.networks
               ].address as Address;
               const loading =
-                waitApproveToken.isLoading ||
-                (approveToken.isLoading && approvalAddress === address);
+                approvalAddress === address &&
+                (approveTokenTransaction.isLoading || approveToken.isLoading);
+
               return (
                 <div
                   key={token}
@@ -418,19 +466,38 @@ const ProtectionActiveDialog = ({
                     </span>
                   </div>
                   <div className="col-span-3 text-sm">
-                    <span>0</span>
+                    <span>
+                      {(tokenBalances.data &&
+                        formatBigNumber(tokenBalances.data[index])) ??
+                        'loading...'}
+                    </span>
 
-                    <span className="subtitle block">$0.00</span>
+                    <span className="subtitle block">
+                      $
+                      {(tokenBalances.data &&
+                        +formatBigNumber(tokenBalances.data[index]) *
+                          prices[token]) ??
+                        '0.00'}
+                    </span>
                   </div>
-                  <Button
-                    variant="primary"
-                    text={loading ? 'loading...' : 'Approve Token'}
-                    disabled={loading}
-                    className="col-span-4 py-3"
-                    onClick={() => {
-                      loading ? null : handleApproveToken(address);
-                    }}
-                  />
+                  {protectedTokens?.some((token) => token === address) ? (
+                    <Chip
+                      text={'Protected'}
+                      className="col-span-4 h-12 py-0 "
+                    />
+                  ) : (
+                    <Button
+                      variant="primary"
+                      loading={loading}
+                      disabled={loading}
+                      className="col-span-4 h-12 py-0"
+                      onClick={() => {
+                        loading ? null : handleApproveToken(address);
+                      }}
+                    >
+                      {loading ? <Loading /> : <span>Approve Token</span>}
+                    </Button>
+                  )}
                 </div>
               );
             })}

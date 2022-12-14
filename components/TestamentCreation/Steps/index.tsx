@@ -72,6 +72,7 @@ const Steps = () => {
     if (!createTestamentTransaction.isSuccess) {
       return;
     }
+    dynamicVault.refetch();
     createTestament.reset();
 
     const addBeneficiariesToDB = async () => {
@@ -90,7 +91,13 @@ const Steps = () => {
     };
 
     addBeneficiariesToDB();
-  }, [address, beneficiaries, createTestament, createTestamentTransaction]);
+  }, [
+    address,
+    beneficiaries,
+    createTestament,
+    createTestamentTransaction,
+    dynamicVault,
+  ]);
 
   async function handleDeploy() {
     if (createTestament.write) {
@@ -218,6 +225,7 @@ const Steps = () => {
     if (!dynamicVault) {
       return <UILoading />;
     }
+
     if (
       (dynamicVault.data && dynamicVault.data.testament.status == 1) ||
       createTestamentTransaction?.isSuccess

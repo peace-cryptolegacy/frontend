@@ -1,5 +1,6 @@
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
 import clsx from 'clsx';
 import Box from 'components/Box/Box';
 import Button from 'components/button/Button';
@@ -18,13 +19,14 @@ import { useEffect, useState } from 'react';
 import networkMappings from 'utils/helpers/networkMappings';
 import timeSince from 'utils/helpers/timeSince';
 import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
-import { useNetwork } from 'wagmi';
+import { useAccount, useNetwork } from 'wagmi';
 import percentageCalculator from '../../../utils/helpers/percentageCalculator';
 import tokenMappings from '../../../utils/helpers/tokenMappings';
-import { DynamicVault } from '../../../utils/Types';
+import { Address, DynamicVault, Testament } from '../../../utils/Types';
 import ProtectionActiveDialog from './Dialog';
 
 const ProtectionsActive = (dynamicVault: Partial<DynamicVault>) => {
+  const { address } = useAccount();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState<
     'edit assets' | 'edit heirs' | 'edit time'
@@ -32,8 +34,27 @@ const ProtectionsActive = (dynamicVault: Partial<DynamicVault>) => {
   const [inactivityTime, setInactivityTime] = useState(
     BigNumber.from(Date.now())
   );
+  const [testament, setTestament] = useState<Testament>();
+  const [protectedTokens, setProtectedTokens] = useState<Address[]>();
 
   const { chain } = useNetwork();
+
+  useEffect(() => {
+    setTestament(dynamicVault.testament);
+  }, [dynamicVault.testament]);
+
+  useEffect(() => {
+    const fetchProtectedTokens = async () => {
+      // To-do: fix any
+      const res: any = await axios.get(
+        'http://localhost:3000/api/dynamicvault?dynamicvaultowner=' + address
+      );
+
+      setProtectedTokens(res.data.dynamicVault?.testament.protectedTokens);
+    };
+
+    fetchProtectedTokens();
+  }, [address]);
 
   const network =
     wagmiChainNameMappings[
@@ -43,7 +64,6 @@ const ProtectionsActive = (dynamicVault: Partial<DynamicVault>) => {
     networkMappings[network as keyof typeof networkMappings].token;
   const networkTokenMapping =
     tokenMappings[networkNativeToken as keyof typeof tokenMappings];
-  const testament = dynamicVault.testament;
 
   useEffect(() => {
     if (testament?.proofOfLife !== undefined) {
@@ -159,11 +179,13 @@ const ProtectionsActive = (dynamicVault: Partial<DynamicVault>) => {
                     >
                       <div>
                         <span>Tokens</span>
-                        <span className="block">0</span>
+                        <span className="block">
+                          {protectedTokens?.length ?? 0}
+                        </span>
                       </div>
                       <div>
                         <span>Collectibles</span>
-                        <span>{testament?.tokens?.length}</span>
+                        <span>0</span>
                       </div>
                       <div className="self-end">
                         <Button
@@ -306,10 +328,13 @@ const ProtectionsActive = (dynamicVault: Partial<DynamicVault>) => {
         </TabPanels>
       </TabGroup>
       <ProtectionActiveDialog
+        protectedTokens={protectedTokens}
+        setProtectedTokens={setProtectedTokens}
         dynamicVault={dynamicVault}
         dialogContent={dialogContent}
         isDialogOpen={isDialogOpen}
         setIsDialogOpen={setIsDialogOpen}
+        testament={testament}
       />
     </>
   );
