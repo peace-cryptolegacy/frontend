@@ -26,7 +26,6 @@ export type Testament = {
   proofOfLife: BigNumber;
   succeeded: boolean;
   beneficiaries: readonly Beneficiary[];
-  tokens: readonly `0x${string}`[];
   status: number;
 };
 

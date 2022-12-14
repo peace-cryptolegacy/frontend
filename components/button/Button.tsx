@@ -74,15 +74,15 @@ const Button = ({
             ) : (
               <>
                 <span className="mr-2">{icon}</span>
-                <span
+                <div
                   className={clsx(
                     variant === 'fancy' ? 'text-white' : 'text-black',
-                    'capitalize'
+                    'inline capitalize'
                   )}
                 >
                   {text}
                   {children}
-                </span>
+                </div>
               </>
             )}
           </div>

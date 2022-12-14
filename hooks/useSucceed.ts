@@ -6,15 +6,17 @@ import {
 import { Address } from '../utils/Types';
 import useGetDynamicVaults from './utils/useGetDynamicVaults';
 
-const useSucceed = (dynamicVaultOwner: Address) => {
+type Props = [dynamicVaultOwner: Address, tokens: Address[]];
+
+const useSucceed = (...[dynamicVaultOwner, tokens]: Partial<Props>) => {
   const dynamicVaults = useGetDynamicVaults();
 
   const prepareTransact = usePrepareContractWrite({
     address: dynamicVaults?.address ?? '',
     abi: dynamicVaults?.abi,
     functionName: 'succeed',
-    args: [dynamicVaultOwner as Address],
-    enabled: dynamicVaultOwner && true,
+    args: [dynamicVaultOwner, tokens] as Props,
+    enabled: dynamicVaultOwner && tokens && tokens.length ? true : false,
   });
 
   const transact = useContractWrite(prepareTransact.config);

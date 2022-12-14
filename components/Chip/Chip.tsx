@@ -10,12 +10,12 @@ type Props = {
   children?: Node | Node[];
 };
 
-const Chip = ({ variant, icon, text, className }: Props) => {
+const Chip = ({ variant = 'success', icon, text, className }: Props) => {
   return (
     <div
       className={clsx(
         variant === 'success' && 'bg-green-500',
-        'rounded-md px-5 py-2',
+        'flex items-center rounded-md px-5 py-2',
         className
       )}
     >

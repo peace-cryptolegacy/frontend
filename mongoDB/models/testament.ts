@@ -8,6 +8,7 @@ const TestamentSchema = new Schema({
       message: { type: String },
     },
   ],
+  protectedTokens: [String],
 });
 
 const ModelTestament = models.Testament || model('Testament', TestamentSchema);

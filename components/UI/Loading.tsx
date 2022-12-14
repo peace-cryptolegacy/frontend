@@ -1,7 +1,7 @@
 type Props = {
   fill?: `#${string}`;
-  width?: number;
-  height?: number;
+  width?: number | string;
+  height?: number | string;
 };
 
 const UILoading = ({ fill = '#5f4dff', width = 202, height = 202 }: Props) => (
