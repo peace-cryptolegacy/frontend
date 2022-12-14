@@ -6,7 +6,8 @@ const useGetDynamicVaults = () => {
 
   // to add other network, add a new condition here
   if (!chain) return;
-  if (chain?.name === 'Polygon Mumbai') return mumbai.contracts.DynamicVaults;
+  if (chain?.name === 'Polygon Mumbai' || chain?.name === 'Mumbai')
+    return mumbai.contracts.DynamicVaults;
 };
 
 export default useGetDynamicVaults;

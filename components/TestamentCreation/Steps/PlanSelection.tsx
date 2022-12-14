@@ -9,6 +9,7 @@ import Stack from 'components/stack/Stack';
 import { testamentInfoInitialValue } from 'mock/index';
 import Image from 'next/image';
 import React from 'react';
+import { PlanSelection as MenuItemsPlanSelection } from 'utils/constants/PlanSelection';
 import networkMappings from 'utils/helpers/networkMappings';
 import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
 import { useLocalStorage } from 'utils/hooks/useLocalStorage';
@@ -39,7 +40,9 @@ const PlanSelection = ({
     networkMappings[networkName as keyof typeof networkMappings];
 
   async function handleClick() {
-    onNextStep();
+    if (testamentInfo.selectedPlan === MenuItemsPlanSelection.INHERITANCE) {
+      onNextStep();
+    }
   }
 
   return (
@@ -114,6 +117,9 @@ const PlanSelection = ({
         <div className="mt-12 flex w-full justify-center">
           <PrimaryButton
             text={'Continue'}
+            disabled={
+              testamentInfo.selectedPlan !== MenuItemsPlanSelection.INHERITANCE
+            }
             className={'!py-2 !px-10 lg:!py-4 lg:!px-14'}
             onClick={handleClick}
           />

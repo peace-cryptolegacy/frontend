@@ -149,7 +149,7 @@ const Assets: NextPage = () => {
           <Tabs>
             <Tab>Tokens</Tab>
             <Tab>Collectibles</Tab>
-            <Tab>Walle Activity</Tab>
+            <Tab>Wallet Activity</Tab>
           </Tabs>
           <TabPanels>
             <TabPanel>

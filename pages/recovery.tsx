@@ -35,6 +35,7 @@ import recovery from '../public/images/recovery.png';
 
 const MyPlans: NextPage = () => {
   const { address } = useAccount();
+
   const [userPlans, setUserPlans] = useState<UserPlans>();
   const [activeClaim, setActiveClaim] = useState<
     'Inheritance Plan' | 'Backup Wallet'

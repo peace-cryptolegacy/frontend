@@ -205,7 +205,7 @@ const InheritancePlan = ({
                               fakeSignersAmount < beneficiariesAmount - i
                             }
                             className={clsx(
-                              'flex h-[75px] w-[75px] items-center justify-center rounded-full drop-shadow-none',
+                              'flex h-[75px] w-[75px] items-center justify-center !rounded-full drop-shadow-none',
                               '[&>div]:rounded-full [&>div]:p-0'
                             )}
                           >

@@ -237,11 +237,9 @@ const BeneficiariesStep = ({
       <Box display="flex">
         <Box marginRight="150px">
           <Select size="lg" width="230px" onChange={handleExpirationChange}>
-            <option value={7}>7 days</option>
-            <option value={30}>30 days</option>
-            <option value={60}>60 days</option>
-            <option value={180}>180 days</option>
-            <option value={365}>365 days</option>
+            <option value={3}>3 days</option>
+            <option value={6}>6 days</option>
+            <option value={9}>9 days</option>
           </Select>
         </Box>
 

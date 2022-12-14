@@ -27,7 +27,7 @@ const menuItems =
             'Don’t lose your assets again, create a backup of your funds.',
           alt: 'Backup Wallet',
           route: '/backup-wallet',
-          comingSoon: false,
+          comingSoon: true,
           planId: PlanSelection.BACKUP_WALLET,
           myPlansButtonText: 'Claim Now',
         },
@@ -67,11 +67,11 @@ const menuItems =
       alt: 'Invest',
       route: '/invest',
     },
-    'My Plans': {
-      title: 'My Plans',
+    Recovery: {
+      title: 'Recovery',
       icon: '/icons/my-plans.png',
-      alt: 'My Plans',
-      route: '/my-plans',
+      alt: 'Recovery',
+      route: '/recovery',
     },
     Settings: {
       title: 'Settings',
