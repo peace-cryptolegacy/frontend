@@ -81,7 +81,7 @@ const tokenMappings: {
         address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
       },
       mumbai: {
-        address: '0x878E6aDEfF7D66b79Dfa1c9a69b0038b08A25a7b',
+        address: '0x048eC837d51c44d0e03da326eBE289bc657EB264',
       },
     },
   },

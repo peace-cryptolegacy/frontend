@@ -814,7 +814,7 @@ const ProtectionActiveDialog = ({
               className="[&>div>div]:flex [&>div>div]:gap-10 [&>div>div]:space-y-0"
               name="newInactivityTime"
             >
-              <RadioOption value={1}>1 Days</RadioOption>
+              <RadioOption value={1}>1 Day</RadioOption>
               <RadioOption value={2}>2 Days</RadioOption>
               <RadioOption value={3}>3 Days</RadioOption>
             </RadioGroup>

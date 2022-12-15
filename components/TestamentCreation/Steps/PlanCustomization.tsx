@@ -36,7 +36,7 @@ const PlanCustomization = ({
   );
 
   const [expirationDays, setExpirationDays] = useState<number>(
-    testamentInfo.expirationDays || 7
+    testamentInfo.expirationDays || 1
   );
   const [errors, setErrors] = useState<boolean[]>([false]);
 

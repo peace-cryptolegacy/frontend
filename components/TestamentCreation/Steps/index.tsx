@@ -34,8 +34,9 @@ const Steps = () => {
     testamentInfoInitialValue
   );
 
-  //temp solution to redirect to the creation page upon testament cancelation
+  //temp solution to redirect upon testament update
   const [canceled, setCanceled] = useState<boolean>(false);
+  const [created, setCreated] = useState(false);
 
   const getUpdatedTestamentInfo = () =>
     JSON.parse(localStorage.getItem('TESTAMENT_INFO')!);
@@ -77,6 +78,7 @@ const Steps = () => {
     }
     createTestament.reset();
     setCanceled(false);
+    setCreated(true);
 
     const addBeneficiariesToDB = async () => {
       try {
@@ -226,7 +228,7 @@ const Steps = () => {
     if (!canceled) {
       if (
         (dynamicVault.data && dynamicVault.data.testament.status == 1) ||
-        createTestamentTransaction?.isSuccess
+        created
       ) {
         return (
           <ProtectionsActive
