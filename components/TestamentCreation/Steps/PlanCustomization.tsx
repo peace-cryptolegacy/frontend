@@ -214,9 +214,9 @@ const PlanCustomization = ({
               onChange={handleExpirationChange}
               value={expirationDays}
             >
+              <option value={1}>1 days</option>
+              <option value={2}>2 days</option>
               <option value={3}>3 days</option>
-              <option value={6}>6 days</option>
-              <option value={9}>9 days</option>
             </select>
 
             <select className="form-select   w-2/6 rounded px-4 py-3">

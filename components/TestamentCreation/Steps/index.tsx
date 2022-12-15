@@ -11,7 +11,7 @@ import { BigNumber } from 'ethers';
 import useCreateTestament from 'hooks/useCreateTestament';
 import { IBeneficiary } from 'mock';
 import { testamentInfoInitialValue } from 'mock/index';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import {
   getBeneficiaries,
@@ -33,6 +33,9 @@ const Steps = () => {
     'TESTAMENT_INFO',
     testamentInfoInitialValue
   );
+
+  //temp solution to redirect to the creation page upon testament cancelation
+  const [canceled, setCanceled] = useState<boolean>(false);
 
   const getUpdatedTestamentInfo = () =>
     JSON.parse(localStorage.getItem('TESTAMENT_INFO')!);
@@ -72,8 +75,8 @@ const Steps = () => {
     if (!createTestamentTransaction.isSuccess) {
       return;
     }
-    dynamicVault.refetch();
     createTestament.reset();
+    setCanceled(false);
 
     const addBeneficiariesToDB = async () => {
       try {
@@ -91,13 +94,7 @@ const Steps = () => {
     };
 
     addBeneficiariesToDB();
-  }, [
-    address,
-    beneficiaries,
-    createTestament,
-    createTestamentTransaction,
-    dynamicVault,
-  ]);
+  }, [address, beneficiaries, createTestament, createTestamentTransaction]);
 
   async function handleDeploy() {
     if (createTestament.write) {
@@ -226,11 +223,18 @@ const Steps = () => {
       return <UILoading />;
     }
 
-    if (
-      (dynamicVault.data && dynamicVault.data.testament.status == 1) ||
-      createTestamentTransaction?.isSuccess
-    ) {
-      return <ProtectionsActive {...dynamicVault.data} />;
+    if (!canceled) {
+      if (
+        (dynamicVault.data && dynamicVault.data.testament.status == 1) ||
+        createTestamentTransaction?.isSuccess
+      ) {
+        return (
+          <ProtectionsActive
+            dynamicVault={dynamicVault.data}
+            setCanceled={setCanceled}
+          />
+        );
+      }
     }
     return (
       <div className="my-16">

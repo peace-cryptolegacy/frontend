@@ -15,7 +15,7 @@ import Tabs from 'components/tabs/Tabs';
 import { BigNumber } from 'ethers';
 import useSignalLife from 'hooks/useSignalLife';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import networkMappings from 'utils/helpers/networkMappings';
 import timeSince from 'utils/helpers/timeSince';
 import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
@@ -25,7 +25,12 @@ import tokenMappings from '../../../utils/helpers/tokenMappings';
 import { Address, DynamicVault, Testament } from '../../../utils/Types';
 import ProtectionActiveDialog from './Dialog';
 
-const ProtectionsActive = (dynamicVault: Partial<DynamicVault>) => {
+type Props = {
+  dynamicVault: Partial<DynamicVault> | undefined;
+  setCanceled: Dispatch<SetStateAction<boolean>>;
+};
+
+const ProtectionsActive = ({ dynamicVault, setCanceled }: Props) => {
   const { address } = useAccount();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState<
@@ -40,8 +45,8 @@ const ProtectionsActive = (dynamicVault: Partial<DynamicVault>) => {
   const { chain } = useNetwork();
 
   useEffect(() => {
-    setTestament(dynamicVault.testament);
-  }, [dynamicVault.testament]);
+    setTestament(dynamicVault?.testament);
+  }, [dynamicVault?.testament]);
 
   useEffect(() => {
     const fetchProtectedTokens = async () => {
@@ -335,6 +340,8 @@ const ProtectionsActive = (dynamicVault: Partial<DynamicVault>) => {
         isDialogOpen={isDialogOpen}
         setIsDialogOpen={setIsDialogOpen}
         testament={testament}
+        setTestament={setTestament}
+        setCanceled={setCanceled}
       />
     </>
   );

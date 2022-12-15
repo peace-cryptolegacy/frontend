@@ -1,21 +1,27 @@
 import { Address } from 'utils/Types';
-import { useContractWrite, usePrepareContractWrite } from 'wagmi';
+import {
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from 'wagmi';
 import useGetDynamicVaults from './utils/useGetDynamicVaults';
 
-const useRemoveBeneficiary = (address: Address) => {
+const useRemoveBeneficiary = (address: Address | undefined) => {
   const dynamicVaults = useGetDynamicVaults();
 
   const prepareTransact = usePrepareContractWrite({
     address: dynamicVaults?.address ?? '',
     abi: dynamicVaults?.abi,
     functionName: 'removeBeneficiary',
-    args: [address],
+    args: [address as Address],
     enabled: dynamicVaults && address ? true : false,
   });
 
   const transact = useContractWrite(prepareTransact.config);
 
-  return { prepareTransact, transact };
+  const transaction = useWaitForTransaction({ hash: transact.data?.hash });
+
+  return { prepareTransact, transact, transaction };
 };
 
 export default useRemoveBeneficiary;

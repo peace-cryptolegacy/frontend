@@ -5,12 +5,8 @@ import {
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  prepareWriteContract,
-  PrepareWriteContractResult,
-  writeContract,
-} from '@wagmi/core';
 import axios from 'axios';
+import clsx from 'clsx';
 import Button from 'components/button/Button';
 import Chip from 'components/Chip/Chip';
 import Dialog from 'components/dialog/Dialog';
@@ -26,22 +22,15 @@ import RadioOption from 'components/UI/radio/RadioOption';
 import { BigNumber, ethers } from 'ethers';
 import useApproveToken from 'hooks/useApproveToken';
 import useCancelTestament from 'hooks/useCancelTestament';
-import useGetDynamicVaults from 'hooks/utils/useGetDynamicVaults';
 import Image from 'next/image';
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { formatAddress } from 'utils/formatters';
 import tokenMappings from 'utils/helpers/tokenMappings';
 import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
 import topTokens from 'utils/topTokens';
 import { useAccount, useNetwork } from 'wagmi';
 import useGetBalances from '../../../hooks/useGetBalances';
+import useRemoveBeneficiary from '../../../hooks/useRemoveBeneficiary';
 import useUpdateBeneficiaries from '../../../hooks/useUpdateBeneficiaries';
 import useUpdateInactivityMaximum from '../../../hooks/useUpdateInactivityMaximum';
 import formatBigNumber from '../../../utils/helpers/formatBigNumber';
@@ -60,6 +49,8 @@ type Props = {
   isDialogOpen: boolean;
   setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
   testament: Testament | undefined;
+  setTestament: Dispatch<SetStateAction<Testament | undefined>>;
+  setCanceled: Dispatch<SetStateAction<boolean>>;
 };
 
 const ProtectionActiveDialog = ({
@@ -70,6 +61,8 @@ const ProtectionActiveDialog = ({
   isDialogOpen,
   setIsDialogOpen,
   testament,
+  setTestament,
+  setCanceled,
 }: Props) => {
   const { address } = useAccount();
   const [approvalAddress, setApprovalAddress] = useState<Address>();
@@ -77,15 +70,20 @@ const ProtectionActiveDialog = ({
     status: [false],
   });
 
-  console.log('a');
-
   const [beneficiaries, setBeneficiaries] = useState<
-    (Beneficiary[] & { new?: boolean }) | []
+    (readonly Beneficiary[] & { new?: boolean }) | []
   >([]);
+
+  // store temporarily to update the beneficiaries if the update transaction is successful
+  const refBeneficiaries = useRef<Beneficiary[]>();
+
   const [editedBeneficiaries, setEditedBeneficiaries] = useState<
     [string[], Address[], BigNumber[], BigNumber[]]
   >([[], [], [], []]);
   const [newInactivityTime, setNewInactivityTime] = useState<BigNumber>();
+
+  const [removeBeneficiaryAddress, setRemoveBeneficiaryAddress] =
+    useState<Address>();
 
   const { transact: cancelTestament, transaction: cancelTestamentTransaction } =
     useCancelTestament();
@@ -125,10 +123,6 @@ const ProtectionActiveDialog = ({
     setProtectedTokens,
   ]);
 
-  const removeBeneficiariesConfigs = useRef<{
-    address: { config: PrepareWriteContractResult<any, 'removeBeneficiary'> };
-  }>();
-
   const { chain } = useNetwork();
 
   const {
@@ -138,9 +132,49 @@ const ProtectionActiveDialog = ({
   } = useUpdateBeneficiaries(...editedBeneficiaries);
 
   const {
+    prepareTransact: prepareRemoveBeneficiary,
+    transact: removeBeneficiary,
+    transaction: removeBeneficiaryTransaction,
+  } = useRemoveBeneficiary(removeBeneficiaryAddress);
+
+  const {
     prepareTransact: prepareUpdateInactivityMaximum,
     transact: updateInactivityMaximum,
   } = useUpdateInactivityMaximum(newInactivityTime);
+
+  useEffect(() => {
+    if (removeBeneficiary.isSuccess) {
+      removeBeneficiary.reset();
+      setBeneficiaries(
+        beneficiaries.filter(
+          (beneficiary) => beneficiary.address_ !== removeBeneficiaryAddress
+        )
+      );
+
+      if (testament) {
+        setTestament({
+          ...testament,
+          beneficiaries: beneficiaries.filter(
+            (beneficiary) => beneficiary.address_ !== removeBeneficiaryAddress
+          ),
+        });
+      }
+
+      setRemoveBeneficiaryAddress(undefined);
+      return;
+    }
+
+    if (removeBeneficiary.isError) {
+      removeBeneficiary.reset();
+      setRemoveBeneficiaryAddress(undefined);
+    }
+  }, [
+    beneficiaries,
+    removeBeneficiary,
+    removeBeneficiaryAddress,
+    setTestament,
+    testament,
+  ]);
 
   useEffect(() => {
     if (
@@ -152,7 +186,53 @@ const ProtectionActiveDialog = ({
   }, [prepareUpdateInactivityMaximum.isSuccess, updateInactivityMaximum]);
 
   useEffect(() => {
-    if ((prepareUpdateBeneficiaries.isSuccess, updateBeneficiaries.isIdle)) {
+    if (updateBeneficiaries.isSuccess && testament) {
+      updateBeneficiaries.reset();
+
+      setEdit({ status: new Array(beneficiaries.length).fill(false) });
+
+      refBeneficiaries.current?.length &&
+        setBeneficiaries(refBeneficiaries.current);
+
+      setTestament({
+        ...testament,
+        beneficiaries: beneficiaries.map((beneficiary) => ({
+          ...beneficiary,
+          new: false,
+        })),
+      });
+
+      setEditedBeneficiaries([[], [], [], []]);
+    }
+
+    if (updateBeneficiaries.isError) {
+      updateBeneficiaries.reset();
+      setEditedBeneficiaries([[], [], [], []]);
+    }
+  }, [
+    beneficiaries,
+    setTestament,
+    testament,
+    updateBeneficiaries,
+    updateBeneficiaries.isSuccess,
+    updateBeneficiaries.isError,
+  ]);
+
+  useEffect(() => {
+    if (
+      prepareRemoveBeneficiary.isSuccess &&
+      removeBeneficiary.isIdle &&
+      removeBeneficiary.write
+    ) {
+      removeBeneficiary.write();
+    }
+  }, [prepareRemoveBeneficiary.isSuccess, removeBeneficiary]);
+
+  useEffect(() => {
+    if (
+      (prepareUpdateBeneficiaries.isSuccess,
+      updateBeneficiaries.write && updateBeneficiaries.isIdle)
+    ) {
       updateBeneficiaries.write?.();
     }
   }, [editedBeneficiaries, updateBeneficiaries, prepareUpdateBeneficiaries]);
@@ -188,6 +268,19 @@ const ProtectionActiveDialog = ({
     prepareApproveToken.isSuccess,
   ]);
 
+  useEffect(() => {
+    if (cancelTestamentTransaction.isSuccess) {
+      setTestament(undefined);
+      cancelTestament.reset();
+      setCanceled(true);
+    }
+  }, [
+    cancelTestament,
+    cancelTestamentTransaction.isSuccess,
+    setCanceled,
+    setTestament,
+  ]);
+
   const handleApproveToken = (address: Address) => {
     setApprovalAddress(address);
   };
@@ -202,13 +295,7 @@ const ProtectionActiveDialog = ({
             )
           );
         } else {
-          if (removeBeneficiariesConfigs.current) {
-            await writeContract(
-              removeBeneficiariesConfigs.current[
-                address as keyof typeof removeBeneficiariesConfigs.current
-              ].config
-            );
-          }
+          setRemoveBeneficiaryAddress(address);
         }
       }
     });
@@ -218,8 +305,6 @@ const ProtectionActiveDialog = ({
     cancelTestament.write?.();
   };
 
-  const dynamicVaults = useGetDynamicVaults();
-
   useEffect(() => {
     if (dynamicVault?.testament && !beneficiaries.length) {
       setBeneficiaries(dynamicVault.testament.beneficiaries as Beneficiary[]);
@@ -228,41 +313,6 @@ const ProtectionActiveDialog = ({
       });
     }
   }, [beneficiaries, dynamicVault]);
-
-  const fetchRemoveBeneficiariesConfig = useCallback(async () => {
-    let configs: {
-      address: {
-        config: PrepareWriteContractResult<any, 'removeBeneficiary'>;
-      };
-    } = {
-      address: {
-        config: undefined as unknown as PrepareWriteContractResult<
-          any,
-          'removeBeneficiary'
-        >,
-      },
-    };
-
-    if (!testament || !dynamicVaults || !dynamicVault) return;
-    await Promise.all(
-      testament.beneficiaries.map(async (beneficiary) => {
-        const prepareTransact = await prepareWriteContract({
-          address: dynamicVaults.address,
-          abi: dynamicVaults.abi,
-          functionName: 'removeBeneficiary',
-          args: [beneficiary.address_],
-        });
-        configs[beneficiary.address_ as keyof typeof configs] = {
-          config: prepareTransact,
-        };
-      })
-    );
-    removeBeneficiariesConfigs.current = configs;
-  }, [dynamicVault, dynamicVaults, testament]);
-
-  useEffect(() => {
-    fetchRemoveBeneficiariesConfig();
-  }, [dynamicVaults, dynamicVault, fetchRemoveBeneficiariesConfig]);
 
   const displayPriceTokens = [{ value: 'USD' }];
 
@@ -278,7 +328,7 @@ const ProtectionActiveDialog = ({
     setBeneficiaries([
       ...beneficiaries,
       {
-        name: '',
+        name: 'Name',
         address_: '0x',
         inheritancePercentage: BigNumber.from(0),
         new: true,
@@ -345,16 +395,35 @@ const ProtectionActiveDialog = ({
     ) as BigNumber[];
 
     const indexes =
-      names?.value !== ''
-        ? [BigNumber.from(0)]
-        : Object.values(names).map((_, index) => BigNumber.from(index));
+      edit.status
+        .map((s) => {
+          if (s) {
+            return BigNumber.from(edit.status.indexOf(s));
+          }
+        })
+        .filter((index) => index !== undefined) ?? [];
 
     setEditedBeneficiaries([
       processedNames,
       processedAddresses,
       processedInheritancePercentages,
-      indexes,
+      indexes as BigNumber[],
     ]);
+
+    let i = -1;
+    refBeneficiaries.current = beneficiaries.map((beneficiary, index) => {
+      if (edit.status[index]) {
+        i++;
+        return {
+          ...beneficiary,
+          name: processedNames[i],
+          address_: processedAddresses[i],
+          inheritancePercentage: processedInheritancePercentages[i],
+          new: false,
+        };
+      }
+      return beneficiary;
+    });
   };
 
   const handleCloseDialog = () => {
@@ -603,7 +672,7 @@ const ProtectionActiveDialog = ({
                           type="number"
                           name="inheritancePercentages"
                           defaultValue={
-                            beneficiary?.inheritancePercentage.toString() ??
+                            beneficiary?.inheritancePercentage?.toString() ??
                             undefined
                           }
                         />
@@ -611,7 +680,7 @@ const ProtectionActiveDialog = ({
                         <span>
                           <>
                             {parseInt(
-                              beneficiary?.inheritancePercentage.toString() ??
+                              beneficiary?.inheritancePercentage?.toString() ??
                                 '0'
                             )}{' '}
                             %
@@ -623,27 +692,47 @@ const ProtectionActiveDialog = ({
                     </div>
                     <FontAwesomeIcon
                       icon={faEdit}
-                      className="col-span-2"
-                      style={{ cursor: 'pointer' }}
+                      className={clsx(
+                        'col-span-2 cursor-pointer',
+                        (updateBeneficiariesTransaction.isLoading ||
+                          updateBeneficiaries.isLoading) &&
+                          'cursor-not-allowed text-gray-400'
+                      )}
                       onClick={() =>
-                        setEdit((prev) => {
-                          let newEditStatus = [...prev.status];
-                          newEditStatus[index] = !newEditStatus[index];
+                        updateBeneficiariesTransaction.isLoading ||
+                        updateBeneficiaries.isLoading
+                          ? null
+                          : setEdit((prev) => {
+                              let newEditStatus = [...prev.status];
+                              newEditStatus[index] = !newEditStatus[index];
 
-                          return {
-                            status: newEditStatus,
-                          };
-                        })
+                              return {
+                                status: newEditStatus,
+                              };
+                            })
                       }
                     />
-                    <FontAwesomeIcon
-                      icon={faTrashAlt}
-                      className="col-span-2"
-                      style={{ color: 'red', cursor: 'pointer' }}
-                      onClick={() =>
-                        handleRemoveBeneficiary(beneficiary?.address_)
-                      }
-                    />
+                    {removeBeneficiaryAddress === beneficiary.address_ &&
+                    (removeBeneficiary.isLoading ||
+                      removeBeneficiaryTransaction.isLoading) ? (
+                      <Loading width={22} height={22} />
+                    ) : (
+                      <FontAwesomeIcon
+                        icon={faTrashAlt}
+                        className={clsx(
+                          'col-span-2 cursor-pointer text-red-600',
+                          (updateBeneficiariesTransaction.isLoading ||
+                            updateBeneficiaries.isLoading) &&
+                            'cursor-not-allowed !text-gray-400'
+                        )}
+                        onClick={() =>
+                          updateBeneficiariesTransaction.isLoading ||
+                          updateBeneficiaries.isLoading
+                            ? null
+                            : handleRemoveBeneficiary(beneficiary?.address_)
+                        }
+                      />
+                    )}
                   </div>
                 );
               })}
@@ -651,7 +740,16 @@ const ProtectionActiveDialog = ({
               <Button
                 variant="text"
                 text="+ Add another wallet"
-                onClick={() => handleAddAnotherWallet()}
+                disabled={
+                  updateBeneficiariesTransaction.isLoading ||
+                  updateBeneficiaries.isLoading
+                }
+                onClick={() =>
+                  updateBeneficiariesTransaction.isLoading ||
+                  updateBeneficiaries.isLoading
+                    ? null
+                    : handleAddAnotherWallet()
+                }
               />
             </div>
             <Stack direction="row" className="!mt-20 justify-center ">
@@ -674,7 +772,12 @@ const ProtectionActiveDialog = ({
               <Button
                 variant="basic"
                 size="sm"
-                onClick={() => handleCancelTestament()}
+                onClick={() =>
+                  cancelTestament.isLoading ||
+                  cancelTestamentTransaction.isLoading
+                    ? null
+                    : handleCancelTestament()
+                }
                 loading={
                   cancelTestament.isLoading ||
                   cancelTestamentTransaction.isLoading
@@ -711,9 +814,9 @@ const ProtectionActiveDialog = ({
               className="[&>div>div]:flex [&>div>div]:gap-10 [&>div>div]:space-y-0"
               name="newInactivityTime"
             >
+              <RadioOption value={1}>1 Days</RadioOption>
+              <RadioOption value={2}>2 Days</RadioOption>
               <RadioOption value={3}>3 Days</RadioOption>
-              <RadioOption value={6}>6 Days</RadioOption>
-              <RadioOption value={7}>9 Days</RadioOption>
             </RadioGroup>
           </div>
 

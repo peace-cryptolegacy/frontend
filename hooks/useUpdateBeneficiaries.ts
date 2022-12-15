@@ -28,7 +28,7 @@ const useUpdateBeneficiaries = (
       names.length &&
       addresses.length &&
       inheritancePercentages.length &&
-      indexes
+      indexes.length
         ? true
         : false,
   });
