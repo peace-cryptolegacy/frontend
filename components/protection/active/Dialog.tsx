@@ -99,7 +99,7 @@ const ProtectionActiveDialog = ({
       if (approvalAddress) {
         setProtectedTokens((prev) => [...(prev ?? []), approvalAddress]);
         axios
-          .post('http://localhost:3000/api/testament/protected-tokens', {
+          .post('/api/testament/protected-tokens', {
             dynamicVaultOwner: address,
             newProtectedTokens: [approvalAddress],
           })
