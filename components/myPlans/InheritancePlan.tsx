@@ -71,8 +71,7 @@ const InheritancePlan = ({
     const fetchTokens = async () => {
       try {
         const res = await axios.get(
-          'http://localhost:3000/api/dynamicvault?dynamicvaultowner=' +
-            dynamicVaultOwner
+          '/api/dynamicvault?dynamicvaultowner=' + dynamicVaultOwner
         );
 
         setTokens(res.data.dynamicVault.testament.protectedTokens);

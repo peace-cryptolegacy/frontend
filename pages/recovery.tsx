@@ -148,7 +148,7 @@ const MyPlans: NextPage = () => {
     if (signSucceed.isSuccess) {
       setFakeSignersAmount((prev) => (prev ? prev + 1 : 1));
       setFakeSignersAmount(beneficiariesAmount);
-      axios.put('api/testament-signatures', {
+      axios.put('/api/testament-signatures', {
         testamentId: beneficiary?.dynamicVaults[0]?.testament._id,
         beneficiaryAddress: address,
         signature: signSucceed.data,

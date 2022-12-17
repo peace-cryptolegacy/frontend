@@ -52,7 +52,7 @@ const ProtectionsActive = ({ dynamicVault, setCanceled }: Props) => {
     const fetchProtectedTokens = async () => {
       // To-do: fix any
       const res: any = await axios.get(
-        'http://localhost:3000/api/dynamicvault?dynamicvaultowner=' + address
+        '/api/dynamicvault?dynamicvaultowner=' + address
       );
 
       setProtectedTokens(res.data.dynamicVault?.testament.protectedTokens);
