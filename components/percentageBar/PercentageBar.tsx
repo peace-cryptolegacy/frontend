@@ -28,7 +28,7 @@ const PercentageBar = ({
         <div
           // eslint-disable-next-line tailwindcss/classnames-order, tailwindcss/no-custom-classname
           className="absolute h-2.5 rounded-xl bg-purple-900"
-          style={{ width: `${percentage}%` }}
+          style={{ width: `${percentage > 100 ? 100 : percentage}%` }}
         ></div>
       </div>
     </div>

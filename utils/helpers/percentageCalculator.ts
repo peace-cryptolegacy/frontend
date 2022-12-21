@@ -1,7 +1,10 @@
 import { BigNumber } from 'ethers';
 
 const percentageCalculator = (numerator: BigNumber, denominator: BigNumber) => {
+  console.log('🚀 ~ numerator', numerator.toString());
+  console.log('🚀 ~ denominator', denominator.toString());
   // checking for typeof BigNumber does not work
+  console.log('numerator', numerator);
   if (numerator._hex !== undefined && denominator._hex !== undefined) {
     return (
       (parseInt(numerator.toString()) /

@@ -261,12 +261,12 @@ const ProtectionsActive = ({ dynamicVault, setCanceled }: Props) => {
                     <PercentageBar
                       percentage={
                         percentageCalculator(
-                          testament?.inactivityMaximum ?? BigNumber.from(0),
                           timeSince(
                             inactivityTime,
-                            'seconds',
-                            'number'
-                          ) as BigNumber
+                            'days',
+                            'BigNumber'
+                          ) as BigNumber,
+                          testament?.inactivityMaximum ?? BigNumber.from(0)
                         ) as number
                       }
                       className="[&>div>div:nth-child(2)]:!bg-mainHorizontal"
