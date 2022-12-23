@@ -191,6 +191,20 @@ const ProtectionActiveDialog = ({
 
       setEdit({ status: new Array(beneficiaries.length).fill(false) });
 
+      // map over the new beneficiaries created and add them to the DB
+      editedBeneficiaries[3].map((beneficiaryIndex, index) => {
+        if (beneficiaries[parseInt(beneficiaryIndex.toString())].new) {
+          try {
+            axios.post('/api/beneficiary', {
+              dynamicVaultOwner: address,
+              beneficiaryAddress: editedBeneficiaries[1][index],
+            });
+          } catch (error) {
+            return error;
+          }
+        }
+      });
+
       refBeneficiaries.current?.length &&
         setBeneficiaries(refBeneficiaries.current);
 
@@ -216,6 +230,8 @@ const ProtectionActiveDialog = ({
     updateBeneficiaries,
     updateBeneficiaries.isSuccess,
     updateBeneficiaries.isError,
+    address,
+    editedBeneficiaries,
   ]);
 
   useEffect(() => {
