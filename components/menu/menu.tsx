@@ -56,7 +56,7 @@ const Menu: FC = () => {
                     <div
                       className={clsx(
                         router.route !== route && 'hidden',
-                        'absolute right-0 h-8 w-[5px] rounded-l-xl bg-mainVertical'
+                        'absolute right-0 h-8 w-[5px] rounded-xl bg-mainVertical'
                       )}
                     ></div>
                   </ListItem>
@@ -80,13 +80,7 @@ const Menu: FC = () => {
         </Section>
       </menu>
 
-      <menu
-        className="fixed
-             inset-x-0 bottom-0 z-50
-             rounded-2xl border-t-2
-             bg-gray-peace
-             py-3 text-center text-3xl  text-white sm:block lg:hidden"
-      >
+      <menu className="fixed inset-x-0 bottom-0 z-50 rounded-2xl border-t-2 bg-gray-peace py-3 text-center text-3xl text-white sm:block lg:hidden">
         <List className="flex flex-row justify-around">
           {Object.entries(menuItems).map(
             ([, { title, icon, route, alt }], key) => {

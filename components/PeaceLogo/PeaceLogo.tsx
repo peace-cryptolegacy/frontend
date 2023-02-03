@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 import logo from '../../public/logos/logo.png';
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 const PeaceLogo = ({ className }: Props) => {
   return (
     <div className={className}>
-      <Link href="/">
+      <Link href="https://yourpeace.io/">
         <Image
           src={logo}
           alt="Peace Logo"
