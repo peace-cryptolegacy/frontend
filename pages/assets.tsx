@@ -86,8 +86,38 @@ const Assets: NextPage = () => {
     if (!address) {
       return (
         <GeneralDefaultConnectWallet>
-          <Image src={assets} alt="Tokens Vault" objectFit="contain" />
-          <GeneralDefaultConnectWalletTitle>
+          {/* The className is split into multiple lines to make it easier to read. */}
+          <div
+            className="
+              absolute
+              h-full
+              max-h-[215px]
+              w-full
+              mobile-lg:max-h-[270px]
+              sm:!top-[calc(50%-63px)]
+              sm:max-h-[330px]
+              sm:inset-center
+              lg:max-h-[445px]
+              "
+          >
+            <Image
+              src={assets}
+              alt="Tokens Vault"
+              layout="fill"
+              objectFit="contain"
+            />
+          </div>
+          {/* This div is used to create a fix space between the image and the title. */}
+          <div
+            className="
+          relative
+          h-[230px]
+          mobile-lg:h-[285px]
+          sm:h-[400px]
+          lg:h-[550px]
+          "
+          ></div>
+          <GeneralDefaultConnectWalletTitle className="-mt-9">
             Manage your assets easy
           </GeneralDefaultConnectWalletTitle>
           <GeneralDefaultConnectWalletDescription>
