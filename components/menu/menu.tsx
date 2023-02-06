@@ -70,11 +70,13 @@ const Menu: FC = () => {
           <HorizontalRule />
         </div>
         <Section className="my-7 w-full justify-evenly">
-          {Object.entries(socialItems).map(([key, { alt }]) => (
+          {Object.entries(socialItems).map(([key, { alt, link }]) => (
             <FontAwesomeIcon
               key={key}
               icon={['fab', alt as IconName]}
               size="lg"
+              onClick={() => (link === '' ? null : window.open(link, '_blank'))}
+              className="cursor-pointer"
             />
           ))}
         </Section>

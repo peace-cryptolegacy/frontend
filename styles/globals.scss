@@ -18,8 +18,11 @@ a {
   letter-spacing: 0.25px;
 }
 
-.block {
-  display: block;
+// center the connect wallet button considering the width of the side menu
+@media (min-width: 1024px) {
+  .sc-idXgbr.jlGrGt {
+    left: calc(50% + 125px) !important ;
+  }
 }
 
 .h4 {
