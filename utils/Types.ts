@@ -1,4 +1,5 @@
 import { BigNumber } from 'ethers';
+import { IBeneficiary } from 'mock';
 
 export type UserPlans = (
   | 'Inheritance Plan'
@@ -27,6 +28,14 @@ export type Testament = {
   succeeded: boolean;
   beneficiaries: readonly Beneficiary[];
   status: number;
+};
+
+export type TestamentCreationInfo = {
+  selectedPlan: number;
+  activeStep: number;
+  beneficiaries: IBeneficiary[];
+  expirationDays: number;
+  beneficiariesAffected: number;
 };
 
 export type DynamicVault = {

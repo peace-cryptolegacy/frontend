@@ -9,65 +9,43 @@ import Title from 'components/Title/Title';
 import UILoading from 'components/UI/Loading';
 import { BigNumber } from 'ethers';
 import useCreateTestament from 'hooks/useCreateTestament';
-import { IBeneficiary } from 'mock';
-import { testamentInfoInitialValue } from 'mock/index';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
-import {
-  getBeneficiaries,
-  setActiveStep,
-  setBeneficiaries,
-  setBeneficiariesAffected,
-  setExpirationDays,
-  setSelectedPlan,
-} from 'store/reducers/testamentInfo';
-import { useLocalStorage } from 'utils/hooks/useLocalStorage';
+import { TestamentCreationInfo } from 'utils/Types';
 import { useAccount } from 'wagmi';
 import useGetDynamicVault from '../../../hooks/useGetDynamicVault';
+import {
+  dispatchTestamentCreationInfo,
+  getTestamentCreationInfo,
+} from '../../../store/reducers/testamentCreationInfo';
 
 const Steps = () => {
+  // get testament info from redux state
   const dispatch = useAppDispatch();
-  const beneficiaries: IBeneficiary[] = useAppSelector(getBeneficiaries);
-  const stepsLabel = ['Select Plan', 'Customize Plan', 'Review Plan'];
-  const { item: testamentInfo, saveItem: setTestamentInfo } = useLocalStorage(
-    'TESTAMENT_INFO',
-    testamentInfoInitialValue
+  const testamentCreationInfo: TestamentCreationInfo = useAppSelector(
+    getTestamentCreationInfo
   );
+
+  const stepsLabel = ['Select Plan', 'Customize Plan', 'Review Plan'];
 
   //temp solution to redirect upon testament update
   const [canceled, setCanceled] = useState<boolean>(false);
   const [created, setCreated] = useState(false);
 
-  const getUpdatedTestamentInfo = () =>
-    JSON.parse(localStorage.getItem('TESTAMENT_INFO')!);
-
-  useEffect(() => {
-    dispatch(setSelectedPlan({ selectedPlan: testamentInfo.selectedPlan }));
-    dispatch(setActiveStep({ activeStep: testamentInfo.activeStep }));
-    dispatch(setBeneficiaries({ beneficiaries: testamentInfo.beneficiaries }));
-    dispatch(
-      setExpirationDays({ expirationDays: testamentInfo.expirationDays })
-    );
-    dispatch(
-      setBeneficiariesAffected({
-        beneficiariesAffected: testamentInfo.beneficiariesAffected,
-      })
-    );
-  }, [dispatch, testamentInfo]);
-
   // smart-contracts
-
   const { address } = useAccount();
 
   const { transact: createTestament, transaction: createTestamentTransaction } =
     useCreateTestament(
-      BigNumber.from(testamentInfo.expirationDays),
+      BigNumber.from(testamentCreationInfo.expirationDays),
       // The create testament function does not take the IBeneficiary type. Check the deployments file
-      beneficiaries?.map(({ name, address, distribution }) => ({
-        name,
-        address_: address,
-        inheritancePercentage: BigNumber.from(distribution),
-      }))
+      testamentCreationInfo.beneficiaries?.map(
+        ({ name, address, distribution }) => ({
+          name,
+          address_: address,
+          inheritancePercentage: BigNumber.from(distribution),
+        })
+      )
     );
 
   const dynamicVault = useGetDynamicVault(address);
@@ -84,11 +62,13 @@ const Steps = () => {
       try {
         await axios.post('/api/testament-signatures', {
           dynamicVaultOwner: address,
-          beneficiaries: beneficiaries.map((beneficiary) => {
-            return {
-              address: beneficiary.address,
-            };
-          }),
+          beneficiaries: testamentCreationInfo.beneficiaries.map(
+            (beneficiary) => {
+              return {
+                address: beneficiary.address,
+              };
+            }
+          ),
         });
       } catch (error) {
         return error;
@@ -96,7 +76,12 @@ const Steps = () => {
     };
 
     addBeneficiariesToDB();
-  }, [address, beneficiaries, createTestament, createTestamentTransaction]);
+  }, [
+    address,
+    createTestament,
+    createTestamentTransaction,
+    testamentCreationInfo.beneficiaries,
+  ]);
 
   async function handleDeploy() {
     if (createTestament.write) {
@@ -114,7 +99,7 @@ const Steps = () => {
         <Stepper
           steps={stepsLabel}
           className="mb-7"
-          activeStep={testamentInfo.activeStep}
+          activeStep={testamentCreationInfo.activeStep}
         />
         <HorizontalRule />
       </>
@@ -127,22 +112,13 @@ const Steps = () => {
           stepperClassName=""
           renderStepper={() => renderStepper()}
           onNextStep={() => {
-            const updatedTestamentInfo = getUpdatedTestamentInfo();
             dispatch(
-              setActiveStep({
+              dispatchTestamentCreationInfo({
+                ...testamentCreationInfo,
                 activeStep: 1,
+                selectedPlan: testamentCreationInfo.selectedPlan,
               })
             );
-            dispatch(
-              setSelectedPlan({
-                selectedPlan: updatedTestamentInfo.selectedPlan,
-              })
-            );
-            setTestamentInfo({
-              ...updatedTestamentInfo,
-              activeStep: 1,
-              selectedPlan: updatedTestamentInfo.selectedPlan,
-            });
           }}
         />
       ), // <ConnectStep onNextStep={() => setTestamentInfo(1)} />
@@ -157,31 +133,30 @@ const Steps = () => {
       content: (
         <PlanCustomization
           stepperClassName=""
-          testamentInfo={testamentInfo}
+          testamentInfo={testamentCreationInfo}
           renderStepper={() => renderStepper()}
           onPrevStep={() => {
-            const updatedTestamentInfo = getUpdatedTestamentInfo();
-            setTestamentInfo({ ...updatedTestamentInfo, activeStep: 0 });
-          }}
-          onNextStep={(
-            beneficiaries: IBeneficiary[],
-            expirationDays: number
-          ) => {
-            const updatedTestamentInfo = getUpdatedTestamentInfo();
             dispatch(
-              setActiveStep({
+              dispatchTestamentCreationInfo({
+                ...testamentCreationInfo,
+                activeStep: 0,
+              })
+            );
+          }}
+          onNextStep={() => {
+            dispatch(
+              dispatchTestamentCreationInfo({
+                ...testamentCreationInfo,
                 activeStep: 2,
               })
             );
 
-            dispatch(setBeneficiaries(beneficiaries));
-            dispatch(setExpirationDays({ expirationDays }));
-            setTestamentInfo({
-              ...updatedTestamentInfo,
-              activeStep: 2,
-              expirationDays,
-              beneficiaries,
-            });
+            dispatch(
+              dispatchTestamentCreationInfo({
+                ...testamentCreationInfo,
+                activeStep: 2,
+              })
+            );
           }}
         />
       ),
@@ -193,11 +168,15 @@ const Steps = () => {
         <PlanReview
           stepperClassName=""
           renderStepper={() => renderStepper()}
-          beneficiaries={testamentInfo.beneficiaries}
-          expirationDays={testamentInfo.expirationDays}
+          beneficiaries={testamentCreationInfo.beneficiaries}
+          expirationDays={testamentCreationInfo.expirationDays}
           onPrevStep={() => {
-            const updatedTestamentInfo = getUpdatedTestamentInfo();
-            setTestamentInfo({ ...updatedTestamentInfo, activeStep: 1 });
+            dispatch(
+              dispatchTestamentCreationInfo({
+                ...testamentCreationInfo,
+                activeStep: 1,
+              })
+            );
           }}
           onNextStep={{
             handleDeploy: handleDeploy,
@@ -213,11 +192,13 @@ const Steps = () => {
   ];
 
   function renderTitle() {
-    return <Title text={steps && steps[testamentInfo.activeStep].title} />;
+    return (
+      <Title text={steps && steps[testamentCreationInfo.activeStep].title} />
+    );
   }
 
   function renderStep() {
-    return steps[testamentInfo.activeStep].content;
+    return steps[testamentCreationInfo.activeStep].content;
   }
 
   const renderPage = () => {

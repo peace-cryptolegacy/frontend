@@ -1,6 +1,7 @@
 import { AddIcon } from '@chakra-ui/icons';
 import { Button } from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import clsx from 'clsx';
 import Caption from 'components/Caption/Caption';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
 import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
@@ -97,6 +98,8 @@ const PlanCustomization = ({
     e.preventDefault();
   }
 
+  console.log('beneficiaries', beneficiaries);
+
   function renderRow(beneficiary: IBeneficiary, index: number) {
     return (
       <div className="flex flex-col justify-between py-4 lg:flex-row">
@@ -140,11 +143,19 @@ const PlanCustomization = ({
             value={beneficiary.distribution}
           />
         </section>
-        <section className="mb-2 flex flex-col lg:mb-0 lg:flex-row xl:w-1/12">
+        <section
+          className={clsx(
+            index === 0 && 'text-transparent',
+            'mb-2 flex flex-col items-center lg:mb-0 lg:flex-row xl:w-1/12'
+          )}
+        >
           <FontAwesomeIcon
-            className="ml-auto cursor-pointer"
+            className={clsx(
+              index === 0 ? 'cursor-auto' : 'cursor-auto',
+              'ml-auto'
+            )}
             icon="trash"
-            onClick={() => handleCloseIconClick(1)}
+            onClick={() => (index === 0 ? null : handleCloseIconClick(index))}
           />
         </section>
       </div>
