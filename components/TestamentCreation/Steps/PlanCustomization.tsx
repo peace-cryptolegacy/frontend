@@ -259,9 +259,9 @@ const PlanCustomization = ({
               onChange={handleExpirationChange}
               value={testamentCreationInfo.expirationDays}
             >
-              <option value={1}>1 days</option>
-              <option value={2}>2 days</option>
-              <option value={3}>3 days</option>
+              <option value={30}>30 days</option>
+              <option value={180}>180 days</option>
+              <option value={360}>360 days</option>
             </select>
 
             <select
