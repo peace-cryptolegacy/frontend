@@ -18,7 +18,6 @@ import { PlanSelection as MenuItemsPlanSelection } from 'utils/constants/PlanSel
 import networkMappings from 'utils/helpers/networkMappings';
 import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
 import menuItems from 'utils/menuItems';
-import { TestamentCreationInfo } from 'utils/Types';
 import { useNetwork } from 'wagmi';
 
 interface Props {
@@ -36,9 +35,7 @@ const PlanSelection = ({
 
   const dispatch = useDispatch();
 
-  const testamentCreationInfo: TestamentCreationInfo = useAppSelector(
-    getTestamentCreationInfo
-  );
+  const testamentCreationInfo = useAppSelector(getTestamentCreationInfo);
 
   const networkName =
     wagmiChainNameMappings[chain?.name as keyof typeof wagmiChainNameMappings];

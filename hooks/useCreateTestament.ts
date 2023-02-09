@@ -1,4 +1,4 @@
-import { TestamentCreationParams } from 'utils/Types';
+import { DeepPartial, TestamentCreationParams } from 'utils/Types';
 import {
   useContractWrite,
   usePrepareContractWrite,
@@ -7,7 +7,7 @@ import {
 import useGetDynamicVaults from './utils/useGetDynamicVaults';
 
 const useCreateTestament = (
-  ...[inactivityMaximum, beneficiaries]: TestamentCreationParams | undefined[]
+  ...[inactivityMaximum, beneficiaries]: DeepPartial<TestamentCreationParams>
 ) => {
   const dynamicVaults = useGetDynamicVaults();
 

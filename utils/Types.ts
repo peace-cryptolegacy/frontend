@@ -35,7 +35,7 @@ export type TestamentCreationInfo = {
   activeStep: number;
   beneficiaries: IBeneficiary[];
   expirationDays: number;
-  beneficiariesAffected: number;
+  signaturesRequired: number;
 };
 
 export type DynamicVault = {
@@ -43,3 +43,11 @@ export type DynamicVault = {
   backupAddresses: Address[];
   ESTABLISHMENT_FEE_RATE: BigNumber;
 };
+
+// utility types
+
+export type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;

@@ -1,18 +1,22 @@
 import { AddIcon } from '@chakra-ui/icons';
-import { Button } from '@chakra-ui/react';
+import { Button as ChakraButton } from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
+import Button from 'components/button/Button';
 import Caption from 'components/Caption/Caption';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
-import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
 import { isAddress } from 'ethers/lib/utils';
 import { IBeneficiary, ITestamentInfo } from 'mock';
 import { BaseSyntheticEvent, useState } from 'react';
-import { Address } from 'utils/Types';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from 'store/hooks';
+import { dispatchTestamentCreationInfo } from 'store/reducers/testamentCreationInfo';
+import { DeepPartial } from 'utils/Types';
+import { getTestamentCreationInfo } from '../../../store/reducers/testamentCreationInfo';
 
 interface Props {
   stepperClassName?: string;
-  testamentInfo: ITestamentInfo;
+  testamentInfo: DeepPartial<ITestamentInfo>;
   renderStepper: Function;
   onNextStep: Function;
   onPrevStep: Function;
@@ -20,52 +24,73 @@ interface Props {
 
 const PlanCustomization = ({
   stepperClassName,
-  testamentInfo,
   renderStepper,
   onNextStep,
   onPrevStep,
 }: Props) => {
-  const defaultBeneficiary = {
-    name: '',
-    address: '0x' as Address,
-    isClaimant: false,
-    distribution: 0,
-  };
+  const dispatch = useDispatch();
 
-  const [beneficiaries, setBeneficiaries] = useState<IBeneficiary[]>(
-    testamentInfo.beneficiaries
-  );
+  const testamentCreationInfo = useAppSelector(getTestamentCreationInfo);
 
-  const [expirationDays, setExpirationDays] = useState<number>(
-    testamentInfo.expirationDays || 1
-  );
   const [errors, setErrors] = useState<boolean[]>([false]);
 
   function handleExpirationChange(event: any) {
-    setExpirationDays(Number(event.target.value));
+    dispatch(
+      dispatchTestamentCreationInfo({
+        ...testamentCreationInfo,
+        expirationDays: Number(event.target.value),
+      })
+    );
+  }
+
+  function handleSignaturesRequiredChange(event: any) {
+    dispatch(
+      dispatchTestamentCreationInfo({
+        ...testamentCreationInfo,
+        signaturesRequired: Number(event.target.value),
+      })
+    );
   }
 
   function handleAddBeneficiary() {
-    setBeneficiaries([...beneficiaries, defaultBeneficiary]);
+    dispatch(
+      dispatchTestamentCreationInfo({
+        ...testamentCreationInfo,
+        beneficiaries: [
+          ...testamentCreationInfo.beneficiaries,
+          {
+            name: undefined,
+            address: undefined,
+            isClaimant: false,
+            distribution: undefined,
+          },
+        ],
+      })
+    );
   }
 
   function handleAddressBlur(index: number) {
     setErrors([
       ...errors.slice(0, index),
-      !isAddress(beneficiaries[index].address),
+      !isAddress(testamentCreationInfo.beneficiaries[index]?.address || ''),
       ...errors.slice(index + 1),
     ]);
   }
 
   function handleChange(key: string, value: string, index: number) {
-    setBeneficiaries([
-      ...beneficiaries.slice(0, index),
-      {
-        ...beneficiaries[index],
-        [key]: value,
-      },
-      ...beneficiaries.slice(index + 1),
-    ]);
+    dispatch(
+      dispatchTestamentCreationInfo({
+        ...testamentCreationInfo,
+        beneficiaries: [
+          ...testamentCreationInfo.beneficiaries.slice(0, index),
+          {
+            ...testamentCreationInfo.beneficiaries[index],
+            [key]: value,
+          },
+          ...testamentCreationInfo.beneficiaries.slice(index + 1),
+        ],
+      })
+    );
   }
 
   // function handleClaimantChange(value: string, index: number) {
@@ -82,25 +107,32 @@ const PlanCustomization = ({
   // }
 
   async function handleContinueClick() {
-    onNextStep(beneficiaries, expirationDays);
+    onNextStep();
   }
 
   function handleCloseIconClick(index: number) {
-    setBeneficiaries([
-      ...beneficiaries.slice(0, index),
-      ...beneficiaries.slice(index + 1),
-    ]);
+    dispatch(
+      dispatchTestamentCreationInfo({
+        ...testamentCreationInfo,
+        beneficiaries: [
+          ...testamentCreationInfo.beneficiaries.slice(0, index),
+          ...testamentCreationInfo.beneficiaries.slice(index + 1),
+        ],
+      })
+    );
 
     setErrors([...errors.slice(0, index), ...errors.slice(index + 1)]);
   }
 
   function handleSubmit(e: BaseSyntheticEvent) {
     e.preventDefault();
+    handleContinueClick();
   }
 
-  console.log('beneficiaries', beneficiaries);
-
-  function renderRow(beneficiary: IBeneficiary, index: number) {
+  function renderRow(
+    beneficiary: DeepPartial<IBeneficiary> | undefined,
+    index: number
+  ) {
     return (
       <div className="flex flex-col justify-between py-4 lg:flex-row">
         <section className="mb-2 flex flex-col lg:mb-0  lg:flex-row xl:w-3/12">
@@ -113,7 +145,7 @@ const PlanCustomization = ({
             onChange={(event: BaseSyntheticEvent) => {
               handleChange('name', event.target.value, index);
             }}
-            value={beneficiary.name}
+            value={beneficiary?.name}
           />
         </section>
         <section className="mb-2 flex flex-col lg:mb-0  lg:flex-row xl:w-4/12">
@@ -121,13 +153,13 @@ const PlanCustomization = ({
           <input
             type="text"
             className="w-full rounded text-pink-500 lg:w-3/4 xl:w-full"
-            placeholder="Beneficiary address*"
+            placeholder="0x"
             required
             onChange={(event: BaseSyntheticEvent) => {
               handleChange('address', event.target.value, index);
             }}
             onBlur={() => handleAddressBlur(index)}
-            value={beneficiary.address}
+            value={beneficiary?.address}
           />
         </section>
         <section className="mb-2 flex flex-col lg:mb-0 lg:flex lg:flex-row xl:w-2/12">
@@ -135,12 +167,12 @@ const PlanCustomization = ({
           <input
             type="number"
             className="rounded text-pink-500 lg:w-3/4 "
-            placeholder="100%"
+            placeholder="0"
             required
             onChange={(event: BaseSyntheticEvent) =>
               handleChange('distribution', event.target.value, index)
             }
-            value={beneficiary.distribution}
+            value={beneficiary?.distribution}
           />
         </section>
         <section
@@ -151,7 +183,7 @@ const PlanCustomization = ({
         >
           <FontAwesomeIcon
             className={clsx(
-              index === 0 ? 'cursor-auto' : 'cursor-auto',
+              index === 0 ? 'cursor-auto' : 'cursor-pointer',
               'ml-auto'
             )}
             icon="trash"
@@ -198,11 +230,13 @@ const PlanCustomization = ({
             <label className="pb-3 font-bold xl:w-1/12"></label>
           </div>
           <HorizontalRule className="hidden w-full border-[1px] lg:block" />
-          <>{beneficiaries.map(renderRow)}</>
+          {testamentCreationInfo.beneficiaries.map((beneficiary, index) =>
+            renderRow(beneficiary, index)
+          )}
         </div>
 
         <div className="flex justify-center">
-          <Button
+          <ChakraButton
             color="#5F4DFF"
             fontSize="14px"
             leftIcon={<AddIcon />}
@@ -210,7 +244,7 @@ const PlanCustomization = ({
             variant="ghost"
           >
             Add another beneficiary
-          </Button>
+          </ChakraButton>
         </div>
 
         <div className="my-6 flex flex-col ">
@@ -223,29 +257,32 @@ const PlanCustomization = ({
             <select
               className="form-select w-2/6 rounded px-4 py-3"
               onChange={handleExpirationChange}
-              value={expirationDays}
+              value={testamentCreationInfo.expirationDays}
             >
               <option value={1}>1 days</option>
               <option value={2}>2 days</option>
               <option value={3}>3 days</option>
             </select>
 
-            <select className="form-select   w-2/6 rounded px-4 py-3">
-              <option>Just peace</option>
-
-              {beneficiaries.map((beneficiary, index) => {
+            <select
+              className="form-select   w-2/6 rounded px-4 py-3"
+              onChange={handleSignaturesRequiredChange}
+              value={testamentCreationInfo.signaturesRequired}
+            >
+              {testamentCreationInfo.beneficiaries.map((_, index) => {
                 return (
-                  <option key={`option-${index}`}>
-                    Just {index + 1} beneficiary
+                  <option key={`option-${index}`} value={index + 1}>
+                    {index + 1} beneficiary
                   </option>
                 );
               })}
+              <option value={0}>Automatic</option>
             </select>
           </div>
         </div>
 
         <div className="my-6 flex justify-center">
-          <Button
+          <ChakraButton
             color="#5F4DFF"
             fontSize="14px"
             marginRight="80px"
@@ -253,12 +290,14 @@ const PlanCustomization = ({
             variant="ghost"
           >
             Back
-          </Button>
-          <PrimaryButton
-            text={'Continue'}
+          </ChakraButton>
+          <Button
+            variant={'primary'}
             className={'!py-2 !px-10 lg:!py-4 lg:!px-14'}
-            onClick={handleContinueClick}
-          />
+            type="submit"
+          >
+            Continue
+          </Button>
         </div>
       </form>
     </div>

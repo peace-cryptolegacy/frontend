@@ -12,7 +12,7 @@ export interface ITestamentInfo {
   activeStep: number;
   beneficiaries: IBeneficiary[];
   expirationDays: number;
-  beneficiariesAffected: number;
+  signaturesRequired: number;
 }
 
 export const testamentInfoInitialValue: ITestamentInfo = {
@@ -27,5 +27,5 @@ export const testamentInfoInitialValue: ITestamentInfo = {
     },
   ],
   expirationDays: 0,
-  beneficiariesAffected: 0,
+  signaturesRequired: 0,
 };

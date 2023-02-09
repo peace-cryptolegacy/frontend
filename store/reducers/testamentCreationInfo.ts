@@ -1,24 +1,29 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IBeneficiary } from 'mock';
-import { Address } from 'wagmi';
+import { DeepPartial } from 'utils/Types';
 import { RootState } from '../index';
 
 interface TestamentCreationInfo {
   selectedPlan: number;
   activeStep: number;
-  beneficiaries: IBeneficiary[];
+  beneficiaries: DeepPartial<IBeneficiary[]>;
   expirationDays: number;
-  beneficiariesAffected: number;
+  signaturesRequired: number;
 }
 
 const initialState: TestamentCreationInfo = {
   selectedPlan: 0,
   activeStep: 0,
   beneficiaries: [
-    { name: '', address: '0x' as Address, isClaimant: false, distribution: 0 },
+    {
+      name: undefined,
+      address: undefined,
+      isClaimant: false,
+      distribution: undefined,
+    },
   ],
-  expirationDays: 0,
-  beneficiariesAffected: 0,
+  expirationDays: 360,
+  signaturesRequired: 1,
 };
 
 export const testamentCreationInfoSlice = createSlice({
@@ -30,16 +35,16 @@ export const testamentCreationInfoSlice = createSlice({
       action: PayloadAction<{
         selectedPlan: number;
         activeStep: number;
-        beneficiaries: IBeneficiary[];
+        beneficiaries: DeepPartial<IBeneficiary[]>;
         expirationDays: number;
-        beneficiariesAffected: number;
+        signaturesRequired: number;
       }>
     ) => {
       state.selectedPlan = action.payload.selectedPlan;
       state.activeStep = action.payload.activeStep;
       state.beneficiaries = action.payload.beneficiaries;
       state.expirationDays = action.payload.expirationDays;
-      state.beneficiariesAffected = action.payload.beneficiariesAffected;
+      state.signaturesRequired = action.payload.signaturesRequired;
     },
   },
 });

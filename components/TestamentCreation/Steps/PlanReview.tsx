@@ -3,11 +3,14 @@ import Button from 'components/button/Button';
 import Caption from 'components/Caption/Caption';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
 import { IBeneficiary } from 'mock';
+import { useAppSelector } from 'store/hooks';
+import { getTestamentCreationInfo } from 'store/reducers/testamentCreationInfo';
+import { DeepPartial } from 'utils/Types';
 
 interface Props {
   stepperClassName?: string;
   renderStepper: Function;
-  beneficiaries: IBeneficiary[];
+  beneficiaries: DeepPartial<IBeneficiary[]>;
   expirationDays: number;
   onNextStep: {
     handleDeploy: Function;
@@ -25,6 +28,8 @@ const PlanReview = ({
   onNextStep,
   onPrevStep,
 }: Props) => {
+  const testamentCreationInfo = useAppSelector(getTestamentCreationInfo);
+
   function renderRow(beneficiary: any, index: any) {
     return (
       <Box
@@ -55,13 +60,11 @@ const PlanReview = ({
 
       <div className="flex flex-col py-2">
         <Caption
-          text="You’re about to create a new Testament on Moonbase and will have to
-          confirm a transaction with your currently connected wallet."
+          text="You’re about to create a new Testament on the Mumbai network. Please review the details below are correct. Then click 'Create' and confirm the transaction in your wallet."
           className="my-2 text-left text-black"
         ></Caption>
         <Caption
-          text="After you create this Testament, you will need to approve which tokens
-          you would like to distribute after the following conditions you set:"
+          text="Once your testament is created, you will able to add the tokens you want to be inherited."
           className="my-2 text-left text-black"
         ></Caption>
       </div>
@@ -76,24 +79,26 @@ const PlanReview = ({
           marginBottom={10}
         >
           <Box maxWidth={220}>
-            <Box marginBottom={5}>
-              Any transaction requires the confirmation of:
-            </Box>
-            <Box color="#000000">1 out of 1 claimer</Box>
+            <Box marginBottom={5}>Succession will be possible after:</Box>
+            <Box color="#000000">{expirationDays} days of inactivity</Box>
           </Box>
           <Box maxWidth={220}>
             <Box marginBottom={5}>
-              Claimer will be able to distribute the funds after:
+              The succession requires the confirmation of:
             </Box>
             <Box color="#000000">
-              {expirationDays} days of inactivity on wallet
+              {testamentCreationInfo.signaturesRequired} out of{' '}
+              {beneficiaries.length}{' '}
+              {beneficiaries.length === 1 ? 'beneficiary' : 'beneficiaries'}
+              {testamentCreationInfo.signaturesRequired === 0 &&
+                ". It's automatic"}
             </Box>
           </Box>
           <Box maxWidth={220}>
             <Box marginBottom={5}>
-              The Testament will distribute the following % of tokens
+              % of tokens to be released upon succession:
             </Box>
-            <Box color="#000000">100% of the approved tokens</Box>
+            <Box color="#000000">100% of approved tokens</Box>
           </Box>
         </Box>
       </div>

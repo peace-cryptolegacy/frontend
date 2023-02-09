@@ -11,7 +11,6 @@ import { BigNumber } from 'ethers';
 import useCreateTestament from 'hooks/useCreateTestament';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
-import { TestamentCreationInfo } from 'utils/Types';
 import { useAccount } from 'wagmi';
 import useGetDynamicVault from '../../../hooks/useGetDynamicVault';
 import {
@@ -22,9 +21,7 @@ import {
 const Steps = () => {
   // get testament info from redux state
   const dispatch = useAppDispatch();
-  const testamentCreationInfo: TestamentCreationInfo = useAppSelector(
-    getTestamentCreationInfo
-  );
+  const testamentCreationInfo = useAppSelector(getTestamentCreationInfo);
 
   const stepsLabel = ['Select Plan', 'Customize Plan', 'Review Plan'];
 
@@ -39,13 +36,13 @@ const Steps = () => {
     useCreateTestament(
       BigNumber.from(testamentCreationInfo.expirationDays),
       // The create testament function does not take the IBeneficiary type. Check the deployments file
-      testamentCreationInfo.beneficiaries?.map(
-        ({ name, address, distribution }) => ({
-          name,
-          address_: address,
-          inheritancePercentage: BigNumber.from(distribution),
-        })
-      )
+      testamentCreationInfo.beneficiaries?.map((beneficiary) => ({
+        name: beneficiary?.name,
+        address_: beneficiary?.address,
+        inheritancePercentage: beneficiary?.distribution
+          ? BigNumber.from(beneficiary.distribution)
+          : undefined,
+      }))
     );
 
   const dynamicVault = useGetDynamicVault(address);
@@ -64,9 +61,13 @@ const Steps = () => {
           dynamicVaultOwner: address,
           beneficiaries: testamentCreationInfo.beneficiaries.map(
             (beneficiary) => {
-              return {
-                address: beneficiary.address,
-              };
+              if (beneficiary?.address) {
+                return {
+                  address: beneficiary.address,
+                };
+              } else {
+                return;
+              }
             }
           ),
         });
@@ -144,13 +145,6 @@ const Steps = () => {
             );
           }}
           onNextStep={() => {
-            dispatch(
-              dispatchTestamentCreationInfo({
-                ...testamentCreationInfo,
-                activeStep: 2,
-              })
-            );
-
             dispatch(
               dispatchTestamentCreationInfo({
                 ...testamentCreationInfo,
