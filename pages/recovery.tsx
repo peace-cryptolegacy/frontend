@@ -227,7 +227,16 @@ const MyPlans: NextPage = () => {
     }
 
     if (!beneficiary) {
-      return <span className="h3 !font-normal ">No active plans</span>;
+      return (
+        <div>
+          <span className="h3 block !font-normal">No active plans</span>
+          <p>
+            {
+              "Once you're added to someone's testament or create a protection plan, it will be displayed here."
+            }
+          </p>
+        </div>
+      );
     }
 
     if (!dynamicVault) {
@@ -417,14 +426,14 @@ const MyPlans: NextPage = () => {
                 height={96}
                 width={86}
               />
-              <h2 className="h2 text-gradient">Welcome to Claim Process</h2>
+              <h2 className="h2 text-gradient">Welcome to the Claim Process</h2>
             </Stack>
             <Tabs className="my-10">
               <Tab>Pending Claims</Tab>
               <Tab>History</Tab>
             </Tabs>
           </>
-          {renderPage()};
+          {renderPage()}
           <Dialog isOpen={isDialogOpen} onClose={closeCompleteSignatureModal}>
             {renderDialogContent()}
           </Dialog>
