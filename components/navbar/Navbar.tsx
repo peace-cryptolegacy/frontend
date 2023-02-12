@@ -15,7 +15,7 @@ const Navbar: FC = () => {
     if (address) {
       return (
         <Stack direction="row" className="z-10 mt-6 mb-12 justify-between">
-          <div className="min-w-[440px]">
+          <div className="w-full max-w-[440px]">
             <TextField
               startAdornment={
                 <FontAwesomeIcon
@@ -23,12 +23,18 @@ const Navbar: FC = () => {
                 />
               }
               placeHolder="Search by asset, address, domain or protocol"
+              className="[&>input]:!py-4 "
             />
           </div>
           <ConnectKitButton.Custom>
             {({ isConnecting, show, isConnected, truncatedAddress }) => {
               return (
-                <Button onClick={show} variant="gradientBorder" size="sm">
+                <Button
+                  onClick={show}
+                  variant="gradientBorder"
+                  size="sm"
+                  className="text-sm lg:text-base"
+                >
                   {isConnected ? (
                     truncatedAddress
                   ) : isConnecting ? (

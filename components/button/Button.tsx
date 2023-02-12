@@ -73,7 +73,7 @@ const Button = ({
               />
             ) : (
               <>
-                <span className="mr-2">{icon}</span>
+                {icon && <span className="mr-2">{icon}</span>}
                 <div
                   className={clsx(
                     variant === 'fancy' ? 'text-white' : 'text-black',
