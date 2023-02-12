@@ -4,7 +4,7 @@ import React from 'react';
 type Props = {
   children: React.ReactNode;
   className?: string;
-};
+} & React.ComponentPropsWithoutRef<'picture'>;
 
 const ListItemIcon = ({ children, className }: Props) => {
   return (

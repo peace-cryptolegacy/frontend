@@ -25,6 +25,10 @@ a {
   }
 }
 
+.h5 {
+  @apply text-xs font-medium capitalize text-blue-dark xl:text-sm;
+}
+
 .h4 {
   @apply text-sm font-medium capitalize text-blue-dark xl:text-base;
 }
