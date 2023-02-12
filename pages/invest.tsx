@@ -55,7 +55,7 @@ const Invest: NextPage = () => {
       );
     }
     return (
-      <h1 className="h1 text-gradient absolute top-[50%] left-[50%] !font-extrabold">
+      <h1 className="h1 text-gradient absolute !font-black inset-center lg:!left-[calc(50%+125px)]">
         COMING SOON
       </h1>
     );

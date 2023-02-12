@@ -14,7 +14,7 @@ const Navbar: FC = () => {
   const renderComponent = () => {
     if (address) {
       return (
-        <Stack direction="row" className="mt-6 mb-12 justify-between">
+        <Stack direction="row" className="z-10 mt-6 mb-12 justify-between">
           <div className="min-w-[440px]">
             <TextField
               startAdornment={
