@@ -95,7 +95,7 @@ const ProtectionsActive = ({ dynamicVault, setCanceled }: Props) => {
     {
       action: {
         type: 'Edited',
-        description: '2 Beneficiaries Added',
+        description: `${testament?.beneficiaries?.length} Beneficiaries Added`,
       },
       date: new Date(),
     },
