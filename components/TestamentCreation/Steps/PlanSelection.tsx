@@ -4,7 +4,6 @@ import ListItem from 'components/list/ListItem';
 import ListItemIcon from 'components/list/ListItemIcon';
 import ListItemText from 'components/list/ListItemText';
 import PrimaryButton from 'components/PrimaryButton/PrimaryButton';
-import Stack from 'components/stack/Stack';
 import { useAppSelector } from 'store/hooks';
 
 import Image from 'next/image';
@@ -15,10 +14,7 @@ import {
   getTestamentCreationInfo,
 } from 'store/reducers/testamentCreationInfo';
 import { PlanSelection as MenuItemsPlanSelection } from 'utils/constants/PlanSelection';
-import networkMappings from 'utils/helpers/networkMappings';
-import wagmiChainNameMappings from 'utils/helpers/wagmiChainNameMappings';
 import menuItems from 'utils/menuItems';
-import { useNetwork } from 'wagmi';
 
 interface Props {
   stepperClassName?: string;
@@ -31,17 +27,9 @@ const PlanSelection = ({
   renderStepper,
   onNextStep,
 }: Props) => {
-  const { chain } = useNetwork();
-
   const dispatch = useDispatch();
 
   const testamentCreationInfo = useAppSelector(getTestamentCreationInfo);
-
-  const networkName =
-    wagmiChainNameMappings[chain?.name as keyof typeof wagmiChainNameMappings];
-
-  const networkMapping =
-    networkMappings[networkName as keyof typeof networkMappings];
 
   async function handleClick() {
     if (
@@ -55,20 +43,8 @@ const PlanSelection = ({
     <>
       <div className={`${stepperClassName || ''}`}>
         {renderStepper()}
-        <Stack direction="row" className="mt-8 hidden !gap-9 lg:flex">
-          <span className="inline">Select your Network</span>
-          <Stack direction="row">
-            <Image
-              src={networkMapping?.route ?? '/'}
-              width={40}
-              height={40}
-              alt={chain?.name}
-            />
-            <span className="capitalize">{networkName}</span>
-          </Stack>
-        </Stack>
         <span className="my-7 inline-block text-sm lg:my-11 lg:text-base">
-          Select the protection for your Assets
+          Select the protection plan you want to create:
         </span>
         <List className="grid grid-cols-1 gap-x-14 gap-y-12 lg:grid-cols-2">
           {Object.entries(menuItems.Protection.subMenu)?.map(
@@ -109,7 +85,7 @@ const PlanSelection = ({
                     {comingSoon && (
                       <div
                         className={clsx(
-                          'absolute top-[-18px] right-3 rounded-lg bg-black py-2.5 px-6 text-[8px]',
+                          'absolute top-[-14px] right-3 rounded-lg bg-black py-1.5 px-3.5 text-[8px] lg:top-[-16px] lg:px-5 lg:py-2 xl:top-[-18px] xl:px-6 xl:py-2.5',
                           'font-bold text-white'
                         )}
                       >

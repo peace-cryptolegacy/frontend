@@ -126,7 +126,7 @@ const Steps = () => {
       key: 'step-connect',
       title: (
         <>
-          Time To Protect Our Wealth <span className="text-black">✌</span>
+          Time To Protect Your Wealth <span className="text-black">✌</span>
         </>
       ),
     },
