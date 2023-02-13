@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import Button from 'components/button/Button';
 import Caption from 'components/Caption/Caption';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
+import Section from 'components/Section/Section';
 import { isAddress } from 'ethers/lib/utils.js';
 import { IBeneficiary, ITestamentInfo } from 'mock';
 import { BaseSyntheticEvent, useState } from 'react';
@@ -316,13 +317,13 @@ const PlanCustomization = ({
     index: number
   ) {
     return (
-      <>
-        <div className="flex flex-col justify-between py-4 lg:flex-row">
-          <section className="mb-2 flex flex-col lg:mb-0  lg:flex-row xl:w-3/12">
-            <label className="pb-3 font-bold lg:hidden">Name</label>
+      <section>
+        <Section className="flex-col justify-between gap-6 py-4 sm:flex-row">
+          <section className="mb-2 flex w-full flex-col lg:mb-0 lg:flex-row">
+            <label className="block pb-3 font-bold sm:hidden">Name</label>
             <input
               type="text"
-              className="block rounded text-pink-500 lg:w-3/4 xl:w-full"
+              className="block w-full rounded text-pink-500"
               placeholder="Beneficiary name"
               required
               onChange={(event: BaseSyntheticEvent) => {
@@ -331,11 +332,11 @@ const PlanCustomization = ({
               value={beneficiary?.name}
             />
           </section>
-          <section className="mb-2 flex flex-col lg:mb-0  lg:flex-row xl:w-4/12">
-            <label className="pb-3 font-bold lg:hidden">Wallet</label>
+          <section className="mb-2 flex w-full flex-col  lg:mb-0 lg:flex-row">
+            <label className="block pb-3 font-bold sm:hidden">Wallet</label>
             <input
               type="text"
-              className="w-full rounded text-pink-500 lg:w-3/4 xl:w-full"
+              className="w-full rounded text-pink-500"
               placeholder="0x..."
               required
               onChange={(event: BaseSyntheticEvent) => {
@@ -344,11 +345,13 @@ const PlanCustomization = ({
               value={beneficiary?.address}
             />
           </section>
-          <section className="mb-2 flex flex-col lg:mb-0 lg:flex lg:flex-row xl:w-2/12">
-            <label className="pb-3 font-bold lg:hidden">% Distribution</label>
+          <section className="mb-2 flex w-full flex-col lg:mb-0 lg:flex lg:flex-row">
+            <label className="block pb-3 font-bold sm:hidden">
+              % Distribution
+            </label>
             <input
               type="number"
-              className="rounded text-pink-500 lg:w-3/4 "
+              className="w-full rounded text-pink-500"
               placeholder="1"
               min="1"
               required
@@ -364,20 +367,20 @@ const PlanCustomization = ({
           </section>
           <section
             className={clsx(
-              index === 0 && 'text-transparent',
-              'mb-2 flex flex-col items-center lg:mb-0 lg:flex-row xl:w-1/12'
+              index === 0 && 'hidden sm:inline sm:text-transparent',
+              'mb-2 flex w-full flex-col items-center justify-center sm:w-2/12 lg:mb-0 lg:flex-row'
             )}
           >
             <FontAwesomeIcon
               className={clsx(
                 index === 0 ? 'cursor-auto' : 'cursor-pointer',
-                'ml-auto'
+                'mx-auto sm:ml-auto'
               )}
               icon="trash"
               onClick={() => (index === 0 ? null : handleCloseIconClick(index))}
             />
           </section>
-        </div>
+        </Section>
         <ul className="text-red-600">
           {Object.keys(errors[index]).map((error, i) => {
             if (errors[index][error as keyof typeof inputErrorMessages]) {
@@ -389,46 +392,37 @@ const PlanCustomization = ({
             }
           })}
         </ul>
-      </>
+      </section>
     );
   }
 
   return (
     <div className={`${stepperClassName || ''}`}>
       {renderStepper()}
-      <div className="my-6 flex flex-col sm:block lg:hidden">
-        <Caption
-          text="Select which wallets could activate the protocol after inactivity time passed. This plan will ONLY be claimable on:                           "
-          className="my-3 text-left text-black"
-        ></Caption>
-      </div>
-      <div className="my-6  hidden flex-col lg:flex">
-        <Caption
-          text="Your inheritance plan will have one or more beneficiaries, you can
-          select which of them could activate the protocol after inactivity time
-          passed."
-          className="my-3 text-left text-black"
-        ></Caption>
-        <Caption
-          text="You can add an identifier name to verify in the future who will be
-          receiving your will and customize % of funds and the different type of
-          tokens that will inherit. This plan will ONLY be claimable on
-          Moonbase."
-          className="my-3 text-left text-black"
-        ></Caption>
+      <div className="my-9 flex-col lg:flex">
+        <Caption className="whitespace-pre-line text-left text-black">
+          To create your will, please list the details of your beneficiaries.
+          After the specified period of time, they will be able to claim what
+          you left them.
+          {'\n'}
+          {'\n'}
+          The will is only valid on the Mumbai network.
+        </Caption>
       </div>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div>
-          <div className=" hidden justify-between lg:flex">
-            <label className="pb-3 font-bold xl:w-3/12">Name</label>
-            <label className="pb-3 font-bold xl:w-4/12">Wallet</label>
-            <label className="pb-3 font-bold xl:w-2/12">% Distribution</label>
-            <label className="pb-3 font-bold xl:w-1/12"></label>
+          <div className="hidden justify-between sm:flex">
+            <label className="w-full pb-3 font-bold">Name</label>
+            <label className="w-full pb-3 font-bold">Wallet</label>
+            <label className="w-full pb-3 font-bold">% Distribution</label>
+            <label className="w-2/12 pb-3 font-bold"></label>
           </div>
-          <HorizontalRule className="hidden w-full border-[1px] lg:block" />
-          {testamentCreationInfo.beneficiaries.map((beneficiary, index) =>
-            renderRow(beneficiary, index)
-          )}
+          <HorizontalRule className="w-full border-[1px]" />
+          <div className="space-y-6 sm:space-y-0">
+            {testamentCreationInfo.beneficiaries.map((beneficiary, index) =>
+              renderRow(beneficiary, index)
+            )}
+          </div>
         </div>
 
         <div className="flex justify-center">
@@ -449,9 +443,9 @@ const PlanCustomization = ({
           to be released:"
             className="my-3 text-left text-black"
           ></Caption>
-          <div className="flex flex-col items-center justify-center gap-4 lg:flex-row lg:justify-between">
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:justify-between">
             <select
-              className="form-select w-2/6 rounded px-4 py-3"
+              className="form-select w-full rounded px-4 py-3 sm:w-2/6"
               onChange={handleExpirationChange}
               value={testamentCreationInfo.expirationDays}
             >
@@ -461,7 +455,7 @@ const PlanCustomization = ({
             </select>
 
             <select
-              className="form-select   w-2/6 rounded px-4 py-3"
+              className="form-select w-full rounded px-4 py-3 sm:w-2/6"
               onChange={handleSignaturesRequiredChange}
               value={testamentCreationInfo.signaturesRequired}
             >
@@ -477,19 +471,13 @@ const PlanCustomization = ({
           </div>
         </div>
 
-        <div className="my-6 flex justify-center">
-          <ChakraButton
-            color="#5F4DFF"
-            fontSize="14px"
-            marginRight="80px"
-            onClick={() => onPrevStep()}
-            variant="ghost"
-          >
+        <div className="mt-10 flex items-center justify-center gap-6 mobile-lg:gap-10">
+          <Button color="#5F4DFF" onClick={() => onPrevStep()} variant="text">
             Back
-          </ChakraButton>
+          </Button>
           <Button
             variant={'primary'}
-            className={'!py-2 !px-10 lg:!py-4 lg:!px-14'}
+            className={'!py-2 !px-3 mobile-lg:!px-10 lg:!py-4 lg:!px-14'}
             type="submit"
           >
             Continue
