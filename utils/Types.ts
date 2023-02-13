@@ -5,7 +5,7 @@ export type UserPlans = (
   | 'Inheritance Plan'
   | 'Backup Wallet'
   | 'Expender Wallet'
-  | 'Migration Wallet'
+  | 'Migration Plan'
 )[];
 
 export type Address = `0x${string}`;

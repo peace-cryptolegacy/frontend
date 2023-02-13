@@ -882,7 +882,7 @@ const ProtectionActiveDialog = ({
     <Dialog
       isOpen={isDialogOpen}
       onClose={() => handleCloseDialog()}
-      className="[&>div:nth-child(2)>div>div>h3]:text-left"
+      className="[&>div:nth-child(2)>div>div>h3]:text-left lg:[&>div>div>div]:ml-[250px]"
       size="lg"
     >
       {renderDialogContent()}
