@@ -182,8 +182,40 @@ const MyPlans: NextPage = () => {
     if (!address) {
       return (
         <GeneralDefaultConnectWallet>
-          <Image src={recovery} alt="Tokens Vault" objectFit="contain" />
-          <GeneralDefaultConnectWalletTitle>
+          {/* The className is split into multiple lines to make it easier to read. */}
+          <div
+            className="
+              absolute
+              top-5
+              h-full
+              max-h-[235px]
+              w-full
+              mobile-lg:top-7
+              mobile-lg:max-h-[295px]
+              sm:!top-[calc(50%-17px)]
+              sm:max-h-[350px]
+              sm:inset-center
+              lg:max-h-[525px]
+              "
+          >
+            <Image
+              src={recovery}
+              alt="Tokens Vault"
+              layout="fill"
+              objectFit="contain"
+            />
+          </div>
+          {/* This div is used to create a fix space between the image and the title. */}
+          <div
+            className="
+          relative
+          h-[230px]
+          mobile-lg:h-[285px]
+          sm:h-[400px]
+          lg:h-[550px]
+          "
+          ></div>
+          <GeneralDefaultConnectWalletTitle className="-mt-9">
             Claim without problems
           </GeneralDefaultConnectWalletTitle>
           <GeneralDefaultConnectWalletDescription>
@@ -195,7 +227,16 @@ const MyPlans: NextPage = () => {
     }
 
     if (!beneficiary) {
-      return <span className="h3 !font-normal ">No active plans</span>;
+      return (
+        <div>
+          <span className="h3 block !font-normal">No active plans</span>
+          <p>
+            {
+              "Once you're added to someone's testament or create a protection plan, it will be displayed here."
+            }
+          </p>
+        </div>
+      );
     }
 
     if (!dynamicVault) {
@@ -385,14 +426,14 @@ const MyPlans: NextPage = () => {
                 height={96}
                 width={86}
               />
-              <h2 className="h2 text-gradient">Welcome to Claim Process</h2>
+              <h2 className="h2 text-gradient">Welcome to the Claim Process</h2>
             </Stack>
             <Tabs className="my-10">
               <Tab>Pending Claims</Tab>
               <Tab>History</Tab>
             </Tabs>
           </>
-          {renderPage()};
+          {renderPage()}
           <Dialog isOpen={isDialogOpen} onClose={closeCompleteSignatureModal}>
             {renderDialogContent()}
           </Dialog>

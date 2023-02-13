@@ -8,6 +8,8 @@ module.exports = {
   ],
   theme: {
     screens: {
+      'mobile-md': '375px',
+      'mobile-lg': '425px',
       sm: '640px',
       md: '768px',
       lg: '1024px',
@@ -56,6 +58,15 @@ module.exports = {
     function ({ addVariant }) {
       addVariant('child', '& > *');
       addVariant('child-hover', '& > *:hover');
+    },
+    function ({ addUtilities }) {
+      addUtilities({
+        '.inset-center': {
+          top: '50%',
+          left: '50%',
+          '@apply -translate-x-1/2 -translate-y-1/2': {},
+        },
+      });
     },
   ],
 };

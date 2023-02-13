@@ -1,10 +1,16 @@
 interface Props {
-  text: string;
+  text?: string;
   className?: string;
+  children?: React.ReactNode;
 }
 
-const Caption = ({ text, className }: Props) => {
-  return <p className={className}>{text}</p>;
+const Caption = ({ text, children, className }: Props) => {
+  return (
+    <p className={className}>
+      {text}
+      {children}
+    </p>
+  );
 };
 
 export default Caption;

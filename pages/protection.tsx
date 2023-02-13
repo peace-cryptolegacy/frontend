@@ -16,8 +16,38 @@ const Protection: NextPage = () => {
     }
     return (
       <GeneralDefaultConnectWallet>
-        <Image src={tokensVault} alt="Tokens Vault" objectFit="contain" />
-        <GeneralDefaultConnectWalletTitle>
+        {/* The className is split into multiple lines to make it easier to read. */}
+        <div
+          className="
+              absolute
+              h-full
+              max-h-[250px]
+              w-full
+              mobile-lg:max-h-[320px]
+              sm:!top-[calc(50%-30px)]
+              sm:max-h-[400px]
+              sm:inset-center
+              lg:max-h-[550px]
+              "
+        >
+          <Image
+            src={tokensVault}
+            alt="Tokens Vault"
+            layout="fill"
+            objectFit="contain"
+          />
+        </div>
+        {/* This div is used to create a fix space between the image and the title. */}
+        <div
+          className="
+          relative
+          h-[230px]
+          mobile-lg:h-[285px]
+          sm:h-[400px]
+          lg:h-[550px]
+          "
+        ></div>
+        <GeneralDefaultConnectWalletTitle className="-mt-9">
           Protect your Wealth on Web3
         </GeneralDefaultConnectWalletTitle>
         <GeneralDefaultConnectWalletDescription>

@@ -43,7 +43,8 @@ const Button = ({
             'rounded-2xl bg-mainVertical',
           variant === 'fancy' && 'p-1.5',
           variant === 'gradientBorder' && 'p-0.5',
-          !['fancy', 'gradientBorder'].includes(variant) && 'rounded-lg py-4',
+          !['fancy', 'gradientBorder', 'text'].includes(variant) &&
+            'rounded-lg py-4',
           variant === 'basic' && 'border-[1px] border-gray-300 bg-white',
           variant === 'primary' && 'bg-purple-900',
           size === 'xs' && 'w-[140px]',
@@ -73,7 +74,7 @@ const Button = ({
               />
             ) : (
               <>
-                <span className="mr-2">{icon}</span>
+                {icon && <span className="mr-2">{icon}</span>}
                 <div
                   className={clsx(
                     variant === 'fancy' ? 'text-white' : 'text-black',

@@ -31,6 +31,9 @@ type Props = {
 };
 
 const ProtectionsActive = ({ dynamicVault, setCanceled }: Props) => {
+  {
+    console.log('dynamicVault', dynamicVault);
+  }
   const { address } = useAccount();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState<
@@ -92,7 +95,7 @@ const ProtectionsActive = ({ dynamicVault, setCanceled }: Props) => {
     {
       action: {
         type: 'Edited',
-        description: '2 Beneficiaries Added',
+        description: `${testament?.beneficiaries?.length} Beneficiaries Added`,
       },
       date: new Date(),
     },
@@ -145,8 +148,8 @@ const ProtectionsActive = ({ dynamicVault, setCanceled }: Props) => {
         </Tabs>
         <TabPanels>
           <TabPanel>
-            <div className="mt-10 grid grid-cols-2 gap-20">
-              <div className="space-y-2">
+            <div className="mt-10 grid w-full grid-cols-1 gap-20 xl:grid-cols-2">
+              <div className="mx-auto w-full max-w-2xl space-y-2 xl:m-0 ">
                 <h4 className="h4">Manage Plan</h4>
                 <Box>
                   <div className="flex justify-between text-sm text-blue-gray">
@@ -177,9 +180,10 @@ const ProtectionsActive = ({ dynamicVault, setCanceled }: Props) => {
                       <span className="capitalize">{network}</span>
                     </Stack>
                     <div
+                      // eslint-disable-next-line tailwindcss/classnames-order
                       className={clsx(
                         'mt-8 flex justify-between gap-4 [&>div>span:first-of-type]:text-sm [&>div>span]:block',
-                        '[&>div>span:first-of-type]:text-blue-gray [&>div]:space-y-2'
+                        '[&>div]:space-y-2 [&>div>span:first-of-type]:text-blue-gray'
                       )}
                     >
                       <div>
@@ -188,10 +192,7 @@ const ProtectionsActive = ({ dynamicVault, setCanceled }: Props) => {
                           {protectedTokens?.length ?? 0}
                         </span>
                       </div>
-                      <div>
-                        <span>Collectibles</span>
-                        <span>0</span>
-                      </div>
+
                       <div className="self-end">
                         <Button
                           variant="basic"
@@ -289,7 +290,7 @@ const ProtectionsActive = ({ dynamicVault, setCanceled }: Props) => {
                   />
                 </Box>
               </div>
-              <div className="flex flex-col space-y-2">
+              <div className="mx-auto flex w-full max-w-2xl flex-col space-y-2 xl:m-0">
                 <h4 className="h4">History Activity</h4>
                 <Box className="flex h-full flex-col">
                   <div className="space-y-8">
@@ -321,14 +322,14 @@ const ProtectionsActive = ({ dynamicVault, setCanceled }: Props) => {
                       </Stack>
                     ))}
                   </div>
-                  <HorizontalRule className="mt-auto" />
+                  <HorizontalRule className="mt-20 xl:mt-auto" />
                   <Button variant="basic" text="Seel All" className="mt-9" />
                 </Box>
               </div>
             </div>
           </TabPanel>
-          <TabPanel>
-            <div className="h-6"></div>
+          <TabPanel className="mt-10">
+            <p>No eligible protections found.</p>
           </TabPanel>
         </TabPanels>
       </TabGroup>

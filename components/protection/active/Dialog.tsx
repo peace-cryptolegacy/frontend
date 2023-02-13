@@ -830,9 +830,9 @@ const ProtectionActiveDialog = ({
               className="[&>div>div]:flex [&>div>div]:gap-10 [&>div>div]:space-y-0"
               name="newInactivityTime"
             >
-              <RadioOption value={1}>1 Day</RadioOption>
-              <RadioOption value={2}>2 Days</RadioOption>
-              <RadioOption value={3}>3 Days</RadioOption>
+              <RadioOption value={30}>30 Days</RadioOption>
+              <RadioOption value={180}>180 Days</RadioOption>
+              <RadioOption value={360}>360 Days</RadioOption>
             </RadioGroup>
           </div>
 
@@ -882,7 +882,7 @@ const ProtectionActiveDialog = ({
     <Dialog
       isOpen={isDialogOpen}
       onClose={() => handleCloseDialog()}
-      className="[&>div:nth-child(2)>div>div>h3]:text-left"
+      className="[&>div:nth-child(2)>div>div>h3]:text-left lg:[&>div>div>div]:ml-[250px]"
       size="lg"
     >
       {renderDialogContent()}

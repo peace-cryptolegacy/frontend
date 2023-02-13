@@ -8,7 +8,7 @@ type Props = {
 
 const GeneralDefaultConnectWallet = ({ children }: Props) => {
   return (
-    <Stack className="min-h-screen items-center justify-center !gap-9 text-center">
+    <Stack className="relative mt-8 h-full max-h-screen items-center !gap-9 text-center sm:mt-0 sm:justify-center">
       {children}
       <div className="space-y-3">
         <ConnectKitButton.Custom>

@@ -13,7 +13,7 @@ const menuItems =
           icon: '/icons/inheritance-plan.png',
           title: 'Inheritance Plan',
           description:
-            'Transfer and distribute your assets to your loved ones.',
+            'Transfer your assets to your loved ones in case of emergency.',
           alt: 'Inheritance Plan',
           route: '/inheritancePlan',
           comingSoon: false,
@@ -24,7 +24,7 @@ const menuItems =
           icon: '/icons/backup-wallet.png',
           title: 'Backup Wallet',
           description:
-            'Don’t lose your assets again, create a backup of your funds.',
+            'Never lose your assets again. Create a backup of your funds.',
           alt: 'Backup Wallet',
           route: '/backup-wallet',
           comingSoon: true,
@@ -35,18 +35,17 @@ const menuItems =
           icon: '/icons/expender-wallet.png',
           title: 'Expender Wallet',
           description:
-            'Create disposable wallets to admin budget or expenses safe.',
+            'Disposable wallets to overview expenses and protect assets.',
           alt: 'Expender Wallet',
           route: '/expender-wallet',
           comingSoon: true,
           planId: PlanSelection.EXPENDER_WALLET,
           myPlansButtonText: 'Claim Now',
         },
-        'Migration Wallet': {
+        'Migration Plan': {
           icon: '/icons/migration-wallet.png',
-          title: 'Migration Wallet',
-          description:
-            'Have a extra protection on your DeFi activity or emergency.',
+          title: 'Migration Plan',
+          description: 'An extra layer of security for your DEFI activity.',
           alt: 'Migration Wallet',
           route: '/migration-wallet',
           comingSoon: true,

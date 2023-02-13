@@ -1,13 +1,18 @@
-import { Box, Button as ChakraButton, Stack } from '@chakra-ui/react';
+import { Stack } from '@chakra-ui/react';
 import Button from 'components/button/Button';
 import Caption from 'components/Caption/Caption';
 import HorizontalRule from 'components/horizontal-rule/HorizontalRule';
+import Section from 'components/Section/Section';
 import { IBeneficiary } from 'mock';
+import { useAppSelector } from 'store/hooks';
+import { getTestamentCreationInfo } from 'store/reducers/testamentCreationInfo';
+import { formatAddress } from 'utils/formatters';
+import { DeepPartial } from 'utils/Types';
 
 interface Props {
   stepperClassName?: string;
   renderStepper: Function;
-  beneficiaries: IBeneficiary[];
+  beneficiaries: DeepPartial<IBeneficiary[]>;
   expirationDays: number;
   onNextStep: {
     handleDeploy: Function;
@@ -25,27 +30,32 @@ const PlanReview = ({
   onNextStep,
   onPrevStep,
 }: Props) => {
+  const testamentCreationInfo = useAppSelector(getTestamentCreationInfo);
+
   function renderRow(beneficiary: any, index: any) {
     return (
-      <Box
-        display="flex"
-        flexDirection="row"
-        marginBottom="15px"
+      <Section
+        className="flex-row items-center !gap-10 text-center sm:text-left"
         key={`beneficiary-${index}`}
       >
-        <Box flex={3}>{beneficiary.name}</Box>
-        <Box flex={1}>{beneficiary.distribution} %</Box>
-        <Box className="hidden lg:block" flex={3}>
-          {beneficiary.address}
-        </Box>
-        <Box
-          className="cursor-pointer text-purple-900"
-          onClick={() => onPrevStep()}
-          flex={1}
-        >
-          Edit
-        </Box>
-      </Box>
+        <div className="w-full sm:w-4/12">
+          <span className="block">{beneficiary.name}</span>
+          <span className="text-sm sm:hidden">
+            {formatAddress(beneficiary.address)}
+          </span>
+        </div>
+        <span className="hidden w-4/12 sm:inline">
+          {formatAddress(beneficiary.address)}
+        </span>
+        <span className="inline w-full sm:w-2/12">
+          {beneficiary.distribution}%
+        </span>
+        <div className="hidden sm:block sm:w-2/12">
+          <Button onClick={() => onPrevStep()} variant="text">
+            Edit
+          </Button>
+        </div>
+      </Section>
     );
   }
 
@@ -55,79 +65,83 @@ const PlanReview = ({
 
       <div className="flex flex-col py-2">
         <Caption
-          text="You’re about to create a new Testament on Moonbase and will have to
-          confirm a transaction with your currently connected wallet."
+          text="You’re about to create a new Testament on the Mumbai network. Please review the details below are correct. Then click 'Create' and confirm the transaction in your wallet."
           className="my-2 text-left text-black"
         ></Caption>
         <Caption
-          text="After you create this Testament, you will need to approve which tokens
-          you would like to distribute after the following conditions you set:"
+          text="Once your testament is created, you will able to add the tokens you want to be inherited."
           className="my-2 text-left text-black"
         ></Caption>
       </div>
 
-      <HorizontalRule className="mb-5 hidden w-full border-[1px] lg:block" />
-      <div className="hidden lg:block">
-        <Box
-          color="#64748B"
-          display="flex"
-          flexDirection="row"
-          justifyContent="space-between"
-          marginBottom={10}
-        >
-          <Box maxWidth={220}>
-            <Box marginBottom={5}>
-              Any transaction requires the confirmation of:
-            </Box>
-            <Box color="#000000">1 out of 1 claimer</Box>
-          </Box>
-          <Box maxWidth={220}>
-            <Box marginBottom={5}>
-              Claimer will be able to distribute the funds after:
-            </Box>
-            <Box color="#000000">
-              {expirationDays} days of inactivity on wallet
-            </Box>
-          </Box>
-          <Box maxWidth={220}>
-            <Box marginBottom={5}>
-              The Testament will distribute the following % of tokens
-            </Box>
-            <Box color="#000000">100% of the approved tokens</Box>
-          </Box>
-        </Box>
-      </div>
+      <HorizontalRule />
 
-      <HorizontalRule className="mb-5 hidden w-full border-[1px] lg:block" />
+      {/* >sm screens */}
+      <section className="my-5 hidden space-y-8 sm:block">
+        <Section className="flex-col !gap-10 text-blue-gray sm:flex-row">
+          <span className="w-full">Succession will be possible after:</span>
+          <span className="w-full">Signatures required for succession:</span>
+          <span className="w-full">% of tokens released upon succession:</span>
+        </Section>
+        <Section className="!gap-10">
+          <span className="w-full">{expirationDays} days of inactivity</span>
+          <span className="w-full">
+            {testamentCreationInfo.signaturesRequired} out of{' '}
+            {beneficiaries.length} beneficiaries
+            {testamentCreationInfo.signaturesRequired === 0 &&
+              ". It's automatic."}
+          </span>
+          <span className="w-full">100% of approved tokens</span>
+        </Section>
+      </section>
 
-      <Box
-        color="#64748B"
-        display="flex"
-        flexDirection="row"
-        fontWeight="bold"
-        className="mb-5"
+      {/* <sm screens */}
+      <section className="my-5 space-y-8 sm:hidden">
+        <Section className="flex-col items-center !gap-10 text-center sm:flex-row sm:text-blue-gray [&>div]:!space-y-4">
+          <div>
+            <span className="block text-blue-gray">
+              Succession will be possible after:
+            </span>
+            <span className="block">{expirationDays} days of inactivity</span>
+          </div>
+          <div>
+            <span className="block text-blue-gray">
+              Signatures required for succession:
+            </span>
+            <span className="block">
+              {testamentCreationInfo.signaturesRequired} out of{' '}
+              {beneficiaries.length} beneficiaries
+              {testamentCreationInfo.signaturesRequired === 0 &&
+                ". It's automatic."}
+            </span>
+          </div>
+          <div>
+            <span className="block text-blue-gray">
+              % of tokens released upon succession:
+            </span>
+            <span className="block">100% of approved tokens</span>
+          </div>
+        </Section>
+      </section>
+
+      <HorizontalRule className="mb-5" />
+
+      <Section className="h4 mb-6 flex !gap-10 text-center sm:text-left">
+        <span className="w-full sm:w-4/12">Beneficiary</span>
+        <span className="hidden w-4/12 sm:inline">Wallet</span>
+        <span className="w-full sm:w-2/12">Funds</span>
+        <span className="hidden w-2/12 sm:inline"></span>
+      </Section>
+
+      <div className="space-y-6">{beneficiaries.map(renderRow)}</div>
+
+      <Stack
+        direction="row"
+        className="mt-20 items-center justify-center gap-6 mobile-lg:gap-10"
       >
-        {/* <Box flex={1}>Claimer</Box> */}
-        <Box flex={3}>Beneficiary</Box>
-        <Box flex={1}>% Funds</Box>
-        <Box className="hidden lg:block" flex={3}>
-          Wallet
-        </Box>
-        <Box flex={1}>Edit</Box>
-      </Box>
-
-      {beneficiaries.map(renderRow)}
-
-      <Stack direction="row" className="mt-20 items-center justify-center">
-        <ChakraButton
-          color="#5F4DFF"
-          fontSize="14px"
-          marginRight="80px"
-          onClick={() => onPrevStep()}
-          variant="ghost"
-        >
+        <Button color="#5F4DFF" onClick={() => onPrevStep()} variant="text">
           Back
-        </ChakraButton>
+        </Button>
 
         <Button
           variant="primary"
